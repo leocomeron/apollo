@@ -1,6 +1,6 @@
 import RadioButtons from '@/components/RadioButtons';
 import { Heading } from '@chakra-ui/react';
-import { Options } from '../RadioButtons/RadioButtons';
+import { Options } from '../../RadioButtons/RadioButtons';
 
 interface OnboardingFirstStepProps {
   options: Options[];

@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "msjsdiag.debugger-for-chrome",
+    "ms-azuretools.vscode-docker",
+    "ms-vsliveshare.vsliveshare",
+    "stylelint.vscode-stylelint",
+    "rosshamish.kuskus-kusto-syntax-highlighting"
+  ]
+}

@@ -19,7 +19,6 @@ module.exports = {
     eqeqeq: ['error', 'always'],
     semi: ['error', 'always'],
     quotes: ['error', 'single'],
-    indent: ['error', 2],
 
     // TypeScript specific rules
     '@typescript-eslint/explicit-module-boundary-types': 'off',

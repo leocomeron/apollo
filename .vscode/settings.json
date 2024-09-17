@@ -1,0 +1,18 @@
+{
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "files.insertFinalNewline": true,
+  "window.title": "${activeEditorMedium}${separator}${rootName}",
+  "explorer.sortOrder": "filesFirst",
+  "liveshare.allowGuestDebugControl": true,
+  "terminal.integrated.scrollback": 25000,
+  "task.quickOpen.history": 3,
+  "typescript.tsdk": "./tools/node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "eslint.workingDirectories": ["./site/", "./tools/"],
+  "prettier.configPath": ".prettierrc"
+}
