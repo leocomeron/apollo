@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 export interface Options {
   label: string;
-  option: string;
+  value: string;
   required?: boolean;
 }
 
@@ -18,13 +18,17 @@ const RadioButtons: React.FC<RadioButtonsProps> = ({ options }) => {
       <Stack direction="column">
         {options.map((option) => (
           <Box
-            key={option.option}
-            className="md:w-1/3 w-full mx-auto shadow-lg rounded-lg overflow-hidden p-6 m-1"
-            bg="brand.500"
+            key={option.value}
+            className="md:w-1/3 w-full mx-auto shadow-lg overflow-hidden p-6 m-1"
+            bg="brand.600"
             textColor="white"
             fontWeight="bold"
+            borderColor={value === option.value ? 'brand.800' : 'transparent'}
+            borderWidth="3px"
+            onClick={() => setValue(option.value)} // make all area selectable
+            borderRadius="50px"
           >
-            <Radio value={option.option} colorScheme="white" size="lg">
+            <Radio value={option.value} colorScheme="white" size="lg">
               {option.label}
             </Radio>
           </Box>

@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface OnboardingSecondStepProps {}
 
 const OnboardingSecondStep: React.FC<OnboardingSecondStepProps> = () => {

@@ -12,8 +12,8 @@ export default function Onboarding() {
         return (
           <OnboardingFirstStep
             options={[
-              { label: 'Quiero trabajar', option: 'work' },
-              { label: 'Quiero contratar', option: 'hire' },
+              { label: 'Quiero trabajar', value: 'work' },
+              { label: 'Quiero contratar', value: 'hire' },
             ]}
           />
         );
@@ -32,9 +32,10 @@ export default function Onboarding() {
     <main className="flex flex-col items-center justify-between p-12">
       {renderStep()}
       <Button
-        colorScheme="blue"
         color="white"
-        className="mt-6"
+        backgroundColor="brand.800"
+        className="mt-6 md:w-1/6 w-full"
+        _hover={{ bg: 'brand.900' }}
         onClick={() => setStep((prevState) => prevState + 1)}
       >
         Continuar
