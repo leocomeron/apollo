@@ -1,6 +1,6 @@
 import { Heading, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
-import RadioButtons, { Options } from './UserTypeOptions/UserTypeOptions';
+import UserTypeOptions, { Options } from './UserTypeOptions/UserTypeOptions';
 
 interface OnboardingFirstStepProps {
   options: Options[];
@@ -21,7 +21,7 @@ const OnboardingFirstStep: React.FC<OnboardingFirstStepProps> = ({
       <Heading textAlign="center" mb="4" fontSize={{ base: 'xl', md: '4xl' }}>
         Qué te gustaría realizar?
       </Heading>
-      <RadioButtons options={options} />
+      <UserTypeOptions options={options} />
     </>
   );
 };

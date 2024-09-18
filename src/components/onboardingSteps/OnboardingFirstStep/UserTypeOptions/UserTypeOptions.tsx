@@ -30,8 +30,8 @@ const UserTypeOptions: React.FC<UserTypeOptionsProps> = ({ options }) => {
           variant="solid"
           bgColor="brand.600"
           cursor="pointer"
-          px={{ base: '2', md: '6' }}
-          py={{ base: '1', md: '3' }}
+          px={{ base: 2, md: 6 }}
+          py={{ base: 1, md: 3 }}
           borderWidth="3px"
           borderColor={value === option.value ? 'brand.900' : 'transparent'}
           onClick={() => setValue(option.value)}
