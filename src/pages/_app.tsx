@@ -1,14 +1,21 @@
+import { OnboardingProvider } from '@/context/OnboardingContext';
 import '@/styles/globals.css';
 import theme from '@/theme/theme';
 import { Box, ChakraProvider } from '@chakra-ui/react';
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
-      <Box bg="gray.100" minH="100vh">
-        <Component {...pageProps} />
-      </Box>
+      <Head>
+        <title>Manos a la obra | Onboarding</title>
+      </Head>
+      <OnboardingProvider>
+        <Box minH="100vh">
+          <Component {...pageProps} />
+        </Box>
+      </OnboardingProvider>
     </ChakraProvider>
   );
 }

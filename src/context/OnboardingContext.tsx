@@ -7,8 +7,13 @@ import {
   useState,
 } from 'react';
 
+export interface Category {
+  label: string;
+  value: string;
+}
 interface OnboardingInfo {
-  userType: 'hire' | 'work' | '';
+  userType: string;
+  categories: Category[];
 }
 
 interface OnboardingContextType {
@@ -29,6 +34,7 @@ interface OnboardingProviderProps {
 
 const onboardingInitialState: OnboardingInfo = {
   userType: '',
+  categories: [],
 };
 
 export const OnboardingProvider = ({ children }: OnboardingProviderProps) => {

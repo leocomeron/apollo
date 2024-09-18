@@ -1,10 +1,20 @@
 import OnboardingFirstStep from '@/components/onboardingSteps/OnboardingFirstStep';
 import OnboardingSecondStep from '@/components/onboardingSteps/OnboardingSecondStep';
+import { Category, useOnboarding } from '@/context/OnboardingContext';
 import { Button } from '@chakra-ui/react';
-import { useState } from 'react';
+
+const categories: Category[] = [
+  { label: 'Albañilería', value: 'masonry' },
+  { label: 'Plomería', value: 'plumbing' },
+  { label: 'Pintura', value: 'painting' },
+  { label: 'Carpintería', value: 'carpentry' },
+  { label: 'Herrería', value: 'blacksmithing' },
+  { label: 'Electricidad', value: 'electricity' },
+  { label: 'Otros', value: 'other' },
+];
 
 export default function Onboarding() {
-  const [step, setStep] = useState(1);
+  const { step, nextStep, onboardingInfo } = useOnboarding();
 
   const renderStep = () => {
     switch (step) {
@@ -18,7 +28,7 @@ export default function Onboarding() {
           />
         );
       case 2:
-        return <OnboardingSecondStep />;
+        return <OnboardingSecondStep categories={categories} />;
       case 3:
         return <p>STEP 3</p>;
       case 4:
@@ -29,17 +39,20 @@ export default function Onboarding() {
   };
 
   return (
-    <main className="flex flex-col items-center justify-between p-12">
-      {renderStep()}
-      <Button
-        color="white"
-        backgroundColor="brand.800"
-        className="mt-6 md:w-1/6 w-full"
-        _hover={{ bg: 'brand.900' }}
-        onClick={() => setStep((prevState) => prevState + 1)}
-      >
-        Continuar
-      </Button>
-    </main>
+    <>
+      <main className="flex flex-col items-center justify-between p-12">
+        {renderStep()}
+        <Button
+          color="white"
+          backgroundColor="brand.800"
+          className="mt-6 md:w-1/6 w-full"
+          _hover={{ bg: 'brand.900' }}
+          onClick={nextStep}
+          isDisabled={!onboardingInfo.userType}
+        >
+          Continuar
+        </Button>
+      </main>
+    </>
   );
 }

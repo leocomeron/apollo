@@ -1,5 +1,6 @@
+import { useOnboarding } from '@/context/OnboardingContext';
 import { Box, Radio, RadioGroup, Stack } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export interface Options {
   label: string;
@@ -13,6 +14,12 @@ interface RadioButtonsProps {
 
 const RadioButtons: React.FC<RadioButtonsProps> = ({ options }) => {
   const [value, setValue] = useState('');
+  const { setOnboardingInfo, onboardingInfo } = useOnboarding();
+
+  useEffect(() => {
+    setOnboardingInfo({ ...onboardingInfo, userType: value });
+  }, [value]);
+
   return (
     <RadioGroup onChange={setValue} value={value} width="100%">
       <Stack direction="column">
