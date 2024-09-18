@@ -8,11 +8,11 @@ export interface Options {
   required?: boolean;
 }
 
-interface RadioButtonsProps {
+interface UserTypeOptionsProps {
   options: Options[];
 }
 
-const RadioButtons: React.FC<RadioButtonsProps> = ({ options }) => {
+const UserTypeOptions: React.FC<UserTypeOptionsProps> = ({ options }) => {
   const [value, setValue] = useState('');
   const { setOnboardingInfo, onboardingInfo } = useOnboarding();
 
@@ -30,8 +30,8 @@ const RadioButtons: React.FC<RadioButtonsProps> = ({ options }) => {
           variant="solid"
           bgColor="brand.600"
           cursor="pointer"
-          px={6}
-          py={4}
+          px={{ base: '2', md: '6' }}
+          py={{ base: '1', md: '3' }}
           borderWidth="3px"
           borderColor={value === option.value ? 'brand.900' : 'transparent'}
           onClick={() => setValue(option.value)}
@@ -43,4 +43,4 @@ const RadioButtons: React.FC<RadioButtonsProps> = ({ options }) => {
   );
 };
 
-export default RadioButtons;
+export default UserTypeOptions;

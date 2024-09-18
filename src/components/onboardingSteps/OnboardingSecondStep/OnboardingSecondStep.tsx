@@ -56,8 +56,9 @@ const OnboardingSecondStep: React.FC<OnboardingSecondStepProps> = ({
               variant="solid"
               bgColor="brand.600"
               cursor="pointer"
-              px={6}
-              py={4}
+              px={{ base: '2', md: '6' }}
+              py={{ base: '1', md: '3' }}
+              borderRadius="50px"
               borderWidth="3px"
               borderColor={
                 selectedCategories.includes(category.value)
@@ -75,7 +76,7 @@ const OnboardingSecondStep: React.FC<OnboardingSecondStepProps> = ({
         ¿Dónde te ubicas?
       </Heading>
       <Box maxWidth="400px" mx="auto">
-        <Select placeholder="Departamento" focusBorderColor="brand.800">
+        <Select focusBorderColor="brand.800">
           {sanJuanDepartments.map((department) => (
             <option value={department} key={department}>
               {department}

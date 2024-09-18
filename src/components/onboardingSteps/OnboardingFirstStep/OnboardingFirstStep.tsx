@@ -1,6 +1,6 @@
 import { Heading, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
-import RadioButtons, { Options } from '../../RadioButtons/RadioButtons';
+import RadioButtons, { Options } from './UserTypeOptions/UserTypeOptions';
 
 interface OnboardingFirstStepProps {
   options: Options[];
