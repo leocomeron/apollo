@@ -1,4 +1,4 @@
-import { Heading } from '@chakra-ui/react';
+import { Heading, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
 import RadioButtons, { Options } from '../../RadioButtons/RadioButtons';
 
@@ -9,18 +9,18 @@ interface OnboardingFirstStepProps {
 const OnboardingFirstStep: React.FC<OnboardingFirstStepProps> = ({
   options,
 }) => {
+  const isMobile = useBreakpointValue({ base: true, md: false });
   return (
     <>
-      <Heading textAlign="center" mb="8">
-        Qué te gustaría realizar?
-      </Heading>
       <Image
         src="/images/step1-image.png"
         alt="Descripción de la imagen"
-        width={500}
-        height={300}
+        width={isMobile ? 240 : 500}
+        height={isMobile ? 120 : 300}
       />
-
+      <Heading textAlign="center" mb="4" fontSize={{ base: 'xl', md: '4xl' }}>
+        Qué te gustaría realizar?
+      </Heading>
       <RadioButtons options={options} />
     </>
   );

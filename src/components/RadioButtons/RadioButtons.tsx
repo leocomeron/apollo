@@ -1,5 +1,5 @@
 import { useOnboarding } from '@/context/OnboardingContext';
-import { Box, Radio, RadioGroup, Stack } from '@chakra-ui/react';
+import { Stack, Tag } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 
 export interface Options {
@@ -21,27 +21,25 @@ const RadioButtons: React.FC<RadioButtonsProps> = ({ options }) => {
   }, [value]);
 
   return (
-    <RadioGroup onChange={setValue} value={value} width="100%">
-      <Stack direction="column">
-        {options.map((option) => (
-          <Box
-            key={option.value}
-            className="md:w-1/3 w-full mx-auto shadow-lg overflow-hidden p-6 m-1"
-            bg="brand.600"
-            textColor="white"
-            fontWeight="bold"
-            borderColor={value === option.value ? 'brand.800' : 'transparent'}
-            borderWidth="3px"
-            onClick={() => setValue(option.value)} // make all area selectable
-            borderRadius="50px"
-          >
-            <Radio value={option.value} colorScheme="white" size="lg">
-              {option.label}
-            </Radio>
-          </Box>
-        ))}
-      </Stack>
-    </RadioGroup>
+    <Stack direction="column">
+      {options.map((option) => (
+        <Tag
+          key={option.value}
+          borderRadius="50px"
+          size="lg"
+          variant="solid"
+          bgColor="brand.600"
+          cursor="pointer"
+          px={6}
+          py={4}
+          borderWidth="3px"
+          borderColor={value === option.value ? 'brand.900' : 'transparent'}
+          onClick={() => setValue(option.value)}
+        >
+          {option.label}
+        </Tag>
+      ))}
+    </Stack>
   );
 };
 

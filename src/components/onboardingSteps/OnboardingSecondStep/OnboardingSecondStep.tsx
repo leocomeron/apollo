@@ -58,9 +58,7 @@ const OnboardingSecondStep: React.FC<OnboardingSecondStepProps> = ({
               cursor="pointer"
               px={6}
               py={4}
-              borderWidth={
-                selectedCategories.includes(category.value) ? '3px' : '0px'
-              }
+              borderWidth="3px"
               borderColor={
                 selectedCategories.includes(category.value)
                   ? 'brand.900'
