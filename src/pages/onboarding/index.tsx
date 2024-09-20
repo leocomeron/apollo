@@ -1,19 +1,10 @@
 import OnboardingFirstStep from '@/components/onboardingSteps/OnboardingFirstStep';
 import OnboardingSecondStep from '@/components/onboardingSteps/OnboardingSecondStep';
-import { Category, useOnboarding } from '@/context/OnboardingContext';
+import { categories } from '@/constants';
+import { useOnboarding } from '@/context/OnboardingContext';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { Button, useBreakpointValue } from '@chakra-ui/react';
-import { disableNextStepButtonHandler } from './helpers';
-
-const categories: Category[] = [
-  { label: 'Albañilería', value: 'masonry' },
-  { label: 'Plomería', value: 'plumbing' },
-  { label: 'Pintura', value: 'painting' },
-  { label: 'Carpintería', value: 'carpentry' },
-  { label: 'Herrería', value: 'blacksmithing' },
-  { label: 'Electricidad', value: 'electricity' },
-  { label: 'Otros', value: 'other' },
-];
+import { disableNextStepButtonHandler } from '../../utils/helpers';
 
 export default function Onboarding() {
   const { step, nextStep, prevStep, onboardingInfo } = useOnboarding();

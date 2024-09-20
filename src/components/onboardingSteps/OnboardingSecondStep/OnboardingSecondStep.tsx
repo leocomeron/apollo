@@ -1,3 +1,4 @@
+import { sanJuanDepartments } from '@/constants';
 import { Category, useOnboarding } from '@/context/OnboardingContext';
 import {
   Box,
@@ -14,28 +15,6 @@ import React from 'react';
 interface OnboardingSecondStepProps {
   categoriesCatalog: Category[];
 }
-
-const sanJuanDepartments: string[] = [
-  'Albardón',
-  'Angaco',
-  'Calingasta',
-  'Capital',
-  'Caucete',
-  'Chimbas',
-  'Iglesia',
-  'Jáchal',
-  '9 de Julio',
-  'Pocito',
-  'Rawson',
-  'Rivadavia',
-  'San Martín',
-  'Santa Lucía',
-  'Sarmiento',
-  'Ullum',
-  'Valle Fértil',
-  '25 de Mayo',
-  'Zonda',
-];
 
 const OnboardingSecondStep: React.FC<OnboardingSecondStepProps> = ({
   categoriesCatalog,
