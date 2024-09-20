@@ -3,6 +3,7 @@ import OnboardingSecondStep from '@/components/onboardingSteps/OnboardingSecondS
 import { Category, useOnboarding } from '@/context/OnboardingContext';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { Button, useBreakpointValue } from '@chakra-ui/react';
+import { disableNextStepButtonHandler } from './helpers';
 
 const categories: Category[] = [
   { label: 'Albañilería', value: 'masonry' },
@@ -64,7 +65,7 @@ export default function Onboarding() {
           className="mt-6 md:w-1/6 w-full"
           _hover={{ bg: 'brand.900' }}
           onClick={nextStep}
-          isDisabled={!onboardingInfo.userType}
+          isDisabled={disableNextStepButtonHandler(step, onboardingInfo)}
         >
           Continuar
         </Button>

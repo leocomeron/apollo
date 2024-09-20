@@ -11,7 +11,7 @@ export interface Category {
   label: string;
   value: string;
 }
-interface OnboardingInfo {
+export interface OnboardingInfo {
   userType: string;
   categories: string[];
   location: string;
