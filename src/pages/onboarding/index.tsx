@@ -1,5 +1,6 @@
 import OnboardingFirstStep from '@/components/onboardingSteps/OnboardingFirstStep';
 import OnboardingSecondStep from '@/components/onboardingSteps/OnboardingSecondStep';
+import OnboardingThirdStep from '@/components/onboardingSteps/OnboardingThirdStep';
 import { categories } from '@/constants';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { ArrowBackIcon } from '@chakra-ui/icons';
@@ -24,7 +25,7 @@ export default function Onboarding() {
       case 2:
         return <OnboardingSecondStep categoriesCatalog={categories} />;
       case 3:
-        return <p>STEP 3</p>;
+        return <OnboardingThirdStep />;
       case 4:
         return <p>STEP 4</p>;
       default:
