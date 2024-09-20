@@ -1,9 +1,9 @@
-import { Category } from '@/context/OnboardingContext';
+import { Category, useOnboarding } from '@/context/OnboardingContext';
 import { Box, Heading, Select, Tag, Wrap, WrapItem } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React from 'react';
 
 interface OnboardingSecondStepProps {
-  categories: Category[];
+  categoriesCatalog: Category[];
 }
 
 const sanJuanDepartments: string[] = [
@@ -29,18 +29,29 @@ const sanJuanDepartments: string[] = [
 ];
 
 const OnboardingSecondStep: React.FC<OnboardingSecondStepProps> = ({
-  categories,
+  categoriesCatalog,
 }) => {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const { onboardingInfo, setOnboardingInfo } = useOnboarding();
+  const { categories } = onboardingInfo;
 
-  const handleTagClick = (value: string) => {
-    if (selectedCategories.includes(value)) {
-      setSelectedCategories(
-        selectedCategories.filter((selectedValue) => selectedValue !== value),
-      );
+  const handleCategoryClick = (value: string) => {
+    if (categories.includes(value)) {
+      setOnboardingInfo({
+        ...onboardingInfo,
+        categories: categories.filter(
+          (selectedValue) => selectedValue !== value,
+        ),
+      });
     } else {
-      setSelectedCategories([...selectedCategories, value]);
+      setOnboardingInfo({
+        ...onboardingInfo,
+        categories: [...categories, value],
+      });
     }
+  };
+
+  const handleLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setOnboardingInfo({ ...onboardingInfo, location: e.target.value });
   };
 
   return (
@@ -49,7 +60,7 @@ const OnboardingSecondStep: React.FC<OnboardingSecondStepProps> = ({
         ¿A qué rubro te dedicas?
       </Heading>
       <Wrap spacing={4} justify="center">
-        {categories.map((category) => (
+        {categoriesCatalog.map((category) => (
           <WrapItem key={category.value}>
             <Tag
               size="lg"
@@ -61,11 +72,11 @@ const OnboardingSecondStep: React.FC<OnboardingSecondStepProps> = ({
               borderRadius="50px"
               borderWidth="3px"
               borderColor={
-                selectedCategories.includes(category.value)
+                categories.includes(category.value)
                   ? 'brand.900'
                   : 'transparent'
               }
-              onClick={() => handleTagClick(category.value)}
+              onClick={() => handleCategoryClick(category.value)}
             >
               {category.label}
             </Tag>
@@ -76,7 +87,11 @@ const OnboardingSecondStep: React.FC<OnboardingSecondStepProps> = ({
         ¿Dónde te ubicas?
       </Heading>
       <Box maxWidth="400px" mx="auto">
-        <Select focusBorderColor="brand.800">
+        <Select
+          placeholder="Selecciona departamento"
+          focusBorderColor="brand.800"
+          onChange={handleLocationChange}
+        >
           {sanJuanDepartments.map((department) => (
             <option value={department} key={department}>
               {department}

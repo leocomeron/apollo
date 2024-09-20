@@ -13,7 +13,8 @@ export interface Category {
 }
 interface OnboardingInfo {
   userType: string;
-  categories: Category[];
+  categories: string[];
+  location: string;
 }
 
 interface OnboardingContextType {
@@ -35,6 +36,7 @@ interface OnboardingProviderProps {
 const onboardingInitialState: OnboardingInfo = {
   userType: '',
   categories: [],
+  location: '',
 };
 
 export const OnboardingProvider = ({ children }: OnboardingProviderProps) => {

@@ -1,7 +1,8 @@
 import OnboardingFirstStep from '@/components/onboardingSteps/OnboardingFirstStep';
 import OnboardingSecondStep from '@/components/onboardingSteps/OnboardingSecondStep';
 import { Category, useOnboarding } from '@/context/OnboardingContext';
-import { Button } from '@chakra-ui/react';
+import { ArrowBackIcon } from '@chakra-ui/icons';
+import { Button, useBreakpointValue } from '@chakra-ui/react';
 
 const categories: Category[] = [
   { label: 'Albañilería', value: 'masonry' },
@@ -14,7 +15,8 @@ const categories: Category[] = [
 ];
 
 export default function Onboarding() {
-  const { step, nextStep, onboardingInfo } = useOnboarding();
+  const { step, nextStep, prevStep, onboardingInfo } = useOnboarding();
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const renderStep = () => {
     switch (step) {
@@ -28,7 +30,7 @@ export default function Onboarding() {
           />
         );
       case 2:
-        return <OnboardingSecondStep categories={categories} />;
+        return <OnboardingSecondStep categoriesCatalog={categories} />;
       case 3:
         return <p>STEP 3</p>;
       case 4:
@@ -41,6 +43,20 @@ export default function Onboarding() {
   return (
     <>
       <main className="flex flex-col items-center justify-between p-12">
+        {step > 1 && (
+          <Button
+            onClick={prevStep}
+            leftIcon={!isMobile ? <ArrowBackIcon /> : undefined}
+            bgColor="brand.100"
+            _hover={{}}
+            position="absolute"
+            left="0"
+            m={4}
+          >
+            {isMobile ? '←' : 'Volver'}
+          </Button>
+        )}
+
         {renderStep()}
         <Button
           color="white"
