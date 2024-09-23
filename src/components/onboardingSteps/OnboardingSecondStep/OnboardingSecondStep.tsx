@@ -51,7 +51,6 @@ const OnboardingSecondStep: React.FC<OnboardingSecondStepProps> = ({
         width={isMobile ? 240 : 500}
         height={isMobile ? 120 : 300}
         className="mb-8"
-        placeholder="blur"
         priority
       />
       <Box maxWidth="600px" mx="auto">
