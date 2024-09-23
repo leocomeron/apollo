@@ -88,6 +88,7 @@ const OnboardingSecondStep: React.FC<OnboardingSecondStepProps> = ({
             placeholder="Selecciona departamento"
             focusBorderColor="brand.800"
             onChange={handleLocationChange}
+            value={onboardingInfo.location}
           >
             {sanJuanDepartments.map((department) => (
               <option value={department} key={department}>

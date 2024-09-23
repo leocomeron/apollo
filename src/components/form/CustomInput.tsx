@@ -10,7 +10,9 @@ const CustomInput: React.FC<CustomInputProps> = (props) => {
       variant="solid"
       bgColor="brand.600"
       borderColor="brand.900"
-      px={{ base: 2, md: 6 }}
+      color="white"
+      fontWeight="bold"
+      px={{ base: 4, md: 6 }}
       py={{ base: 1, md: 3 }}
       borderRadius="50px"
       borderWidth="3px"

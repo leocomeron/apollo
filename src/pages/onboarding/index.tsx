@@ -5,6 +5,7 @@ import { categories } from '@/constants';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { Button, useBreakpointValue } from '@chakra-ui/react';
+import Image from 'next/image';
 import { disableNextStepButtonHandler } from '../../utils/helpers';
 
 export default function Onboarding() {
@@ -28,6 +29,8 @@ export default function Onboarding() {
         return <OnboardingThirdStep />;
       case 4:
         return <p>STEP 4</p>;
+      case 5:
+        return <p>STEP 5</p>;
       default:
         return null;
     }
@@ -35,7 +38,16 @@ export default function Onboarding() {
 
   return (
     <>
-      <main className="flex flex-col items-center justify-between p-12">
+      <main className="flex flex-col items-center justify-between p-6">
+        <div className="flex w-full justify-end">
+          <Image
+            src="/images/logo-header.png"
+            alt="header logo"
+            width={isMobile ? 45 : 99}
+            height={isMobile ? 60 : 176}
+            priority
+          />
+        </div>
         {step > 1 && (
           <Button
             onClick={prevStep}

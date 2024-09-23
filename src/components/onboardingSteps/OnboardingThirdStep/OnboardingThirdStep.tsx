@@ -45,7 +45,7 @@ const OnboardingThirdStep: React.FC = () => {
             <CustomFormLabel>Nombre</CustomFormLabel>
             <CustomInput
               type="text"
-              placeholder="Nombre"
+              // placeholder="Nombre"
               value={firstName}
               onChange={handleInputChange}
             />
@@ -56,7 +56,7 @@ const OnboardingThirdStep: React.FC = () => {
             <CustomFormLabel>Apellido</CustomFormLabel>
             <CustomInput
               type="text"
-              placeholder="Apellido"
+              // placeholder="Apellido"
               value={lastName}
               onChange={handleInputChange}
             />
@@ -67,7 +67,7 @@ const OnboardingThirdStep: React.FC = () => {
             <CustomFormLabel>Email</CustomFormLabel>
             <CustomInput
               type="email"
-              placeholder="Email"
+              // placeholder="Email"
               value={email}
               onChange={handleInputChange}
             />
@@ -78,7 +78,7 @@ const OnboardingThirdStep: React.FC = () => {
             <CustomFormLabel>Teléfono</CustomFormLabel>
             <CustomInput
               type="number"
-              placeholder="Teléfono"
+              // placeholder="Teléfono"
               value={phone}
               onChange={handleInputChange}
             />
@@ -92,7 +92,6 @@ const OnboardingThirdStep: React.FC = () => {
             <CustomFormLabel>Fecha de nacimiento</CustomFormLabel>
             <CustomInput
               type="date"
-              placeholder="Fecha de Nacimiento"
               value={birthDate}
               onChange={handleInputChange}
             />
