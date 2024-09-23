@@ -1,21 +1,30 @@
+import CustomFormLabel from '@/components/form/CustomFormLabel';
+import CustomInput from '@/components/form/CustomInput';
+import { useOnboarding } from '@/context/OnboardingContext';
 import {
   Box,
   FormControl,
+  FormHelperText,
   Heading,
-  Input,
-  InputGroup,
-  InputLeftAddon,
   Stack,
   useBreakpointValue,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import React from 'react';
 
-// interface OnboardingThirdStepProps {}
-
 const OnboardingThirdStep: React.FC = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
-  // const { onboardingInfo, setOnboardingInfo } = useOnboarding();
+  const { onboardingInfo, setOnboardingInfo } = useOnboarding();
+  const { firstName, lastName, email, phone, birthDate } = onboardingInfo;
+
+  // Handlers for input fields
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setOnboardingInfo((prevState) => ({
+      ...prevState,
+      [id]: value,
+    }));
+  };
 
   return (
     <>
@@ -33,30 +42,60 @@ const OnboardingThirdStep: React.FC = () => {
         <Stack spacing={4}>
           {/* First Name */}
           <FormControl id="firstName" isRequired>
-            <Input type="text" placeholder="Nombre" />
+            <CustomFormLabel>Nombre</CustomFormLabel>
+            <CustomInput
+              type="text"
+              placeholder="Nombre"
+              value={firstName}
+              onChange={handleInputChange}
+            />
           </FormControl>
 
           {/* Last Name */}
           <FormControl id="lastName" isRequired>
-            <Input type="text" placeholder="Apellido" />
+            <CustomFormLabel>Apellido</CustomFormLabel>
+            <CustomInput
+              type="text"
+              placeholder="Apellido"
+              value={lastName}
+              onChange={handleInputChange}
+            />
           </FormControl>
 
           {/* Email */}
           <FormControl id="email" isRequired>
-            <Input type="email" placeholder="Email" />
+            <CustomFormLabel>Email</CustomFormLabel>
+            <CustomInput
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={handleInputChange}
+            />
           </FormControl>
 
           {/* Phone */}
-          <FormControl id="phone">
-            <InputGroup>
-              <InputLeftAddon>+54</InputLeftAddon>
-              <Input type="tel" placeholder="Teléfono" />
-            </InputGroup>
+          <FormControl id="phone" isRequired>
+            <CustomFormLabel>Teléfono</CustomFormLabel>
+            <CustomInput
+              type="number"
+              placeholder="Teléfono"
+              value={phone}
+              onChange={handleInputChange}
+            />
+            <FormHelperText ml={2}>
+              Sin 0, sin el 15 y sin espacios. Ej: 2645178311
+            </FormHelperText>
           </FormControl>
 
           {/* Birth Date */}
-          <FormControl id="birthDate">
-            <Input type="date" placeholder="Fecha de Nacimiento" />
+          <FormControl id="birthDate" isRequired>
+            <CustomFormLabel>Fecha de nacimiento</CustomFormLabel>
+            <CustomInput
+              type="date"
+              placeholder="Fecha de Nacimiento"
+              value={birthDate}
+              onChange={handleInputChange}
+            />
           </FormControl>
         </Stack>
       </Box>
