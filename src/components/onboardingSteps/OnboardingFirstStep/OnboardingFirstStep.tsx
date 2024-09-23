@@ -17,6 +17,7 @@ const OnboardingFirstStep: React.FC<OnboardingFirstStepProps> = ({
         alt="Descripción de la imagen"
         width={isMobile ? 240 : 500}
         height={isMobile ? 120 : 300}
+        loading="eager"
       />
       <Heading textAlign="center" mb="4" fontSize={{ base: 'xl', md: '4xl' }}>
         Qué te gustaría realizar?
