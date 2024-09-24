@@ -31,16 +31,16 @@ const OnboardingThirdStep: React.FC = () => {
       <Image
         src="/images/step3-image.png"
         alt="Descripción de la imagen"
-        width={isMobile ? 240 : 500}
-        height={isMobile ? 120 : 300}
-        className="mb-8"
+        width={isMobile ? 180 : 500}
+        height={isMobile ? 80 : 300}
+        className="mb-6"
         priority
       />
       <Box maxWidth="600px" mx="auto">
-        <Heading textAlign="center" mb="8">
+        <Heading textAlign="center" mb={{ base: 1, md: 6 }}>
           Contanos de vos
         </Heading>
-        <Stack spacing={4}>
+        <Stack spacing={2}>
           {/* First Name */}
           <FormControl id="firstName" isRequired>
             <CustomFormLabel>Nombre</CustomFormLabel>
