@@ -1,4 +1,5 @@
 import OnboardingFirstStep from '@/components/onboardingSteps/OnboardingFirstStep';
+import OnboardingFourthStep from '@/components/onboardingSteps/OnboardingFourthStep';
 import OnboardingSecondStep from '@/components/onboardingSteps/OnboardingSecondStep';
 import OnboardingThirdStep from '@/components/onboardingSteps/OnboardingThirdStep';
 import { categories } from '@/constants';
@@ -28,7 +29,7 @@ export default function Onboarding() {
       case 3:
         return <OnboardingThirdStep />;
       case 4:
-        return <p>STEP 4</p>;
+        return <OnboardingFourthStep />;
       case 5:
         return <p>STEP 5</p>;
       default:
