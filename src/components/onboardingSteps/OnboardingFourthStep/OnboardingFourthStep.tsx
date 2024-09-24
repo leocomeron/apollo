@@ -1,6 +1,14 @@
 import FileDropzone from '@/components/FileDropzone';
 import { DocumentType } from '@/types/onboarding';
-import { Box, Heading, Tooltip, useBreakpointValue } from '@chakra-ui/react';
+import { Link } from '@chakra-ui/next-js';
+import {
+  Alert,
+  AlertIcon,
+  Box,
+  Heading,
+  Tooltip,
+  useBreakpointValue,
+} from '@chakra-ui/react';
 import Image from 'next/image';
 
 const OnboardingFirstStep: React.FC = () => {
@@ -15,8 +23,8 @@ const OnboardingFirstStep: React.FC = () => {
         priority
       />
       <Heading textAlign="center" mb="4" fontSize={{ base: 'xl', md: '4xl' }}>
-        Como último paso para crear tu perfil necesitamos que cargues esta
-        información:
+        Como último paso para crear tu perfil necesitamos que cargues <br />
+        esta información:
       </Heading>
       <FileDropzone text="Foto de perfil" id={DocumentType.ProfilePicture} />
       <FileDropzone
@@ -27,7 +35,11 @@ const OnboardingFirstStep: React.FC = () => {
         text="Foto DNI dorso"
         id={DocumentType.IdentificationBack}
       />
-      <Tooltip label="Lo puedes subir luego pero para poder operar necesitas tener tus antecedentes cargados">
+      <Tooltip
+        hasArrow
+        placement="top"
+        label="Lo puedes subir luego pero para poder operar necesitas tener tus antecedentes cargados"
+      >
         <Box>
           <FileDropzone
             text="Certificado de antecedentes"
@@ -36,6 +48,30 @@ const OnboardingFirstStep: React.FC = () => {
           />
         </Box>
       </Tooltip>
+      <Box mt={2} maxW={460}>
+        <Alert
+          status="info"
+          variant="subtle"
+          borderRadius="md"
+          fontSize="small"
+        >
+          <AlertIcon />
+
+          <span>
+            El certificado de antecedentes lo puedes subir luego, pero para
+            poder operar necesitas tener tus antecedentes cargados. Cómo
+            obtenerlo?{' '}
+            <Link
+              href="https://www.argentina.gob.ar/servicio/solicitar-certificado-de-antecedentes-penales-con-clave-fiscal"
+              target="_blank"
+              textDecoration="underline"
+              fontWeight="bold"
+            >
+              Más info aquí
+            </Link>
+          </span>
+        </Alert>
+      </Box>
     </>
   );
 };
