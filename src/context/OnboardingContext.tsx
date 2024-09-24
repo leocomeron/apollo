@@ -1,20 +1,5 @@
-import { OnboardingInfo } from '@/types/onboarding';
-import {
-  createContext,
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useContext,
-  useState,
-} from 'react';
-
-interface OnboardingContextType {
-  step: number;
-  nextStep: () => void;
-  prevStep: () => void;
-  onboardingInfo: OnboardingInfo;
-  setOnboardingInfo: Dispatch<SetStateAction<OnboardingInfo>>;
-}
+import { OnboardingContextType, OnboardingInfo } from '@/types/onboarding';
+import { createContext, ReactNode, useContext, useState } from 'react';
 
 const OnboardingContext = createContext<OnboardingContextType | undefined>(
   undefined,

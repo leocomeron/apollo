@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react';
+
 export interface Category {
   label: string;
   value: string;
@@ -25,4 +27,12 @@ export interface OnboardingInfo {
   phone: string;
   birthDate: string; // or Date?
   documents: Document[];
+}
+
+export interface OnboardingContextType {
+  step: number;
+  nextStep: () => void;
+  prevStep: () => void;
+  onboardingInfo: OnboardingInfo;
+  setOnboardingInfo: Dispatch<SetStateAction<OnboardingInfo>>;
 }
