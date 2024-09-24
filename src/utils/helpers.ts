@@ -1,4 +1,4 @@
-import { OnboardingInfo } from '@/context/OnboardingContext';
+import { DocumentType, OnboardingInfo } from '@/types/onboarding';
 
 export const disableNextStepButtonHandler = (
   currentStep: number,
@@ -13,7 +13,16 @@ export const disableNextStepButtonHandler = (
     email,
     phone,
     birthDate,
+    documents,
   } = onboardingInfo;
+
+  // Backgorund verification is not mandatory for onboarding
+  const mandatoryDocuments = documents.filter(
+    (document) =>
+      document.type !== DocumentType.BackgroundVerification && document.file,
+  );
+  const disableDocumentsStep = mandatoryDocuments.length !== 3;
+
   switch (currentStep) {
     case 1:
       return !userType;
@@ -21,6 +30,8 @@ export const disableNextStepButtonHandler = (
       return !categories.length || !location;
     case 3:
       return !firstName || !lastName || !email || !phone || !birthDate;
+    case 4:
+      return disableDocumentsStep;
     default:
       return true;
   }

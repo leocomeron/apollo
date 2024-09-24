@@ -1,8 +1,5 @@
-import {
-  Document,
-  DocumentType,
-  useOnboarding,
-} from '@/context/OnboardingContext';
+import { useOnboarding } from '@/context/OnboardingContext';
+import { Document, DocumentType } from '@/types/onboarding';
 import { CheckIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -85,7 +82,9 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
       ) : (
         <VStack spacing={4}>
           <Box display="flex" alignItems="center">
-            <Text color="white">{text}</Text>
+            <Text color="white" fontSize={{ base: 'medium', md: '2xl' }}>
+              {text}
+            </Text>
             {link && (
               <Link
                 href={link}

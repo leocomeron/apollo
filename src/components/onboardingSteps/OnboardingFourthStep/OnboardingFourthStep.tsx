@@ -1,5 +1,5 @@
 import FileDropzone from '@/components/FileDropzone';
-import { DocumentType } from '@/context/OnboardingContext';
+import { DocumentType } from '@/types/onboarding';
 import { Box, Heading, Tooltip, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
 
@@ -8,7 +8,7 @@ const OnboardingFirstStep: React.FC = () => {
   return (
     <>
       <Image
-        src="/images/step1-image.png"
+        src="/images/step4-image.png"
         alt="Descripción de la imagen"
         width={isMobile ? 240 : 500}
         height={isMobile ? 120 : 300}

@@ -15,7 +15,7 @@ module.exports = {
     // Basic rules
     'no-console': 'warn',
     'no-debugger': 'warn',
-    'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    'no-unused-vars': ['warn', { argsIgnorePattern: '^_', enums: 'none' }],
     eqeqeq: ['error', 'always'],
     semi: ['error', 'always'],
     quotes: ['error', 'single'],

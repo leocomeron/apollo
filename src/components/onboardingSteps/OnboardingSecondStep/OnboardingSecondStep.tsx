@@ -1,5 +1,6 @@
 import { sanJuanDepartments } from '@/constants';
-import { Category, useOnboarding } from '@/context/OnboardingContext';
+import { useOnboarding } from '@/context/OnboardingContext';
+import { Category } from '@/types/onboarding';
 import {
   Box,
   Heading,
