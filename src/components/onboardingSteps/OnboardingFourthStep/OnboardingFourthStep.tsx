@@ -6,7 +6,6 @@ import {
   AlertIcon,
   Box,
   Heading,
-  Tooltip,
   useBreakpointValue,
 } from '@chakra-ui/react';
 import Image from 'next/image';
@@ -35,19 +34,11 @@ const OnboardingFirstStep: React.FC = () => {
         text="Foto DNI dorso"
         id={DocumentType.IdentificationBack}
       />
-      <Tooltip
-        hasArrow
-        placement="top"
-        label="Lo puedes subir luego pero para poder operar necesitas tener tus antecedentes cargados"
-      >
-        <Box>
-          <FileDropzone
-            text="Certificado de antecedentes"
-            link="https://www.argentina.gob.ar/servicio/solicitar-certificado-de-antecedentes-penales-con-clave-fiscal"
-            id={DocumentType.BackgroundVerification}
-          />
-        </Box>
-      </Tooltip>
+      <FileDropzone
+        text="Certificado de antecedentes"
+        link="https://www.argentina.gob.ar/servicio/solicitar-certificado-de-antecedentes-penales-con-clave-fiscal"
+        id={DocumentType.BackgroundVerification}
+      />
       <Box mt={2} maxW={460}>
         <Alert
           status="info"
