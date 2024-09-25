@@ -1,15 +1,18 @@
 import OnboardingFirstStep from '@/components/onboardingSteps/OnboardingFirstStep';
 import OnboardingFourthStep from '@/components/onboardingSteps/OnboardingFourthStep';
 import OnboardingSecondStep from '@/components/onboardingSteps/OnboardingSecondStep';
+import OnboardingStepper from '@/components/onboardingSteps/OnboardingStepper';
 import OnboardingThirdStep from '@/components/onboardingSteps/OnboardingThirdStep';
 import { categories } from '@/constants';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { ArrowBackIcon } from '@chakra-ui/icons';
-import { Button, useBreakpointValue } from '@chakra-ui/react';
+import { Button, Text, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { disableNextStepButtonHandler } from '../../utils/helpers';
 
 export default function Onboarding() {
+  const router = useRouter();
   const { step, nextStep, prevStep, onboardingInfo } = useOnboarding();
   const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -31,7 +34,9 @@ export default function Onboarding() {
       case 4:
         return <OnboardingFourthStep />;
       case 5:
-        return <p>STEP 5</p>;
+        return (
+          <Text fontSize="medium">Pagina de perfil, en contrucción...</Text>
+        );
       default:
         return null;
     }
@@ -72,8 +77,9 @@ export default function Onboarding() {
           onClick={nextStep}
           isDisabled={disableNextStepButtonHandler(step, onboardingInfo)}
         >
-          Continuar
+          {step === 4 ? 'Finalizar' : 'Continuar'}
         </Button>
+        <OnboardingStepper />
       </main>
     </>
   );
