@@ -74,7 +74,12 @@ export default function Onboarding() {
           backgroundColor="brand.800"
           className="mt-6 md:w-1/6 w-full"
           _hover={{ bg: 'brand.900' }}
-          onClick={nextStep}
+          onClick={async () => {
+            if (step !== 4) {
+              nextStep();
+            }
+            await router.push('/profile');
+          }}
           isDisabled={disableNextStepButtonHandler(step, onboardingInfo)}
         >
           {step === 4 ? 'Finalizar' : 'Continuar'}
