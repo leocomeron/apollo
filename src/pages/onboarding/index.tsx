@@ -75,10 +75,10 @@ export default function Onboarding() {
           className="mt-6 md:w-1/6 w-full"
           _hover={{ bg: 'brand.900' }}
           onClick={async () => {
-            if (step !== 4) {
-              nextStep();
+            if (step === 4) {
+              await router.push('/profile');
             }
-            await router.push('/profile');
+            nextStep();
           }}
           isDisabled={disableNextStepButtonHandler(step, onboardingInfo)}
         >

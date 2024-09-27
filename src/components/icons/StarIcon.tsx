@@ -2,16 +2,22 @@ interface StarIconProps {
   filled: boolean;
 }
 
-const StarIcon: React.FC<StarIconProps> = ({ filled }) => {
-  return (
-    <svg
-      className={`w-5 h-5 ${filled ? 'text-yellow-500' : 'text-gray-300'}`}
-      fill="currentColor"
-      viewBox="0 0 20 20"
-    >
-      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.3 3.993a1 1 0 00.95.69h4.215c.969 0 1.371 1.24.588 1.81l-3.415 2.5a1 1 0 00-.364 1.118l1.3 3.993c.3.921-.755 1.688-1.54 1.118l-3.415-2.5a1 1 0 00-1.175 0l-3.415 2.5c-.785.57-1.84-.197-1.54-1.118l1.3-3.993a1 1 0 00-.364-1.118l-3.415-2.5c-.783-.57-.381-1.81.588-1.81h4.215a1 1 0 00.95-.69l1.3-3.993z" />
-    </svg>
-  );
-};
+const StarIcon = ({ filled, half }: { filled?: boolean; half?: boolean }) => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 20 20"
+    fill={filled ? '#FFC107' : half ? 'url(#half)' : '#E0E0E0'}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <defs>
+      <linearGradient id="half" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="50%" stopColor="#FFC107" />
+        <stop offset="50%" stopColor="#E0E0E0" />
+      </linearGradient>
+    </defs>
+    <path d="M12 2.5l2.47 5.16L20 8.37l-4 3.89.94 5.46L12 15.94l-4.94 2.78.94-5.46-4-3.89 5.53-.71L12 2.5z" />
+  </svg>
+);
 
 export default StarIcon;

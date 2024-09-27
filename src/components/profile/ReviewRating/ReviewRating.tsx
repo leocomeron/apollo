@@ -1,74 +1,72 @@
+import StarIcon from '@/components/icons/StarIcon';
 import { HStack, Progress, Text, VStack } from '@chakra-ui/react';
-import React from 'react';
+import React, { useMemo } from 'react';
+import { getReviewDetails } from './helpers';
 
-// SVG Star Icon component
-const StarIcon = ({ filled }: { filled: boolean }) => (
-  <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill={filled ? '#FFC107' : '#E0E0E0'} // Gold color for filled, grey for empty
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M12 2.5l2.47 5.16L20 8.37l-4 3.89.94 5.46L12 15.94l-4.94 2.78.94-5.46-4-3.89 5.53-.71L12 2.5z" />
-  </svg>
-);
-
-interface ReviewRatingProps {
-  rating: number;
-  totalReviews: number;
-  breakdown: {
-    stars: number;
-    reviews: number;
-  }[];
+export interface Review {
+  userName: string;
+  userAvatarUrl: string;
+  isVerified: boolean;
+  date: string;
+  imageUrl?: string;
+  score: number;
+  comment?: string;
 }
 
-const ReviewRating: React.FC<ReviewRatingProps> = ({
-  rating,
-  totalReviews,
-  breakdown,
-}) => {
+interface ReviewRatingProps {
+  reviews: Review[];
+}
+
+const ReviewRating: React.FC<ReviewRatingProps> = ({ reviews }) => {
+  const { rating, totalReviews, breakdown } = useMemo(
+    () => getReviewDetails(reviews),
+    [reviews],
+  );
+
   const getProgressValue = (reviews: number) => {
-    return (reviews / totalReviews) * 100;
+    return totalReviews > 0 ? (reviews / totalReviews) * 100 : 0;
+  };
+
+  const renderStars = () => {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating - fullStars >= 0.5;
+
+    return [...Array(5)].map((_, i) => {
+      if (i < fullStars) {
+        return <StarIcon key={i} filled />;
+      } else if (i === fullStars && hasHalfStar) {
+        return <StarIcon key={i} half />;
+      } else {
+        return <StarIcon key={i} />;
+      }
+    });
   };
 
   return (
-    <VStack align="flex-start" spacing={4}>
-      {/* Main section with the overall rating */}
-      <HStack>
-        <Text fontSize="3xl" fontWeight="bold">
-          {rating.toFixed(1)}
+    <HStack align="flex-start" spacing={8} w="100%">
+      {/* Left side: rating, stars and total reviews */}
+      <VStack align="flex-start" spacing={0} alignItems="center">
+        <Text fontSize="2xl">{rating.toFixed(1)}</Text>
+        <HStack spacing={0}>{renderStars()}</HStack>
+        <Text fontSize="small" color="gray.500">
+          ({totalReviews.toLocaleString()})
         </Text>
-        <HStack spacing={1}>
-          {[...Array(5)].map((_, i) => (
-            <StarIcon key={i} filled={i < Math.floor(rating)} />
-          ))}
-        </HStack>
-      </HStack>
-      <Text fontSize="md" color="gray.500">
-        ({totalReviews.toLocaleString()} reviews)
-      </Text>
+      </VStack>
 
-      {/* Breakdown of the rating by stars */}
-      {breakdown.map((item) => (
-        <HStack key={item.stars} spacing={4} w="100%">
-          <Text w="30px" textAlign="right">
-            {item.stars} ★
-          </Text>
+      {/* Right side: Progress bars for the breakdown */}
+      <VStack align="flex-start" spacing={2} w="100%">
+        {breakdown.map((item) => (
           <Progress
+            key={item.stars}
             value={getProgressValue(item.reviews)}
             colorScheme="yellow"
             w="100%"
             borderRadius="md"
             size="sm"
           />
-          <Text w="40px" textAlign="right">
-            {item.reviews.toLocaleString()}
-          </Text>
-        </HStack>
-      ))}
-    </VStack>
+        ))}
+      </VStack>
+    </HStack>
   );
 };
-
 export default ReviewRating;

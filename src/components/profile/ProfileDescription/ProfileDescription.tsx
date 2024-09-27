@@ -28,7 +28,11 @@ const ProfileDescription: React.FC<ProfileDescriptionProps> = ({
         />
         {/* Badge de verificación */}
         {isVerified && (
-          <Tooltip label="Perfil Verificado" hasArrow placement="end-end">
+          <Tooltip
+            label="Perfil Verificado"
+            placement="end-end"
+            fontSize="x-small"
+          >
             <Badge
               position="absolute"
               top="90px"
