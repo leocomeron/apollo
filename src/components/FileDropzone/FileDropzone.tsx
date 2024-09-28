@@ -55,7 +55,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
       'image/png': ['.png'],
       'image/jpeg': ['.jpg', '.jpeg'],
       'image/gif': ['.gif'],
-      // Agrega más tipos de archivo si es necesario
+      // Agregar más tipos de archivo si es necesario
     },
   });
 
@@ -64,7 +64,6 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
       {...getRootProps()}
       borderWidth={3}
       borderRadius="50px"
-      p={5}
       textAlign="center"
       _hover={{ borderColor: 'brand.600' }}
       cursor="pointer"
@@ -74,7 +73,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
       color="white"
       fontWeight="bold"
       px={{ base: 4, md: 6 }}
-      py={{ base: 1, md: 2 }}
+      py={{ base: 1, md: 1 }}
       my={{ base: 1, md: 1 }}
       minWidth={isMobile ? 280 : 320}
     >

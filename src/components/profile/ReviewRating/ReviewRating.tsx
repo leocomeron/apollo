@@ -46,9 +46,11 @@ const ReviewRating: React.FC<ReviewRatingProps> = ({ reviews }) => {
     <HStack align="flex-start" spacing={8} w="100%">
       {/* Left side: rating, stars and total reviews */}
       <VStack align="flex-start" spacing={0} alignItems="center">
-        <Text fontSize="2xl">{rating.toFixed(1)}</Text>
+        <Text fontSize="2xl" lineHeight={1}>
+          {rating.toFixed(1)}
+        </Text>
         <HStack spacing={0}>{renderStars()}</HStack>
-        <Text fontSize="small" color="gray.500">
+        <Text fontSize="small" color="gray.500" mt={1}>
           ({totalReviews.toLocaleString()})
         </Text>
       </VStack>

@@ -3,7 +3,7 @@ import ProfileDescription from '@/components/profile/ProfileDescription';
 import ReviewRating from '@/components/profile/ReviewRating';
 import WorkPortfolio from '@/components/profile/WorkPortfolio';
 import { reviewsMock } from '@/mocks/reviews';
-import { Box, Divider, Grid, GridItem, VStack } from '@chakra-ui/react';
+import { Box, Divider, Grid, GridItem, Text, VStack } from '@chakra-ui/react';
 
 const Profile = () => {
   return (
@@ -25,7 +25,7 @@ const Profile = () => {
       </GridItem>
       {/* Right Column - 2/3 of the screen */}
       <GridItem>
-        <VStack spacing={6} align="stretch" mt={{ base: 0, lg: 16 }}>
+        <VStack spacing={3} align="stretch" mt={{ base: 0, lg: 16 }}>
           <WorkPortfolio
             images={[
               'https://img.freepik.com/foto-gratis/primer-plano-hombre-tenencia-copa-vino-parrilla-carne-barbacoa_23-2147841003.jpg?t=st=1727558760~exp=1727562360~hmac=12e2a2b1b1bfbc32f3f9f858a5c16c65c0a1c20133b51188b61ef9d25a14b813&w=1060',
@@ -35,6 +35,9 @@ const Profile = () => {
           />
           <Divider />
           {/* Detailed Reviews */}
+          <Text fontSize="xl" mb={1}>
+            Opiniones de contrataciones
+          </Text>
           {reviewsMock.map((review, index) => (
             <Box key={index}>
               <DetailedReview review={review} />
