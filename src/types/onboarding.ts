@@ -10,6 +10,7 @@ export enum DocumentType {
   IdentificationFront = 'identificationFront',
   IdentificationBack = 'identificationBack',
   BackgroundVerification = 'backgroundVerification',
+  WorkPortfolio = 'workPortfolio',
 }
 
 export interface Document {

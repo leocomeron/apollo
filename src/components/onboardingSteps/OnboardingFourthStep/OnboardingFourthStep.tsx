@@ -21,23 +21,30 @@ const OnboardingFirstStep: React.FC = () => {
         height={isMobile ? 120 : 300}
         priority
       />
-      <Heading textAlign="center" mb="4" fontSize={{ base: 'xl', md: '4xl' }}>
+      <Heading textAlign="center" mb="4">
         Como último paso para crear tu perfil necesitamos que cargues <br />
         esta información:
       </Heading>
-      <FileDropzone text="Foto de perfil" id={DocumentType.ProfilePicture} />
+      <FileDropzone
+        text="Foto de perfil"
+        id={DocumentType.ProfilePicture}
+        displayCheckIcon
+      />
       <FileDropzone
         text="Foto DNI frente"
         id={DocumentType.IdentificationFront}
+        displayCheckIcon
       />
       <FileDropzone
         text="Foto DNI dorso"
         id={DocumentType.IdentificationBack}
+        displayCheckIcon
       />
       <FileDropzone
         text="Certificado de antecedentes"
         link="https://www.argentina.gob.ar/servicio/solicitar-certificado-de-antecedentes-penales-con-clave-fiscal"
         id={DocumentType.BackgroundVerification}
+        displayCheckIcon
       />
       <Box mt={2} maxW={460}>
         <Alert

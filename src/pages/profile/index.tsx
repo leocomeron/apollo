@@ -1,6 +1,7 @@
 import DetailedReview from '@/components/profile/DetailedReview';
 import ProfileDescription from '@/components/profile/ProfileDescription';
 import ReviewRating from '@/components/profile/ReviewRating';
+import WorkPortfolio from '@/components/profile/WorkPortfolio';
 import { reviewsMock } from '@/mocks/reviews';
 import { Box, Grid, GridItem, VStack } from '@chakra-ui/react';
 
@@ -19,10 +20,13 @@ const Profile = () => {
           <ProfileDescription
             imageUrl="https://img.freepik.com/fotos-premium/trabajador-construccion-casco-amarillo_58409-13665.jpg"
             name="Juan Valdéz"
-            activities={['Albañilería']}
+            activities={['masonry', 'electricity', 'plumbing']}
             description="Especializado en levantamiento de muro"
             isVerified
           />
+          {/* <Input placeholder="contanos de vos...." /> */}
+
+          <WorkPortfolio />
 
           {/* Detailed Reviews */}
           {reviewsMock.map((review, index) => (

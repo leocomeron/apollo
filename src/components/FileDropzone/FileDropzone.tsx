@@ -16,12 +16,14 @@ export interface FileDropzoneProps {
   text?: string;
   link?: string;
   id: DocumentType;
+  displayCheckIcon?: boolean;
 }
 
 const FileDropzone: React.FC<FileDropzoneProps> = ({
   text = 'Arrastra y suelta algunos archivos aquí, o haz clic para seleccionar archivos',
   link,
   id,
+  displayCheckIcon,
 }) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const { setOnboardingInfo } = useOnboarding();
@@ -72,7 +74,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
       color="white"
       fontWeight="bold"
       px={{ base: 4, md: 6 }}
-      py={{ base: 1, md: 3 }}
+      py={{ base: 1, md: 2 }}
       my={{ base: 1, md: 1 }}
       minWidth={isMobile ? 300 : 500}
     >
@@ -82,7 +84,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
       ) : (
         <VStack spacing={4}>
           <Box display="flex" alignItems="center">
-            <Text color="white" fontSize={{ base: 'medium', md: '2xl' }}>
+            <Text color="white" fontSize={{ base: 'medium', md: 'large' }}>
               {text}
             </Text>
             {link && (
@@ -99,7 +101,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
               </Link>
             )}
           </Box>
-          {selectedFile && (
+          {selectedFile && displayCheckIcon && (
             <Icon
               as={CheckIcon}
               color="green.400"

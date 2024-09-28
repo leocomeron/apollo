@@ -8,6 +8,7 @@ export const sanJuanDepartments: string[] = [
   'Capital',
   'Caucete',
   'Chimbas',
+  'Gran San Juan',
   'Iglesia',
   'Jáchal',
   '9 de Julio',

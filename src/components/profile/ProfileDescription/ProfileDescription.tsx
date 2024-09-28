@@ -1,5 +1,7 @@
 import { Badge, Box, Image, Text, Tooltip, VStack } from '@chakra-ui/react';
 import React from 'react';
+import Activities from './Activities';
+import DescriptionText from './DescriptionText';
 
 interface ProfileDescriptionProps {
   imageUrl: string;
@@ -56,14 +58,10 @@ const ProfileDescription: React.FC<ProfileDescriptionProps> = ({
       </Text>
 
       {/* Actividad o actividades */}
-      <Text fontSize="small" fontWeight="bold">
-        {activities.join(', ')}
-      </Text>
+      <Activities initialActivities={activities} />
 
-      {/* Descripción */}
-      <Text fontSize="sm" textAlign="center">
-        {description}
-      </Text>
+      {/* Descripción con ícono de lápiz */}
+      <DescriptionText initialDescription={description} />
     </VStack>
   );
 };

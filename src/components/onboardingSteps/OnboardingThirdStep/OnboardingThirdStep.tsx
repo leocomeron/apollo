@@ -31,8 +31,8 @@ const OnboardingThirdStep: React.FC = () => {
       <Image
         src="/images/step3-image.png"
         alt="Descripción de la imagen"
-        width={isMobile ? 180 : 500}
-        height={isMobile ? 80 : 300}
+        width={isMobile ? 180 : 350}
+        height={isMobile ? 80 : 220}
         className="mb-6"
         priority
       />
