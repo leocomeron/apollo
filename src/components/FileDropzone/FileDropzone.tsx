@@ -76,15 +76,17 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
       px={{ base: 4, md: 6 }}
       py={{ base: 1, md: 2 }}
       my={{ base: 1, md: 1 }}
-      minWidth={isMobile ? 300 : 500}
+      minWidth={isMobile ? 280 : 320}
     >
       <input {...getInputProps()} id={id} />
       {isDragActive ? (
-        <Text color="brand.500">Suelta los archivos aquí ...</Text>
+        <Text color="brand.500" fontSize={{ base: 'small', md: 'medium' }}>
+          Suelta los archivos aquí ...
+        </Text>
       ) : (
         <VStack spacing={4}>
           <Box display="flex" alignItems="center">
-            <Text color="white" fontSize={{ base: 'medium', md: 'large' }}>
+            <Text color="white" fontSize={{ base: 'small', md: 'medium' }}>
               {text}
             </Text>
             {link && (

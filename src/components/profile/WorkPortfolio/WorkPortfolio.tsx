@@ -1,26 +1,59 @@
 import FileDropzone from '@/components/FileDropzone';
 import { DocumentType } from '@/types/onboarding';
-import { Box, Button, Image, SimpleGrid, Text } from '@chakra-ui/react';
+import { InfoOutlineIcon } from '@chakra-ui/icons';
+import {
+  Box,
+  Button,
+  Icon,
+  Image,
+  SimpleGrid,
+  Text,
+  Tooltip,
+} from '@chakra-ui/react';
 import { useState } from 'react';
 
-const WorkPortfolio = () => {
-  // Estado para almacenar las imágenes
-  const [images, setImages] = useState<string[]>([]);
+interface WorkPortfolioProps {
+  images: string[];
+}
 
-  // Ejemplo de función para cargar más imágenes
+const WorkPortfolio: React.FC<WorkPortfolioProps> = ({ images }) => {
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+
   const loadMoreImages = () => {
     // Aquí puedes implementar la lógica para cargar más imágenes
     console.log('Load more images');
   };
 
+  const toggleTooltip = () => {
+    setIsTooltipOpen((prev) => !prev);
+  };
+
   return (
     <>
       <Text fontSize="xl">Trabajos realizados</Text>
-      <Box maxW={150}>
-        <FileDropzone
-          text="Añadir trabajos realizados"
-          id={DocumentType.WorkPortfolio}
-        />
+      <Box display="flex" alignItems="center">
+        <Box>
+          <FileDropzone
+            text="Añadir trabajos realizados"
+            id={DocumentType.WorkPortfolio}
+          />
+        </Box>
+        <Tooltip
+          label="Carga fotos o imágenes de tus trabajos para que los clientes puedan verlo"
+          isOpen={isTooltipOpen}
+          onClose={() => setIsTooltipOpen(false)}
+          hasArrow
+          placement="top"
+        >
+          <Icon
+            as={InfoOutlineIcon}
+            boxSize={4}
+            ml={2}
+            color="gray.500"
+            onClick={toggleTooltip}
+            cursor="pointer"
+          />
+        </Tooltip>
       </Box>
 
       {/* Sección de imágenes */}
@@ -37,6 +70,7 @@ const WorkPortfolio = () => {
                   borderRadius="md"
                   boxSize="100%"
                   objectFit="cover"
+                  maxW={350}
                 />
               ))
           ) : (
