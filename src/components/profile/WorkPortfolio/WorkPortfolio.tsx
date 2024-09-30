@@ -70,7 +70,9 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({ images }) => {
                   borderRadius="md"
                   boxSize="100%"
                   objectFit="cover"
+                  maxH={350}
                   maxW={350}
+                  _placeholder="blur"
                 />
               ))
           ) : (

@@ -1,5 +1,6 @@
 import StarIcon from '@/components/icons/StarIcon';
-import { Avatar, HStack, Image, Text, VStack } from '@chakra-ui/react';
+import { Avatar, HStack, Text, VStack } from '@chakra-ui/react';
+import Image from 'next/image';
 import React from 'react';
 import { Review } from '../ReviewRating/ReviewRating';
 import { timeAgo } from './helpers';
@@ -59,11 +60,12 @@ const DetailedReview: React.FC<DetailedReviewProps> = ({ review }) => {
       <HStack spacing={4} w="100%">
         {review.imageUrl && (
           <Image
+            className="rounded-md"
             src={review.imageUrl}
             alt="Review Image"
-            boxSize="100px"
             objectFit="cover"
-            borderRadius="md"
+            width={100}
+            height={100}
           />
         )}
         <Text fontSize="sm">{review.comment}</Text>

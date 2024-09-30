@@ -1,3 +1,4 @@
+import ContactDetails from '@/components/profile/ContactDetails/ContactDetails';
 import DetailedReview from '@/components/profile/DetailedReview';
 import ProfileDescription from '@/components/profile/ProfileDescription';
 import ReviewRating from '@/components/profile/ReviewRating';
@@ -19,7 +20,7 @@ const Profile = () => {
             description="Especializado en levantamiento de muro"
             isVerified
           />
-
+          <ContactDetails phone="+542465178311" email="juan-valdez@gmail.com" />
           <ReviewRating reviews={reviewsMock} />
         </VStack>
       </GridItem>
