@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 import StarIcon from '../icons/StarIcon';
 
@@ -19,7 +20,7 @@ const WorkerCard: React.FC<WorkerCardProps> = ({
   return (
     <div className="max-w-sm mx-auto bg-white shadow-lg rounded-lg overflow-hidden p-6 m-3">
       <div className="flex flex-col items-center">
-        <img
+        <Image
           className="w-24 h-24 rounded-full object-cover mb-4"
           src="https://via.placeholder.com/150"
           alt={`${firstName} ${lastName}`}

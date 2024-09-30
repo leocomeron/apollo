@@ -1,8 +1,9 @@
 interface StarIconProps {
-  filled: boolean;
+  filled?: boolean;
+  half?: boolean;
 }
 
-const StarIcon = ({ filled, half }: { filled?: boolean; half?: boolean }) => (
+const StarIcon: React.FC<StarIconProps> = ({ filled, half }) => (
   <svg
     width="16"
     height="16"
