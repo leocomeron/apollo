@@ -24,7 +24,7 @@ const ProfileDescription: React.FC<ProfileDescriptionProps> = ({
       <Box position="relative">
         <Image
           borderRadius="full"
-          boxSize="120px"
+          boxSize="200px" //for mobile we can make it smaller
           src={imageUrl}
           alt={`${name} profile`}
         />
