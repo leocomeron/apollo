@@ -32,5 +32,5 @@ export const categories: Category[] = [
   { label: 'Carpintería', value: 'carpentry' },
   { label: 'Herrería', value: 'blacksmithing' },
   { label: 'Electricidad', value: 'electricity' },
-  { label: 'Otros', value: 'other' },
+  { label: 'Otros', value: 'others' },
 ];

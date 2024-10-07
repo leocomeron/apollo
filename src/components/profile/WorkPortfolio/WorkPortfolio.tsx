@@ -11,9 +11,14 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import { useState } from 'react';
+import DescriptionText from '../ProfileDescription/DescriptionText';
 
+interface WorkPortfolioImage {
+  url: string;
+  description: string;
+}
 interface WorkPortfolioProps {
-  images: string[];
+  images: WorkPortfolioImage[];
 }
 
 const WorkPortfolio: React.FC<WorkPortfolioProps> = ({ images }) => {
@@ -55,39 +60,41 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({ images }) => {
           />
         </Tooltip>
       </Box>
-
-      {/* Sección de imágenes */}
-      <Box>
-        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
-          {images.length > 0 ? (
-            images
-              .slice(0, 3)
-              .map((image, index) => (
-                <Image
-                  key={index}
-                  src={image}
-                  alt={`Trabajo realizado ${index + 1}`}
-                  borderRadius="md"
-                  boxSize="100%"
-                  objectFit="cover"
-                  maxH={350}
-                  maxW={350}
-                  _placeholder="blur"
+      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mb={5}>
+        {images.length > 0 ? (
+          images.slice(0, 3).map((image, index) => (
+            <Box key={index}>
+              <Image
+                src={image.url}
+                alt={`Trabajo realizado ${index + 1}`}
+                borderRadius="md"
+                boxSize="100%"
+                objectFit="cover"
+                maxH={350}
+                maxW={350}
+                _placeholder="blur"
+              />
+              {image.description ? (
+                <DescriptionText
+                  initialDescription={image.description}
+                  maxLength={90}
+                  justifyContent="flex-start"
                 />
-              ))
-          ) : (
-            <Text fontSize="large" color="gray.500">
-              No hay trabajos realizados aún.
-            </Text>
-          )}
-        </SimpleGrid>
-        {/* Botón para cargar más imágenes */}
-        {images.length > 3 && (
-          <Button mt={4} onClick={loadMoreImages}>
-            Cargar más
-          </Button>
+              ) : null}
+            </Box>
+          ))
+        ) : (
+          <Text fontSize="large" color="gray.500">
+            No hay trabajos realizados aún.
+          </Text>
         )}
-      </Box>
+      </SimpleGrid>
+      {/* Load more images button */}
+      {images.length > 3 && (
+        <Button mt={4} onClick={loadMoreImages}>
+          Cargar más
+        </Button>
+      )}
     </>
   );
 };

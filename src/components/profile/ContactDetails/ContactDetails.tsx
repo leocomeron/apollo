@@ -1,19 +1,25 @@
 import CallToAction from '@/components/CallToAction';
 import { Box, Text, VStack } from '@chakra-ui/react';
+import { useState } from 'react';
 
 interface ContactDetailsProps {
-  phone: string;
+  initialPhoneNumber: string;
   email: string;
 }
 
-const ContactDetails: React.FC<ContactDetailsProps> = ({ phone, email }) => {
+const ContactDetails: React.FC<ContactDetailsProps> = ({
+  initialPhoneNumber,
+  email,
+}) => {
+  const [phoneNumber, setPhoneNumber] = useState<string>(initialPhoneNumber);
+  console.log(setPhoneNumber);
   return (
     <Box>
       <VStack>
         <Text>Datos de contacto</Text>
         <CallToAction
           minW={300}
-          onClick={() => (window.location.href = `tel:${phone}`)}
+          onClick={() => (window.location.href = `tel:${phoneNumber}`)}
         >
           +542465178311
         </CallToAction>

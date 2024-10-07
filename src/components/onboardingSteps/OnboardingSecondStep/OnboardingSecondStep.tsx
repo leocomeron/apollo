@@ -56,7 +56,7 @@ const OnboardingSecondStep: React.FC<OnboardingSecondStepProps> = ({
       />
       <Box maxWidth="600px" mx="auto">
         <Heading textAlign="center" mb="8">
-          ¿A qué rubro te dedicas?
+          ¿A qué rubros te dedicas?
         </Heading>
         <Wrap spacing={4} justify="center">
           {categoriesCatalog.map((category) => (
