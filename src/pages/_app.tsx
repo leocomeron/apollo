@@ -9,7 +9,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
       <Head>
-        <title>Manos a la obra | Onboarding</title>
+        <title>Manos a la obra</title>
       </Head>
       <OnboardingProvider>
         <Box minH="100vh">
