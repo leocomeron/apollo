@@ -1,47 +1,59 @@
-import Image from 'next/image';
-import React from 'react';
+import { Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
 import StarIcon from '../icons/StarIcon';
 
-interface WorkerCardProps {
+export interface WorkerCardProps {
+  profilePicture: string;
+  rating: number;
   firstName: string;
   lastName: string;
   profession: string;
-  age: number;
-  rating: number;
+  description: string;
 }
 
 const WorkerCard: React.FC<WorkerCardProps> = ({
+  profilePicture,
+  rating,
   firstName,
   lastName,
   profession,
-  age,
-  rating,
+  description,
 }) => {
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, index) => {
+      const filled = rating >= index + 1;
+      const half = !filled && rating > index && rating < index + 1;
+      return <StarIcon key={index} filled={filled} half={half} size={30} />;
+    });
+  };
+
   return (
-    <div className="max-w-sm mx-auto bg-white shadow-lg rounded-lg overflow-hidden p-6 m-3">
-      <div className="flex flex-col items-center">
-        <Image
-          className="w-24 h-24 rounded-full object-cover mb-4"
-          src="https://via.placeholder.com/150"
-          alt={`${firstName} ${lastName}`}
-        />
-        <div className="text-center">
-          <h2 className="text-lg font-semibold text-gray-900">
-            {firstName} {lastName}
-          </h2>
-          <p className="text-gray-600">
-            {profession} - {age} años
-          </p>
-          <div className="flex justify-center mt-2">
-            {Array(5)
-              .fill('')
-              .map((_, i) => (
-                <StarIcon key={i} filled={i < rating} />
-              ))}
-          </div>
-        </div>
-      </div>
-    </div>
+    <Box
+      borderWidth="1px"
+      borderRadius="lg"
+      overflow="hidden"
+      maxW="sm"
+      boxShadow="md"
+      p={4}
+    >
+      <Image
+        src={profilePicture}
+        alt={`${firstName} ${lastName}`}
+        borderRadius="lg"
+        objectFit="cover"
+        width="100%"
+        height="200px"
+      />
+      <VStack mt={4} spacing={2} align="start">
+        <HStack>{renderStars(rating)}</HStack>
+        <Text fontSize="sm" fontWeight="bold">
+          {firstName} {lastName}
+        </Text>
+        <Text fontSize="sm">{profession}</Text>
+        <Text fontSize="sm" color="gray.500">
+          {description}
+        </Text>
+      </VStack>
+    </Box>
   );
 };
 
