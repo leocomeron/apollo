@@ -1,3 +1,4 @@
+import Layout from '@/components/Layout/Layout';
 import { OnboardingProvider } from '@/context/OnboardingContext';
 import '@/styles/globals.css';
 import theme from '@/theme/theme';
@@ -13,7 +14,9 @@ export default function App({ Component, pageProps }: AppProps) {
       </Head>
       <OnboardingProvider>
         <Box minH="100vh">
-          <Component {...pageProps} />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </Box>
       </OnboardingProvider>
     </ChakraProvider>

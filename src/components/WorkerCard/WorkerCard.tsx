@@ -22,7 +22,7 @@ const WorkerCard: React.FC<WorkerCardProps> = ({
     return Array.from({ length: 5 }, (_, index) => {
       const filled = rating >= index + 1;
       const half = !filled && rating > index && rating < index + 1;
-      return <StarIcon key={index} filled={filled} half={half} size={30} />;
+      return <StarIcon key={index} filled={filled} half={half} size={16} />;
     });
   };
 
