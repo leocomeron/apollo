@@ -1,4 +1,5 @@
 import { Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
+import { MdLocationOn } from 'react-icons/md';
 import StarIcon from '../icons/StarIcon';
 
 export interface WorkerCardProps {
@@ -8,6 +9,7 @@ export interface WorkerCardProps {
   lastName: string;
   profession: string;
   description: string;
+  location: string;
 }
 
 const WorkerCard: React.FC<WorkerCardProps> = ({
@@ -17,6 +19,7 @@ const WorkerCard: React.FC<WorkerCardProps> = ({
   lastName,
   profession,
   description,
+  location,
 }) => {
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, index) => {
@@ -31,9 +34,10 @@ const WorkerCard: React.FC<WorkerCardProps> = ({
       borderWidth="1px"
       borderRadius="lg"
       overflow="hidden"
-      maxW="sm"
+      maxW={{ base: '100%', sm: 'sm' }}
       boxShadow="md"
       p={4}
+      m={2}
     >
       <Image
         src={profilePicture}
@@ -41,17 +45,23 @@ const WorkerCard: React.FC<WorkerCardProps> = ({
         borderRadius="lg"
         objectFit="cover"
         width="100%"
-        height="200px"
+        height={{ base: '150px', sm: '200px' }}
       />
       <VStack mt={4} spacing={2} align="start">
         <HStack>{renderStars(rating)}</HStack>
-        <Text fontSize="sm" fontWeight="bold">
+        <Text fontSize={{ base: 'md', sm: 'lg' }} fontWeight="bold">
           {firstName} {lastName}
         </Text>
-        <Text fontSize="sm">{profession}</Text>
-        <Text fontSize="sm" color="gray.500">
+        <Text fontSize={{ base: 'sm', sm: 'md' }}>{profession}</Text>
+        <Text fontSize={{ base: 'xs', sm: 'sm' }} color="gray.500">
           {description}
         </Text>
+        <HStack>
+          <MdLocationOn color="grey" />
+          <Text fontSize={{ base: 'xs', sm: 'sm' }} color="gray.500">
+            {location}
+          </Text>
+        </HStack>
       </VStack>
     </Box>
   );

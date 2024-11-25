@@ -9,6 +9,7 @@ export const workerCardMock: WorkerCardProps[] = [
     lastName: 'Comerón',
     profession: 'Albañil',
     description: 'Especializado en levantamiento de paredes',
+    location: 'Capital',
   },
   {
     profilePicture:
@@ -18,6 +19,7 @@ export const workerCardMock: WorkerCardProps[] = [
     lastName: 'Fernández',
     profession: 'Electricista',
     description: 'Experta en instalaciones eléctricas residenciales',
+    location: 'Rawson',
   },
   {
     profilePicture:
@@ -28,6 +30,7 @@ export const workerCardMock: WorkerCardProps[] = [
 
     profession: 'Albañil',
     description: 'Especialista en reparación de tuberías y grifos',
+    location: 'Ullum',
   },
   {
     profilePicture:
@@ -37,6 +40,7 @@ export const workerCardMock: WorkerCardProps[] = [
     lastName: 'García',
     profession: 'Pintor',
     description: 'Profesional en pintura decorativa y restauración',
+    location: 'Capital',
   },
   {
     profilePicture:
@@ -46,5 +50,6 @@ export const workerCardMock: WorkerCardProps[] = [
     lastName: 'Ruiz',
     profession: 'Carpintero',
     description: 'Hábil en fabricación y reparación de muebles',
+    location: 'Gran San Juan',
   },
 ];
