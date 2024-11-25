@@ -44,7 +44,7 @@ export const workerCardMock: WorkerCardProps[] = [
   {
     profilePicture:
       'https://img.freepik.com/fotos-premium/carpintero-trabajando-taller-sonriendo_58409-78934.jpg',
-    rating: 4.7,
+    rating: 2.5,
     firstName: 'Javier',
     lastName: 'Ruiz',
     profession: 'carpentry',
@@ -64,7 +64,7 @@ export const workerCardMock: WorkerCardProps[] = [
   {
     profilePicture:
       'https://img.freepik.com/fotos-premium/carpintero-trabajando-taller-sonriendo_58409-78934.jpg',
-    rating: 4.8,
+    rating: 4.1,
     firstName: 'Federico',
     lastName: 'Morales',
     profession: 'carpentry',
@@ -116,7 +116,7 @@ export const workerCardMock: WorkerCardProps[] = [
   {
     profilePicture:
       'https://img.freepik.com/foto-gratis/handyman-utiliza-martillo-neumatico-instalacion-trabajador-profesional-sitio-construccion-concepto-electricista-personal-mantenimiento_169016-5882.jpg?t=st=1731097566~exp=1731101166~hmac=f0d7aa616b3ea3bec757e6a41a32b683d51b40a627e3cbf44765eec993b24f19&w=1480',
-    rating: 4.3,
+    rating: 3.9,
     firstName: 'Diego',
     lastName: 'Vega',
     profession: 'others',
@@ -137,7 +137,7 @@ export const workerCardMock: WorkerCardProps[] = [
   {
     profilePicture:
       'https://img.freepik.com/fotos-premium/carpintero-trabajando-taller-sonriendo_58409-78934.jpg',
-    rating: 4.7,
+    rating: 3.7,
     firstName: 'Héctor',
     lastName: 'Cruz',
     profession: 'carpentry',
