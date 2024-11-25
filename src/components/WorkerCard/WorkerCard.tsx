@@ -1,3 +1,4 @@
+import { categories } from '@/constants';
 import { Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
 import { MdLocationOn } from 'react-icons/md';
 import StarIcon from '../icons/StarIcon';
@@ -29,6 +30,13 @@ const WorkerCard: React.FC<WorkerCardProps> = ({
     });
   };
 
+  const getProfessionLabel = (profession: string) => {
+    const category = categories.find(
+      (category) => category.value === profession,
+    );
+    return category ? category.label : 'Otro';
+  };
+
   return (
     <Box
       borderWidth="1px"
@@ -52,7 +60,9 @@ const WorkerCard: React.FC<WorkerCardProps> = ({
         <Text fontSize={{ base: 'md', sm: 'lg' }} fontWeight="bold">
           {firstName} {lastName}
         </Text>
-        <Text fontSize={{ base: 'sm', sm: 'md' }}>{profession}</Text>
+        <Text fontSize={{ base: 'sm', sm: 'md' }}>
+          {getProfessionLabel(profession)}
+        </Text>
         <Text fontSize={{ base: 'xs', sm: 'sm' }} color="gray.500">
           {description}
         </Text>
