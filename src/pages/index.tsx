@@ -2,19 +2,18 @@ import Menu from '@/components/Menu';
 import WorkerCard from '@/components/WorkerCard';
 import { categories } from '@/constants';
 import { workerCardMock } from '@/mocks/workerCard';
-import { Category } from '@/types/onboarding';
 import { Box, Grid, Input, Tag, Wrap, WrapItem } from '@chakra-ui/react';
 import { useState } from 'react';
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  const handleCategoryClick = (category: Category) => {
+  const handleCategoryClick = (category: string) => {
     setSelectedCategories((prev) =>
       prev.includes(category)
         ? prev.filter((cat) => cat !== category)
