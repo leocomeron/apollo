@@ -1,13 +1,29 @@
 import Menu from '@/components/Menu';
 import WorkerCard from '@/components/WorkerCard';
-import { categories } from '@/constants';
 import { workerCardMock } from '@/mocks/workerCard';
+import { Category } from '@/types/onboarding';
 import { Box, Grid, Input, Tag, Wrap, WrapItem } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/catalogs/categories');
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      console.error('Error al obtener los datos:', error);
+    }
+  };
+
+  useEffect(() => {
+    void fetchCategories();
+  }, []);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
