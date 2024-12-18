@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 
-const OnboardingFirstStep: React.FC = () => {
+const OnboardingFourthStep: React.FC = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   return (
     <>
@@ -74,4 +74,4 @@ const OnboardingFirstStep: React.FC = () => {
   );
 };
 
-export default OnboardingFirstStep;
+export default OnboardingFourthStep;

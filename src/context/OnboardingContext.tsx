@@ -10,13 +10,15 @@ interface OnboardingProviderProps {
 }
 
 const onboardingInitialState: OnboardingInfo = {
-  userType: '',
+  isWorker: undefined,
   categories: [],
-  location: '',
+  contact: {
+    email: '',
+    phone: '',
+    location: '',
+  },
   firstName: '',
   lastName: '',
-  email: '',
-  phone: '',
   birthDate: '',
   documents: [],
 };

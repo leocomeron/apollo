@@ -22,6 +22,7 @@ module.exports = {
     'no-console': 'warn',
     'no-debugger': 'warn',
     'no-unused-vars': 'off',
+    'no-var': 'off',
     eqeqeq: ['error', 'always'],
     semi: ['error', 'always'],
     quotes: ['error', 'single'],
@@ -41,7 +42,7 @@ module.exports = {
     '@typescript-eslint/prefer-optional-chain': 'warn',
     '@typescript-eslint/prefer-nullish-coalescing': 'warn',
     '@typescript-eslint/no-non-null-assertion': 'warn',
-
+    '@typescript-eslint/prefer-nullish-coalescing': 'off',
     // Prettier integration
     'prettier/prettier': ['error', { singleQuote: true, semi: true }],
   },

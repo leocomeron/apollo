@@ -22,8 +22,8 @@ export default function Onboarding() {
         return (
           <OnboardingFirstStep
             options={[
-              { label: 'Quiero trabajar', value: 'work' },
-              { label: 'Quiero contratar', value: 'hire' },
+              { label: 'Quiero trabajar', value: true },
+              { label: 'Quiero contratar', value: false },
             ]}
           />
         );
@@ -41,7 +41,7 @@ export default function Onboarding() {
         return null;
     }
   };
-
+  console.log(onboardingInfo);
   return (
     <>
       <main className="flex flex-col items-center justify-between p-6">

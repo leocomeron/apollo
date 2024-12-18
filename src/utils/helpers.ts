@@ -5,13 +5,11 @@ export const disableNextStepButtonHandler = (
   onboardingInfo: OnboardingInfo,
 ): boolean => {
   const {
-    userType,
+    isWorker,
     categories,
-    location,
+    contact,
     firstName,
     lastName,
-    email,
-    phone,
     birthDate,
     documents,
   } = onboardingInfo;
@@ -25,11 +23,17 @@ export const disableNextStepButtonHandler = (
 
   switch (currentStep) {
     case 1:
-      return !userType;
+      return isWorker === undefined;
     case 2:
-      return !categories.length || !location;
+      return !categories.length || !contact.location;
     case 3:
-      return !firstName || !lastName || !email || !phone || !birthDate;
+      return (
+        !firstName ||
+        !lastName ||
+        !contact.email ||
+        !contact.phone ||
+        !birthDate
+      );
     case 4:
       return disableDocumentsStep;
     default:

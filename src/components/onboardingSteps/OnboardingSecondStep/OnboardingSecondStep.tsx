@@ -41,7 +41,10 @@ const OnboardingSecondStep: React.FC<OnboardingSecondStepProps> = ({
   };
 
   const handleLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setOnboardingInfo({ ...onboardingInfo, location: e.target.value });
+    setOnboardingInfo({
+      ...onboardingInfo,
+      contact: { ...onboardingInfo.contact, location: e.target.value },
+    });
   };
 
   return (
@@ -90,7 +93,7 @@ const OnboardingSecondStep: React.FC<OnboardingSecondStepProps> = ({
             placeholder="Selecciona departamento"
             focusBorderColor="brand.800"
             onChange={handleLocationChange}
-            value={onboardingInfo.location}
+            value={onboardingInfo.contact.location}
           >
             {sanJuanDepartments.map((department) => (
               <option value={department} key={department}>

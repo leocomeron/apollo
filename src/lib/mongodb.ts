@@ -1,12 +1,11 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, MongoClientOptions } from 'mongodb';
 
 declare global {
-  // eslint-disable-next-line no-var
   var _mongoClientPromise: Promise<MongoClient>;
 }
 
 const uri = process.env.MONGODB_URI ?? '';
-const options = {};
+const options = {} as MongoClientOptions;
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
@@ -17,15 +16,20 @@ if (!uri) {
   );
 }
 
-if (process.env.NODE_ENV === 'development') {
-  if (!global._mongoClientPromise) {
+try {
+  if (process.env.NODE_ENV === 'development') {
+    if (!global._mongoClientPromise) {
+      client = new MongoClient(uri, options);
+      global._mongoClientPromise = client.connect();
+    }
+    clientPromise = global._mongoClientPromise;
+  } else {
     client = new MongoClient(uri, options);
-    global._mongoClientPromise = client.connect();
+    clientPromise = client.connect();
   }
-  clientPromise = global._mongoClientPromise;
-} else {
-  client = new MongoClient(uri, options);
-  clientPromise = client.connect();
+} catch (error) {
+  console.error('Error al conectar con MongoDB:', error);
+  throw new Error('No se pudo conectar a la base de datos');
 }
 
 export default clientPromise;

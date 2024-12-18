@@ -34,15 +34,17 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({
     onClose();
   };
 
+  const openWhatsApp = (phone: string) => {
+    const cleanPhone = phone.replace(/\D/g, ''); // Remove any non-numeric character
+    window.open(`https://wa.me/${cleanPhone}`, '_blank');
+  };
+
   return (
     <Box>
       <VStack>
         <Text>Datos de contacto</Text>
         <Box display="flex" justifyContent="center" alignItems="center">
-          <CallToAction
-            minW={300}
-            onClick={() => (window.location.href = `tel:${phoneNumber}`)}
-          >
+          <CallToAction minW={300} onClick={() => openWhatsApp(phoneNumber)}>
             {phoneNumber}{' '}
             <EditIcon
               onClick={(e) => {

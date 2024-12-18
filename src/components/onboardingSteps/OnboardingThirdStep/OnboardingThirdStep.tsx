@@ -15,15 +15,27 @@ import React from 'react';
 const OnboardingThirdStep: React.FC = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const { onboardingInfo, setOnboardingInfo } = useOnboarding();
-  const { firstName, lastName, email, phone, birthDate } = onboardingInfo;
+  const { firstName, lastName, contact, birthDate } = onboardingInfo;
 
   // Handlers for input fields
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setOnboardingInfo((prevState) => ({
-      ...prevState,
-      [id]: value,
-    }));
+
+    setOnboardingInfo((prevState) => {
+      if (id === 'email' || id === 'phone') {
+        return {
+          ...prevState,
+          contact: {
+            ...prevState.contact,
+            [id]: value,
+          },
+        };
+      }
+      return {
+        ...prevState,
+        [id]: value,
+      };
+    });
   };
 
   return (
@@ -69,7 +81,7 @@ const OnboardingThirdStep: React.FC = () => {
             <CustomInput
               type="email"
               // placeholder="Email"
-              value={email}
+              value={contact.email}
               onChange={handleInputChange}
             />
           </FormControl>
@@ -80,7 +92,7 @@ const OnboardingThirdStep: React.FC = () => {
             <CustomInput
               type="number"
               // placeholder="Teléfono"
-              value={phone}
+              value={contact.phone}
               onChange={handleInputChange}
             />
             <FormHelperText ml={2}>

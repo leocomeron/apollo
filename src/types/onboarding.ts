@@ -18,14 +18,18 @@ export interface Document {
   file: File;
 }
 
-export interface OnboardingInfo {
-  userType: string;
-  categories: string[];
-  location: string;
-  firstName: string;
-  lastName: string;
+export interface Contact {
   email: string;
   phone: string;
+  location: string;
+}
+
+export interface OnboardingInfo {
+  isWorker: boolean | undefined;
+  categories: string[];
+  contact: Contact;
+  firstName: string;
+  lastName: string;
   birthDate: string; // or Date?
   documents: Document[];
 }

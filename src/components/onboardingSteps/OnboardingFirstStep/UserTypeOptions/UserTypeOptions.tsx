@@ -4,7 +4,7 @@ import React from 'react';
 
 export interface Options {
   label: string;
-  value: string;
+  value: boolean;
   required?: boolean;
 }
 
@@ -14,13 +14,13 @@ interface UserTypeOptionsProps {
 
 const UserTypeOptions: React.FC<UserTypeOptionsProps> = ({ options }) => {
   const { setOnboardingInfo, onboardingInfo } = useOnboarding();
-  const { userType } = onboardingInfo;
+  const { isWorker } = onboardingInfo;
 
   return (
     <Stack direction="column">
       {options.map((option) => (
         <Tag
-          key={option.value}
+          key={option.value.toString()}
           borderRadius="50px"
           size="lg"
           variant="solid"
@@ -29,9 +29,9 @@ const UserTypeOptions: React.FC<UserTypeOptionsProps> = ({ options }) => {
           px={{ base: 2, md: 6 }}
           py={{ base: 1, md: 3 }}
           borderWidth="3px"
-          borderColor={userType === option.value ? 'brand.900' : 'transparent'}
+          borderColor={isWorker === option.value ? 'brand.900' : 'transparent'}
           onClick={() =>
-            setOnboardingInfo({ ...onboardingInfo, userType: option.value })
+            setOnboardingInfo({ ...onboardingInfo, isWorker: option.value })
           }
         >
           {option.label}

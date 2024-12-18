@@ -1,29 +1,28 @@
 import Menu from '@/components/Menu';
 import WorkerCard from '@/components/WorkerCard';
-import { workerCardMock } from '@/mocks/workerCard';
+import fetcher from '@/lib/fetcher';
 import { Category } from '@/types/onboarding';
 import { Box, Grid, Input, Tag, Wrap, WrapItem } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import useSWR from 'swr';
+import { User } from './api/users/types';
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  const [categories, setCategories] = useState<Category[]>([]);
+  const { data: workers, error: usersError } = useSWR<User[]>(
+    '/api/users?isWorker=true',
+    fetcher,
+  );
+  const { data: categories, error: categoriesError } = useSWR<Category[]>(
+    '/api/catalogs/categories',
+    fetcher,
+  );
 
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch('/api/catalogs/categories');
-      const data = await response.json();
-      setCategories(data);
-    } catch (error) {
-      console.error('Error al obtener los datos:', error);
-    }
-  };
+  if (usersError || categoriesError) return <div>Error cargando la página</div>;
 
-  useEffect(() => {
-    void fetchCategories();
-  }, []);
+  if (!workers || !categories) return <div>Cargando...</div>;
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -37,18 +36,20 @@ export default function Home() {
     );
   };
 
-  const filteredWorkers = workerCardMock.filter((worker) => {
+  const filteredWorkers = workers.filter((worker) => {
     const searchLower = searchTerm.toLowerCase();
     const matchesSearchTerm =
       worker.firstName.toLowerCase().includes(searchLower) ||
       worker.lastName.toLowerCase().includes(searchLower) ||
-      worker.profession.toLowerCase().includes(searchLower) ||
-      worker.description.toLowerCase().includes(searchLower) ||
-      worker.location.toLowerCase().includes(searchLower);
+      worker?.categories?.includes(searchLower) ||
+      worker?.description?.toLowerCase().includes(searchLower) ||
+      worker.contact.location.toLowerCase().includes(searchLower);
 
     const matchesCategory =
       selectedCategories.length === 0 ||
-      selectedCategories.includes(worker.profession);
+      selectedCategories.some((category) =>
+        worker?.categories?.includes(category),
+      );
 
     return matchesSearchTerm && matchesCategory;
   });
@@ -99,16 +100,16 @@ export default function Home() {
         }}
         gap={4}
       >
-        {filteredWorkers.map((worker, index) => (
+        {filteredWorkers.map((worker) => (
           <WorkerCard
-            key={worker.firstName + index} //here should go the id
+            key={worker._id}
             profilePicture={worker.profilePicture}
-            rating={worker.rating}
+            rating={worker.rating?.average ?? 1}
             firstName={worker.firstName}
             lastName={worker.lastName}
-            profession={worker.profession}
-            description={worker.description}
-            location={worker.location}
+            professions={worker.categories ?? []}
+            description={worker?.description ?? ''}
+            location={worker.contact.location}
           />
         ))}
       </Grid>
