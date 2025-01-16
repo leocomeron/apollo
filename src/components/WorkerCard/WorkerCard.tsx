@@ -1,5 +1,5 @@
 import { getProfessionLabel } from '@/utils/strings';
-import { Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
+import { Avatar, Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
 import { MdLocationOn } from 'react-icons/md';
 import StarIcon from '../icons/StarIcon';
 
@@ -23,6 +23,14 @@ const WorkerCard: React.FC<WorkerCardProps> = ({
   location,
 }) => {
   const renderStars = (rating: number) => {
+    if (!rating) {
+      return (
+        <Text fontSize="sm" color="gray.500">
+          Sin calificación aún
+        </Text>
+      );
+    }
+
     return Array.from({ length: 5 }, (_, index) => {
       const filled = rating >= index + 1;
       const half = !filled && rating > index && rating < index + 1;
@@ -40,14 +48,28 @@ const WorkerCard: React.FC<WorkerCardProps> = ({
       p={4}
       m={2}
     >
-      <Image
-        src={profilePicture}
-        alt={`${firstName} ${lastName}`}
-        borderRadius="lg"
-        objectFit="cover"
-        width="100%"
-        height={{ base: '150px', sm: '200px' }}
-      />
+      {profilePicture ? (
+        <Image
+          src={profilePicture}
+          alt={`${firstName} ${lastName}`}
+          borderRadius="lg"
+          objectFit="cover"
+          width="100%"
+          height={{ base: '150px', sm: '200px' }}
+        />
+      ) : (
+        <Box
+          width="100%"
+          height={{ base: '150px', sm: '200px' }}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          bg="gray.100"
+          borderRadius="lg"
+        >
+          <Avatar size="2xl" name={`${firstName} ${lastName}`} bg="blue.500" />
+        </Box>
+      )}
       <VStack mt={4} spacing={2} align="start">
         <HStack>{renderStars(rating)}</HStack>
         <Text fontSize={{ base: 'md', sm: 'lg' }} fontWeight="bold">

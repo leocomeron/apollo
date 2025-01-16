@@ -6,15 +6,39 @@ import OnboardingThirdStep from '@/components/onboardingSteps/OnboardingThirdSte
 import { categories } from '@/constants';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { ArrowBackIcon } from '@chakra-ui/icons';
-import { Button, Text, useBreakpointValue } from '@chakra-ui/react';
+import { Link } from '@chakra-ui/next-js';
+import { Button, Text, useBreakpointValue, useToast } from '@chakra-ui/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import useSWRMutation from 'swr/mutation';
 import { disableNextStepButtonHandler } from '../../utils/helpers';
 
 export default function Onboarding() {
   const router = useRouter();
   const { step, nextStep, prevStep, onboardingInfo } = useOnboarding();
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const toast = useToast();
+
+  const { trigger: createUser, isMutating } = useSWRMutation(
+    '/api/users',
+    async (url) => {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(onboardingInfo),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to create user');
+      }
+
+      return data;
+    },
+  );
 
   const renderStep = () => {
     switch (step) {
@@ -35,13 +59,43 @@ export default function Onboarding() {
         return <OnboardingFourthStep />;
       case 5:
         return (
-          <Text fontSize="medium">Pagina de perfil, en contrucción...</Text>
+          <Text fontSize="medium">
+            Ya tienes tu perfil creado! Haz click aquí para ir al{' '}
+            <Link href="/" color="brand.800" fontWeight="bold">
+              Home
+            </Link>
+          </Text>
         );
       default:
         return null;
     }
   };
-  console.log(onboardingInfo);
+
+  const handleFinishOnboarding = async () => {
+    try {
+      await createUser();
+      toast({
+        title: 'Usuario creado con éxito',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      await router.push('/profile'); // Should take the user to the id of the user created
+    } catch (error) {
+      console.error('Error creating user:', error);
+      toast({
+        title: 'Error al crear usuario',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'Por favor intente nuevamente',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <>
       <main className="flex flex-col items-center justify-between p-6">
@@ -76,11 +130,12 @@ export default function Onboarding() {
           _hover={{ bg: 'brand.900' }}
           onClick={async () => {
             if (step === 4) {
-              await router.push('/profile');
+              await handleFinishOnboarding();
             }
             nextStep();
           }}
           isDisabled={disableNextStepButtonHandler(step, onboardingInfo)}
+          isLoading={isMutating && step === 4}
         >
           {step === 4 ? 'Finalizar' : 'Continuar'}
         </Button>

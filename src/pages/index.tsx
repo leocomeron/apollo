@@ -104,7 +104,7 @@ export default function Home() {
           <WorkerCard
             key={worker._id}
             profilePicture={worker.profilePicture}
-            rating={worker.rating?.average ?? 1}
+            rating={worker.rating?.average ?? 0}
             firstName={worker.firstName}
             lastName={worker.lastName}
             professions={worker.categories ?? []}
