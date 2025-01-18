@@ -3,24 +3,66 @@ import WorkerCard from '@/components/WorkerCard';
 import fetcher from '@/lib/fetcher';
 import { Category } from '@/types/onboarding';
 import { Box, Grid, Input, Tag, Wrap, WrapItem } from '@chakra-ui/react';
+import { GetServerSideProps } from 'next';
 import { useState } from 'react';
 import useSWR from 'swr';
 import { User } from './api/users/types';
 
-export default function Home() {
+interface HomeProps {
+  initialWorkers: User[];
+  initialCategories: Category[];
+}
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  try {
+    const [workersRes, categoriesRes] = await Promise.all([
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users?isWorker=true`),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/catalogs/categories`),
+    ]);
+
+    const [workers, categories] = await Promise.all([
+      workersRes.json(),
+      categoriesRes.json(),
+    ]);
+
+    return {
+      props: {
+        initialWorkers: workers,
+        initialCategories: categories,
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching initial data:', error);
+    return {
+      props: {
+        initialWorkers: [],
+        initialCategories: [],
+      },
+    };
+  }
+};
+
+export default function Home({ initialWorkers, initialCategories }: HomeProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  const { data: workers, error: usersError } = useSWR<User[]>(
+  const { data: workers } = useSWR<User[]>(
     '/api/users?isWorker=true',
     fetcher,
+    {
+      fallbackData: initialWorkers,
+      revalidateOnMount: false,
+      refreshInterval: 30000,
+    },
   );
-  const { data: categories, error: categoriesError } = useSWR<Category[]>(
+  const { data: categories } = useSWR<Category[]>(
     '/api/catalogs/categories',
     fetcher,
+    {
+      fallbackData: initialCategories,
+      revalidateOnMount: false,
+    },
   );
-
-  if (usersError || categoriesError) return <div>Error cargando la página</div>;
 
   if (!workers || !categories) return <div>Cargando...</div>;
 
