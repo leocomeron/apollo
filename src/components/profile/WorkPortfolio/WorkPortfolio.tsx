@@ -40,7 +40,7 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({ images }) => {
         <Box>
           <FileDropzone
             text="Añadir trabajos realizados"
-            id={DocumentType.WorkPortfolio}
+            documentType={DocumentType.WorkPortfolio}
           />
         </Box>
         <Tooltip
