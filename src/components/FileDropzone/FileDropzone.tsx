@@ -15,38 +15,78 @@ import { useDropzone } from 'react-dropzone';
 export interface FileDropzoneProps {
   text?: string;
   link?: string;
-  id: DocumentType;
+  documentType: DocumentType;
   displayCheckIcon?: boolean;
 }
 
 const FileDropzone: React.FC<FileDropzoneProps> = ({
   text = 'Arrastra y suelta algunos archivos aquí, o haz clic para seleccionar archivos',
   link,
-  id,
+  documentType,
   displayCheckIcon,
 }) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const { setOnboardingInfo } = useOnboarding();
   const [selectedFile, setSelectedFile] = useState<File | undefined>();
+  const [isUploading, setIsUploading] = useState(false);
 
-  const onDrop = (acceptedFiles: File[]) => {
-    acceptedFiles.forEach((newFile) => {
-      newFile
-        .arrayBuffer()
-        .then(() => {
-          setSelectedFile(newFile);
-          const newDocument: Document = { type: id, file: newFile };
-          setOnboardingInfo((prevState) => ({
-            ...prevState,
-            documents: Array.isArray(prevState.documents)
-              ? [...prevState.documents, newDocument]
-              : [newDocument],
-          }));
-        })
-        .catch((error) => {
-          alert(error);
-        });
-    });
+  const uploadToCloudinary = async (file: File) => {
+    try {
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append(
+        'upload_preset',
+        process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || '',
+      );
+
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: 'POST',
+          body: formData,
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error('Error al subir la imagen');
+      }
+
+      const data = await response.json();
+      return data.secure_url;
+    } catch (error) {
+      console.error('Error uploading to Cloudinary:', error);
+      throw error;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const onDrop = async (acceptedFiles: File[]) => {
+    try {
+      const newFile = acceptedFiles[0];
+      if (!newFile) return;
+
+      setSelectedFile(newFile);
+      const cloudinaryUrl = await uploadToCloudinary(newFile);
+
+      const newDocument: Document = {
+        type: documentType,
+        file: newFile,
+        url: cloudinaryUrl,
+      };
+
+      setOnboardingInfo((prevState) => ({
+        ...prevState,
+        documents: Array.isArray(prevState.documents)
+          ? [...prevState.documents, newDocument]
+          : [newDocument],
+      }));
+    } catch (error) {
+      alert('Error al subir el archivo');
+      console.error(error);
+      setSelectedFile(undefined);
+    }
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -55,8 +95,8 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
       'image/png': ['.png'],
       'image/jpeg': ['.jpg', '.jpeg'],
       'image/gif': ['.gif'],
-      // Agregar más tipos de archivo si es necesario
     },
+    multiple: false,
   });
 
   return (
@@ -66,7 +106,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
       borderRadius="50px"
       textAlign="center"
       _hover={{ borderColor: 'brand.600' }}
-      cursor="pointer"
+      cursor={isUploading ? 'wait' : 'pointer'}
       bgColor="brand.600"
       position="relative"
       borderColor="brand.900"
@@ -76,8 +116,9 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
       py={{ base: 1, md: 1 }}
       my={{ base: 1, md: 1 }}
       minWidth={isMobile ? 280 : 320}
+      opacity={isUploading ? 0.5 : 1}
     >
-      <input {...getInputProps()} id={id} />
+      <input {...getInputProps()} id={documentType} disabled={isUploading} />
       {isDragActive ? (
         <Text color="brand.500" fontSize={{ base: 'small', md: 'medium' }}>
           Suelta los archivos aquí ...
@@ -86,7 +127,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
         <VStack spacing={4}>
           <Box display="flex" alignItems="center">
             <Text color="white" fontSize={{ base: 'small', md: 'medium' }}>
-              {text}
+              {isUploading ? 'Subiendo...' : text}
             </Text>
             {link && (
               <Link

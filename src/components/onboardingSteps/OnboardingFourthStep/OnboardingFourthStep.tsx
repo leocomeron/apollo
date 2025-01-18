@@ -27,23 +27,23 @@ const OnboardingFourthStep: React.FC = () => {
       </Heading>
       <FileDropzone
         text="Foto de perfil"
-        id={DocumentType.ProfilePicture}
+        documentType={DocumentType.ProfilePicture}
         displayCheckIcon
       />
       <FileDropzone
         text="Foto DNI frente"
-        id={DocumentType.IdentificationFront}
+        documentType={DocumentType.IdentificationFront}
         displayCheckIcon
       />
       <FileDropzone
         text="Foto DNI dorso"
-        id={DocumentType.IdentificationBack}
+        documentType={DocumentType.IdentificationBack}
         displayCheckIcon
       />
       <FileDropzone
         text="Certificado de antecedentes"
         link="https://www.argentina.gob.ar/servicio/solicitar-certificado-de-antecedentes-penales-con-clave-fiscal"
-        id={DocumentType.BackgroundVerification}
+        documentType={DocumentType.BackgroundVerification}
         displayCheckIcon
       />
       <Box mt={2} maxW={460}>

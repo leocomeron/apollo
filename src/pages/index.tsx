@@ -2,6 +2,7 @@ import Menu from '@/components/Menu';
 import WorkerCard from '@/components/WorkerCard';
 import fetcher from '@/lib/fetcher';
 import { Category } from '@/types/onboarding';
+import { getProfilePictureUrl } from '@/utils/user';
 import { Box, Grid, Input, Tag, Wrap, WrapItem } from '@chakra-ui/react';
 import { GetServerSideProps } from 'next';
 import { useState } from 'react';
@@ -32,7 +33,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
       },
     };
   } catch (error) {
-    console.error('Error fetching initial data:', error);
+    console.error(error);
     return {
       props: {
         initialWorkers: [],
@@ -145,7 +146,7 @@ export default function Home({ initialWorkers, initialCategories }: HomeProps) {
         {filteredWorkers.map((worker) => (
           <WorkerCard
             key={worker._id}
-            profilePicture={worker.profilePicture}
+            profilePicture={getProfilePictureUrl(worker)}
             rating={worker.rating?.average ?? 0}
             firstName={worker.firstName}
             lastName={worker.lastName}

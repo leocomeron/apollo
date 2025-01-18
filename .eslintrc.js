@@ -19,7 +19,7 @@ module.exports = {
   },
   rules: {
     // Basic rules
-    'no-console': 'warn',
+    'no-console': ['error', { allow: ['error'] }],
     'no-debugger': 'warn',
     'no-unused-vars': 'off',
     'no-var': 'off',

@@ -16,6 +16,7 @@ export enum DocumentType {
 export interface Document {
   type: DocumentType;
   file: File;
+  url?: string;
 }
 
 export interface Contact {
