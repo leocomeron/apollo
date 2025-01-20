@@ -1,15 +1,7 @@
 import FileDropzone from '@/components/FileDropzone';
 import { DocumentType } from '@/types/onboarding';
 import { InfoOutlineIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  Button,
-  Icon,
-  Image,
-  SimpleGrid,
-  Text,
-  Tooltip,
-} from '@chakra-ui/react';
+import { Box, Icon, Image, SimpleGrid, Text, Tooltip } from '@chakra-ui/react';
 import { useState } from 'react';
 import DescriptionText from '../ProfileDescription/DescriptionText';
 
@@ -23,11 +15,6 @@ interface WorkPortfolioProps {
 
 const WorkPortfolio: React.FC<WorkPortfolioProps> = ({ images }) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-
-  const loadMoreImages = () => {
-    // Aquí puedes implementar la lógica para cargar más imágenes
-    console.log('Load more images');
-  };
 
   const toggleTooltip = () => {
     setIsTooltipOpen((prev) => !prev);
@@ -62,7 +49,7 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({ images }) => {
       </Box>
       <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mb={5}>
         {images.length > 0 ? (
-          images.slice(0, 3).map((image, index) => (
+          images.map((image, index) => (
             <Box key={index}>
               <Image
                 src={image.url}
@@ -89,12 +76,6 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({ images }) => {
           </Text>
         )}
       </SimpleGrid>
-      {/* Load more images button */}
-      {images.length > 3 && (
-        <Button mt={4} onClick={loadMoreImages}>
-          Cargar más
-        </Button>
-      )}
     </>
   );
 };
