@@ -107,8 +107,8 @@ export default NextAuth({
     },
   },
   pages: {
-    signIn: '/auth/signin',
-    error: '/auth/error',
+    signIn: '/login',
+    error: '/login',
   },
   secret: process.env.NEXTAUTH_SECRET,
   session: {

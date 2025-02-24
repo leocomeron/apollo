@@ -24,7 +24,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (!session) {
-      void router.push('/auth/signin');
+      void router.push('/login');
     }
   }, [session, router]);
 
