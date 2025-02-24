@@ -42,7 +42,25 @@ const AuthForm = () => {
       });
 
       if (res.ok) {
-        void router.push('/onboarding');
+        const signInResult = await signIn('credentials', {
+          redirect: false,
+          email,
+          password,
+        });
+
+        if (signInResult?.ok) {
+          void router.push('/onboarding');
+        } else {
+          toast({
+            title: 'Error al iniciar sesión',
+            description:
+              'Se creó la cuenta pero hubo un error al iniciar sesión',
+            status: 'error',
+            duration: 3000,
+            isClosable: true,
+            position: 'top',
+          });
+        }
       } else {
         toast({
           title: 'Error al registrarse',
