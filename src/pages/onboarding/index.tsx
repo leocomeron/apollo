@@ -21,7 +21,7 @@ export default function Onboarding() {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const toast = useToast();
 
-  const { trigger: createUser, isMutating } = useSWRMutation(
+  const { trigger: finishOnboarding, isMutating } = useSWRMutation(
     '/api/users',
     async (url) => {
       const response = await fetch(url, {
@@ -32,6 +32,7 @@ export default function Onboarding() {
         body: JSON.stringify({
           ...onboardingInfo,
           userId: session?.user?.id,
+          isOnboardingCompleted: true,
         }),
       });
 
@@ -78,7 +79,7 @@ export default function Onboarding() {
 
   const handleFinishOnboarding = async () => {
     try {
-      await createUser();
+      await finishOnboarding();
       toast({
         title: 'Onboarding completado con éxito!',
         status: 'success',
