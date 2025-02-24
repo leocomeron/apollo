@@ -8,6 +8,7 @@ import { useOnboarding } from '@/context/OnboardingContext';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { Link } from '@chakra-ui/next-js';
 import { Button, Text, useBreakpointValue, useToast } from '@chakra-ui/react';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import useSWRMutation from 'swr/mutation';
@@ -15,6 +16,7 @@ import { disableNextStepButtonHandler } from '../../utils/helpers';
 
 export default function Onboarding() {
   const router = useRouter();
+  const { data: session } = useSession();
   const { step, nextStep, prevStep, onboardingInfo } = useOnboarding();
   const isMobile = useBreakpointValue({ base: true, md: false });
   const toast = useToast();
@@ -23,11 +25,14 @@ export default function Onboarding() {
     '/api/users',
     async (url) => {
       const response = await fetch(url, {
-        method: 'POST',
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(onboardingInfo),
+        body: JSON.stringify({
+          ...onboardingInfo,
+          userId: session?.user?.id,
+        }),
       });
 
       const data = await response.json();
@@ -75,7 +80,7 @@ export default function Onboarding() {
     try {
       await createUser();
       toast({
-        title: 'Usuario creado con éxito',
+        title: 'Onboarding completado con éxito!',
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -95,7 +100,7 @@ export default function Onboarding() {
       });
     }
   };
-
+  console.log(onboardingInfo);
   return (
     <>
       <main className="flex flex-col items-center justify-between p-6">

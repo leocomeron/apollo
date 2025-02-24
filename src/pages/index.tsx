@@ -1,4 +1,3 @@
-import Menu from '@/components/Menu';
 import WorkerCard from '@/components/WorkerCard';
 import fetcher from '@/lib/fetcher';
 import { Category } from '@/types/onboarding';
@@ -65,8 +64,6 @@ export default function Home({ initialWorkers, initialCategories }: HomeProps) {
     },
   );
 
-  if (!workers || !categories) return <div>Cargando...</div>;
-
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
@@ -79,7 +76,7 @@ export default function Home({ initialWorkers, initialCategories }: HomeProps) {
     );
   };
 
-  const filteredWorkers = workers.filter((worker) => {
+  const filteredWorkers = workers?.filter((worker) => {
     const searchLower = searchTerm.toLowerCase();
     const matchesSearchTerm =
       worker.firstName.toLowerCase().includes(searchLower) ||
@@ -103,7 +100,6 @@ export default function Home({ initialWorkers, initialCategories }: HomeProps) {
         'items-center justify-items-center p-2 pb-20 gap-8 sm:p-20 font-[family-name:var(--font-geist-sans)]'
       }
     >
-      <Menu />
       <Box width="100%" maxW="600px" m={4}>
         <Input
           placeholder="Busca tu profesional..."
@@ -112,7 +108,7 @@ export default function Home({ initialWorkers, initialCategories }: HomeProps) {
         />
       </Box>
       <Wrap spacing={2} mb={4}>
-        {categories.map((category) => (
+        {categories?.map((category) => (
           <WrapItem key={category.value}>
             <Tag
               size="lg"
@@ -143,7 +139,7 @@ export default function Home({ initialWorkers, initialCategories }: HomeProps) {
         }}
         gap={4}
       >
-        {filteredWorkers.map((worker) => (
+        {filteredWorkers?.map((worker) => (
           <WorkerCard
             key={worker._id}
             profilePicture={getProfilePictureUrl(worker)}

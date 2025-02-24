@@ -13,7 +13,6 @@ const onboardingInitialState: OnboardingInfo = {
   isWorker: undefined,
   categories: [],
   contact: {
-    email: '',
     phone: '',
     location: '',
   },

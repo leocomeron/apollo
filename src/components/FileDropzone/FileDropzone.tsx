@@ -76,12 +76,29 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
         url: cloudinaryUrl,
       };
 
-      setOnboardingInfo((prevState) => ({
-        ...prevState,
-        documents: Array.isArray(prevState.documents)
-          ? [...prevState.documents, newDocument]
-          : [newDocument],
-      }));
+      setOnboardingInfo((prevState) => {
+        const documents = Array.isArray(prevState.documents)
+          ? prevState.documents
+          : [];
+
+        const existingDocIndex = documents.findIndex(
+          (doc) => doc.type === documentType,
+        );
+
+        if (existingDocIndex !== -1) {
+          const updatedDocuments = [...documents];
+          updatedDocuments[existingDocIndex] = newDocument;
+          return {
+            ...prevState,
+            documents: updatedDocuments,
+          };
+        } else {
+          return {
+            ...prevState,
+            documents: [...documents, newDocument],
+          };
+        }
+      });
     } catch (error) {
       alert('Error al subir el archivo');
       console.error(error);

@@ -9,7 +9,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <Box>
+    <Box m={4}>
       <Menu />
       <Box pt={16} px={8}>
         {children}

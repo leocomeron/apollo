@@ -22,7 +22,7 @@ const OnboardingThirdStep: React.FC = () => {
     const { id, value } = e.target;
 
     setOnboardingInfo((prevState) => {
-      if (id === 'email' || id === 'phone') {
+      if (id === 'phone') {
         return {
           ...prevState,
           contact: {
@@ -71,17 +71,6 @@ const OnboardingThirdStep: React.FC = () => {
               type="text"
               // placeholder="Apellido"
               value={lastName}
-              onChange={handleInputChange}
-            />
-          </FormControl>
-
-          {/* Email */}
-          <FormControl id="email" isRequired>
-            <CustomFormLabel>Email</CustomFormLabel>
-            <CustomInput
-              type="email"
-              // placeholder="Email"
-              value={contact.email}
               onChange={handleInputChange}
             />
           </FormControl>

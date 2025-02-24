@@ -21,5 +21,6 @@ export interface User {
   contact: Contact;
   isVerified: boolean;
   isWorker: boolean;
+  isOnboardingCompleted: boolean;
   documents: Document[];
 }

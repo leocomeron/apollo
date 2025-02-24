@@ -4,9 +4,44 @@ import ProfileDescription from '@/components/profile/ProfileDescription';
 import ReviewRating from '@/components/profile/ReviewRating';
 import WorkPortfolio from '@/components/profile/WorkPortfolio';
 import { reviewsMock } from '@/mocks/reviews';
-import { Box, Divider, Grid, GridItem, Text, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Center,
+  Divider,
+  Grid,
+  GridItem,
+  Spinner,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 const Profile = () => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!session) {
+      void router.push('/auth/signin');
+    }
+  }, [session, router]);
+
+  const user = session?.user;
+
+  if (status === 'loading') {
+    return (
+      <Center h="100vh">
+        <Spinner size="xl" />
+      </Center>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <Grid templateColumns={{ base: '1fr', md: '1fr 4fr' }} gap={6} p={6}>
       {/* Left Column - 1/3 of the screen */}
@@ -14,8 +49,11 @@ const Profile = () => {
       <GridItem mt={{ base: 0, lg: 10 }}>
         <VStack spacing={5} align="stretch">
           <ProfileDescription
-            imageUrl="https://img.freepik.com/fotos-premium/trabajador-construccion-casco-amarillo_58409-13665.jpg"
-            name="Juan Valdéz"
+            imageUrl={
+              user.image ||
+              'https://img.freepik.com/fotos-premium/trabajador-construccion-casco-amarillo_58409-13665.jpg'
+            }
+            name={user.firstName + ' ' + user.lastName || 'Juan Valdéz'}
             activities={['masonry', 'electricity', 'plumbing']}
             description=""
             isVerified
@@ -23,7 +61,7 @@ const Profile = () => {
           <ReviewRating reviews={reviewsMock} />
           <ContactDetails
             initialPhoneNumber="+542465178311"
-            email="juan-valdez@gmail.com"
+            email={user.email || 'juan-valdez@gmail.com'}
           />
         </VStack>
       </GridItem>

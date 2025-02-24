@@ -1,4 +1,5 @@
 import clientPromise from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 interface UserFilter {
@@ -43,8 +44,40 @@ export default async function handler(
       }
       break;
 
+    case 'PATCH':
+      try {
+        const { userId, ...updateData } = req.body;
+
+        if (!userId) {
+          return res.status(400).json({ message: 'User ID is required' });
+        }
+
+        const result = await db.collection('users').updateOne(
+          { _id: new ObjectId(userId) },
+          {
+            $set: {
+              ...updateData,
+              updatedAt: new Date(),
+            },
+          },
+        );
+
+        if (result.matchedCount === 0) {
+          return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'User updated successfully' });
+      } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).json({
+          message: 'Error updating user',
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
+      }
+      break;
+
     default:
-      res.setHeader('Allow', ['GET', 'POST']);
+      res.setHeader('Allow', ['GET', 'POST', 'PATCH']);
       res.status(405).end(`Method ${req.method} not allowed.`);
   }
 }
