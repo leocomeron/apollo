@@ -1,27 +1,18 @@
 import { useOnboarding } from '@/context/OnboardingContext';
 import { Document, DocumentType } from '@/types/onboarding';
-import { CheckIcon, ExternalLinkIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  Icon,
-  Link,
-  Text,
-  useBreakpointValue,
-  VStack,
-} from '@chakra-ui/react';
+import { CheckIcon } from '@chakra-ui/icons';
+import { Box, Icon, Text, useBreakpointValue, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 export interface FileDropzoneProps {
   text?: string;
-  link?: string;
   documentType: DocumentType;
   displayCheckIcon?: boolean;
 }
 
 const FileDropzone: React.FC<FileDropzoneProps> = ({
   text = 'Arrastra y suelta algunos archivos aquí, o haz clic para seleccionar archivos',
-  link,
   documentType,
   displayCheckIcon,
 }) => {
@@ -146,19 +137,6 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
             <Text color="white" fontSize={{ base: 'small', md: 'medium' }}>
               {isUploading ? 'Subiendo...' : text}
             </Text>
-            {link && (
-              <Link
-                href={link}
-                isExternal
-                ml={2}
-                color="black"
-                display="flex"
-                alignItems="center"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Icon as={ExternalLinkIcon} ml={1} />
-              </Link>
-            )}
           </Box>
           {selectedFile && displayCheckIcon && (
             <Icon

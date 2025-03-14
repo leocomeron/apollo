@@ -42,7 +42,6 @@ const OnboardingFourthStep: React.FC = () => {
       />
       <FileDropzone
         text="Certificado de antecedentes"
-        link="https://www.argentina.gob.ar/servicio/solicitar-certificado-de-antecedentes-penales-con-clave-fiscal"
         documentType={DocumentType.BackgroundVerification}
         displayCheckIcon
       />
