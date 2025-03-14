@@ -144,7 +144,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
               color="green.400"
               position="absolute"
               right={isMobile ? -6 : -35}
-              top={isMobile ? 1 : 4}
+              top={isMobile ? 1 : 0}
               boxSize={isMobile ? 4 : 7}
             />
           )}
