@@ -23,10 +23,10 @@ const Profile = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!session) {
+    if (status === 'unauthenticated') {
       void router.push('/login');
     }
-  }, [session, router]);
+  }, [status, router]);
 
   const user = session?.user;
 
