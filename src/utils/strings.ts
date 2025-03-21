@@ -10,3 +10,13 @@ export const getProfessionLabel = (professions: string[]) => {
 
   return labels.join(', ');
 };
+
+export const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+export const isValidPassword = (password: string): boolean => {
+  const passwordRegex = /^(?=.*[a-zA-Z]).{8,}$/;
+  return passwordRegex.test(password);
+};

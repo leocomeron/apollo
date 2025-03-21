@@ -1,3 +1,4 @@
+import { isValidEmail, isValidPassword } from '@/utils/strings';
 import {
   Box,
   Button,
@@ -16,12 +17,13 @@ import { useState } from 'react';
 const AuthForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [isSignup, setIsSignup] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const toast = useToast();
-  const { data: session, status } = useSession();
-
-  console.log('session:', session);
+  const { status } = useSession();
 
   if (status === 'loading') {
     return (
@@ -31,30 +33,75 @@ const AuthForm = () => {
     );
   }
 
+  const validateForm = (email: string, password: string): boolean => {
+    let isValid = true;
+
+    if (!email) {
+      setEmailError('El email es requerido');
+      isValid = false;
+    } else if (!isValidEmail(email)) {
+      setEmailError('Ingrese un email válido');
+      isValid = false;
+    } else {
+      setEmailError('');
+    }
+
+    if (!password) {
+      setPasswordError('La contraseña es requerida');
+      isValid = false;
+    } else if (isSignup && !isValidPassword(password)) {
+      setPasswordError(
+        'La contraseña debe tener al menos 8 caracteres y una letra',
+      );
+      isValid = false;
+    } else {
+      setPasswordError('');
+    }
+
+    return isValid;
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isSignup) {
-      const res = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+    if (!validateForm(email, password)) {
+      return;
+    }
 
-      if (res.ok) {
-        const signInResult = await signIn('credentials', {
-          redirect: false,
-          email,
-          password,
+    setIsLoading(true);
+
+    try {
+      if (isSignup) {
+        const res = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
         });
 
-        if (signInResult?.ok) {
-          void router.push('/onboarding');
+        if (res.ok) {
+          const signInResult = await signIn('credentials', {
+            redirect: false,
+            email,
+            password,
+          });
+
+          if (signInResult?.ok) {
+            void router.push('/onboarding');
+          } else {
+            toast({
+              title: 'Error al iniciar sesión',
+              description:
+                'Se creó la cuenta pero hubo un error al iniciar sesión',
+              status: 'error',
+              duration: 3000,
+              isClosable: true,
+              position: 'top',
+            });
+          }
         } else {
           toast({
-            title: 'Error al iniciar sesión',
-            description:
-              'Se creó la cuenta pero hubo un error al iniciar sesión',
+            title: 'Error al registrarse',
+            description: 'Por favor, intente nuevamente',
             status: 'error',
             duration: 3000,
             isClosable: true,
@@ -62,82 +109,129 @@ const AuthForm = () => {
           });
         }
       } else {
-        toast({
-          title: 'Error al registrarse',
-          description: 'Por favor, intente nuevamente',
-          status: 'error',
-          duration: 3000,
-          isClosable: true,
-          position: 'top',
+        const result = await signIn('credentials', {
+          redirect: false,
+          email,
+          password,
         });
-      }
-    } else {
-      const result = await signIn('credentials', {
-        redirect: false,
-        email,
-        password,
-      });
 
-      if (result?.ok) {
-        void router.push('/onboarding');
-      } else {
-        toast({
-          title: 'Error al iniciar sesión',
-          description: 'Email o contraseña inválidos',
-          status: 'error',
-          duration: 3000,
-          isClosable: true,
-          position: 'top',
-        });
+        if (result?.ok) {
+          void router.push('/onboarding');
+        } else {
+          toast({
+            title: 'Error al iniciar sesión',
+            description: 'Email o contraseña inválidos',
+            status: 'error',
+            duration: 3000,
+            isClosable: true,
+            position: 'top',
+          });
+        }
       }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+
+    if (!value) {
+      setEmailError('El email es requerido');
+    } else if (!isValidEmail(value)) {
+      setEmailError('Ingrese un email válido');
+    } else {
+      setEmailError('');
+    }
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPassword(value);
+
+    if (!value) {
+      setPasswordError('La contraseña es requerida');
+    } else if (isSignup && !isValidPassword(value)) {
+      setPasswordError(
+        'La contraseña debe tener al menos 8 caracteres y una letra',
+      );
+    } else {
+      setPasswordError('');
     }
   };
 
   return (
-    <Center minH="100vh" p={6}>
+    <Center minH="100vh" p={{ base: 4, md: 6 }}>
       <Box
-        w={{ base: '90%', md: '400px' }}
-        p={8}
+        w={{ base: '100%', md: '400px' }}
+        p={{ base: 5, md: 8 }}
         borderRadius="lg"
         boxShadow="lg"
       >
-        <VStack spacing={4}>
-          <Text fontSize="2xl" fontWeight="bold" mb={2}>
+        <VStack spacing={{ base: 3, md: 4 }}>
+          <Text fontSize="2xl" fontWeight="bold" mb={{ base: 1, md: 2 }}>
             {isSignup ? 'Crear Cuenta' : 'Inicia sesión'}
           </Text>
 
           <form onSubmit={handleAuth} style={{ width: '100%' }}>
-            <VStack spacing={4} width="100%">
-              <FormControl>
+            <VStack spacing={{ base: 3, md: 4 }} width="100%">
+              <FormControl isInvalid={!!emailError}>
                 <Input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={handleEmailChange}
                   placeholder="Correo electrónico"
                   size="lg"
+                  h={{ base: '50px', md: '52px' }}
+                  fontSize={{ base: 'md', md: 'md' }}
                 />
+                {emailError && (
+                  <Text color="red.500" fontSize="sm" mt={1}>
+                    {emailError}
+                  </Text>
+                )}
               </FormControl>
-              <FormControl>
+              <FormControl isInvalid={!!passwordError}>
                 <Input
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handlePasswordChange}
                   placeholder="Contraseña"
                   size="lg"
+                  h={{ base: '50px', md: '52px' }}
+                  fontSize={{ base: 'md', md: 'md' }}
                 />
+                {passwordError && (
+                  <Text color="red.500" fontSize="sm" mt={1}>
+                    {passwordError}
+                  </Text>
+                )}
               </FormControl>
-              <Button type="submit" colorScheme="orange" width="100%" size="lg">
+              <Button
+                type="submit"
+                colorScheme="orange"
+                width="100%"
+                size="lg"
+                h={{ base: '50px', md: '52px' }}
+                isLoading={isLoading}
+                loadingText={
+                  isSignup ? 'Registrando...' : 'Iniciando sesión...'
+                }
+              >
                 {isSignup ? 'Registrarse' : 'Iniciar Sesión'}
               </Button>
             </VStack>
           </form>
 
-          <Divider my={4} />
+          <Divider my={{ base: 3, md: 4 }} />
 
           <Button
             variant="ghost"
             onClick={() => setIsSignup(!isSignup)}
             width="100%"
+            size={{ base: 'sm', md: 'lg' }}
+            h={{ base: '45px', md: '52px' }}
           >
             {isSignup
               ? '¿Ya tienes una cuenta? Inicia sesión'
@@ -147,6 +241,8 @@ const AuthForm = () => {
           <Button
             onClick={() => signIn('google')}
             width="100%"
+            size={{ base: 'sm', md: 'lg' }}
+            h={{ base: '45px', md: '52px' }}
             leftIcon={<Text>🌐</Text>}
           >
             Iniciar sesión con Google
