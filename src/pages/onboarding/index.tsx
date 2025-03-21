@@ -7,16 +7,24 @@ import { categories } from '@/constants';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { Link } from '@chakra-ui/next-js';
-import { Button, Text, useBreakpointValue, useToast } from '@chakra-ui/react';
+import {
+  Button,
+  Center,
+  Spinner,
+  Text,
+  useBreakpointValue,
+  useToast,
+} from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import useSWRMutation from 'swr/mutation';
 import { disableNextStepButtonHandler } from '../../utils/helpers';
 
 export default function Onboarding() {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { step, nextStep, prevStep, onboardingInfo } = useOnboarding();
   const isMobile = useBreakpointValue({ base: true, md: false });
   const toast = useToast();
@@ -45,6 +53,32 @@ export default function Onboarding() {
       return data;
     },
   );
+
+  useEffect(() => {
+    if (status === 'loading') return;
+
+    if (!session) {
+      void router.push('/login');
+      return;
+    }
+
+    if (session.user?.isOnboardingCompleted) {
+      void router.push('/profile');
+      return;
+    }
+  }, [session, status, router]);
+
+  if (status === 'loading') {
+    return (
+      <Center h="100vh">
+        <Spinner size="xl" />
+      </Center>
+    );
+  }
+
+  if (!session || session.user?.isOnboardingCompleted) {
+    return null;
+  }
 
   const renderStep = () => {
     switch (step) {
@@ -101,7 +135,7 @@ export default function Onboarding() {
       });
     }
   };
-  console.log(onboardingInfo);
+
   return (
     <>
       <main className="flex flex-col items-center justify-between p-6">

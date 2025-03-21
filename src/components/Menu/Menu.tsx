@@ -26,7 +26,7 @@ export default function Menu() {
     await router.push(path);
     onClose();
   };
-  console.log('session', session);
+
   const handleLogout = async () => {
     try {
       await signOut({
@@ -72,12 +72,19 @@ export default function Menu() {
 
           <DrawerBody>
             <VStack spacing={4} align="start" height="100%">
-              <Button variant="ghost" onClick={() => navigateTo('/profile')}>
-                Mi Perfil
-              </Button>
-              <Button variant="ghost" onClick={() => navigateTo('/onboarding')}>
-                Onboarding
-              </Button>
+              {session?.user && (
+                <Button variant="ghost" onClick={() => navigateTo('/profile')}>
+                  Mi Perfil
+                </Button>
+              )}
+              {session?.user && !session.user.isOnboardingCompleted && (
+                <Button
+                  variant="ghost"
+                  onClick={() => navigateTo('/onboarding')}
+                >
+                  Onboarding
+                </Button>
+              )}
               <Button variant="ghost" onClick={() => navigateTo('/')}>
                 Home
               </Button>

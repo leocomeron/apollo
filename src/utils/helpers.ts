@@ -20,7 +20,7 @@ export const disableNextStepButtonHandler = (
       document.type !== DocumentType.BackgroundVerification && document.file,
   );
   const disableDocumentsStep = mandatoryDocuments.length !== 3;
-  console.log(mandatoryDocuments);
+
   switch (currentStep) {
     case 1:
       return isWorker === undefined;
