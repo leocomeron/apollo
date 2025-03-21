@@ -53,8 +53,8 @@ const Profile = () => {
               user.image ||
               'https://img.freepik.com/fotos-premium/trabajador-construccion-casco-amarillo_58409-13665.jpg'
             }
-            name={user.firstName + ' ' + user.lastName || 'Juan Valdéz'}
-            activities={['masonry', 'electricity', 'plumbing']}
+            name={user.firstName + ' ' + user.lastName}
+            categories={user.categories}
             description=""
             isVerified
           />

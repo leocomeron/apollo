@@ -1,12 +1,12 @@
 import { Badge, Box, Image, Text, Tooltip, VStack } from '@chakra-ui/react';
 import React from 'react';
-import Activities from './Activities';
+import Categories from './Categories';
 import DescriptionText from './DescriptionText';
 
 interface ProfileDescriptionProps {
   imageUrl: string;
   name: string;
-  activities: string[];
+  categories: string[] | undefined;
   description: string;
   isVerified?: boolean;
 }
@@ -14,7 +14,7 @@ interface ProfileDescriptionProps {
 const ProfileDescription: React.FC<ProfileDescriptionProps> = ({
   imageUrl,
   name,
-  activities,
+  categories,
   description,
   isVerified,
 }) => {
@@ -58,7 +58,7 @@ const ProfileDescription: React.FC<ProfileDescriptionProps> = ({
       </Text>
 
       {/* Actividad o actividades */}
-      <Activities initialActivities={activities} />
+      <Categories initialCategories={categories} />
 
       {/* Descripción con ícono de lápiz */}
       <DescriptionText initialDescription={description} />

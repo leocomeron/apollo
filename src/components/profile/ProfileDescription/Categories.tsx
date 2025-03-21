@@ -1,4 +1,3 @@
-import { categories } from '@/constants';
 import { getCategoryLabels } from '@/utils/array';
 import { EditIcon } from '@chakra-ui/icons';
 import {
@@ -19,32 +18,34 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 
-interface ActivitiesProps {
-  initialActivities: string[];
+interface CategoriesProps {
+  initialCategories: string[] | undefined;
 }
 
-const Activities: React.FC<ActivitiesProps> = ({ initialActivities }) => {
-  const [activities, setActivities] = useState<string[]>(initialActivities);
+const Categories: React.FC<CategoriesProps> = ({ initialCategories }) => {
+  const [categories, setCategories] = useState<string[]>(
+    initialCategories || [],
+  );
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleActivityChange = (newActivities: string[]) => {
-    setActivities(newActivities);
+  const handleCategoryChange = (newCategories: string[]) => {
+    setCategories(newCategories);
   };
 
-  const saveActivities = () => {
-    setActivities(activities);
+  const saveCategories = () => {
+    setCategories(categories);
     onClose();
   };
 
-  const activitiesLabels = getCategoryLabels(activities);
+  const categoriesLabels = getCategoryLabels(categories);
 
   return (
     <Box position="relative" w="100%" textAlign="center">
       <Box display="flex" justifyContent="center" alignItems="center">
         <Text fontSize="small" fontWeight="bold">
-          {activitiesLabels.length > 0
-            ? activitiesLabels.join(', ')
-            : 'Selecciona tus actividades...'}
+          {categoriesLabels.length > 0
+            ? categoriesLabels.join(', ')
+            : 'Selecciona tus categorías...'}
         </Text>
         <EditIcon onClick={onOpen} cursor="pointer" ml={2} boxSize={3} />
       </Box>
@@ -57,22 +58,22 @@ const Activities: React.FC<ActivitiesProps> = ({ initialActivities }) => {
           <ModalCloseButton />
           <ModalBody>
             <CheckboxGroup
-              value={activities}
-              onChange={(newActivities) =>
-                handleActivityChange(newActivities as string[])
+              value={categories}
+              onChange={(newCategories) =>
+                handleCategoryChange(newCategories as string[])
               }
             >
               <VStack align="start">
                 {categories.map((category) => (
-                  <Checkbox key={category.value} value={category.value}>
-                    {category.label}
+                  <Checkbox key={category} value={category}>
+                    {category}
                   </Checkbox>
                 ))}
               </VStack>
             </CheckboxGroup>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" onClick={saveActivities}>
+            <Button colorScheme="blue" onClick={saveCategories}>
               Guardar
             </Button>
           </ModalFooter>
@@ -82,4 +83,4 @@ const Activities: React.FC<ActivitiesProps> = ({ initialActivities }) => {
   );
 };
 
-export default Activities;
+export default Categories;
