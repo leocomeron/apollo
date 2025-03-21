@@ -60,7 +60,7 @@ const Profile = () => {
           />
           <ReviewRating reviews={reviewsMock} />
           <ContactDetails
-            initialPhoneNumber="+542465178311"
+            initialPhoneNumber={user.contact?.phone}
             email={user.email || 'juan-valdez@gmail.com'}
           />
         </VStack>

@@ -18,7 +18,7 @@ import {
 import { useState } from 'react';
 
 interface ContactDetailsProps {
-  initialPhoneNumber: string;
+  initialPhoneNumber: string | undefined;
   email: string;
 }
 
@@ -26,7 +26,9 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({
   initialPhoneNumber,
   email,
 }) => {
-  const [phoneNumber, setPhoneNumber] = useState<string>(initialPhoneNumber);
+  const [phoneNumber, setPhoneNumber] = useState<string>(
+    initialPhoneNumber || 'Sin número',
+  );
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleSavePhoneNumber = () => {
