@@ -162,7 +162,7 @@ const AuthForm = () => {
   };
 
   return (
-    <Center minH="100vh" p={{ base: 4, md: 6 }}>
+    <Center p={{ base: 4, md: 6 }}>
       <Box
         w={{ base: '100%', md: '400px' }}
         p={{ base: 5, md: 8 }}
