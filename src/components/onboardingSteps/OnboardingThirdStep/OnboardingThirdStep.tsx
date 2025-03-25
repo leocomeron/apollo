@@ -69,7 +69,6 @@ const OnboardingThirdStep: React.FC = () => {
             <CustomFormLabel>Apellido</CustomFormLabel>
             <CustomInput
               type="text"
-              // placeholder="Apellido"
               value={lastName}
               onChange={handleInputChange}
             />
@@ -80,7 +79,6 @@ const OnboardingThirdStep: React.FC = () => {
             <CustomFormLabel>Teléfono</CustomFormLabel>
             <CustomInput
               type="number"
-              // placeholder="Teléfono"
               value={contact.phone}
               onChange={handleInputChange}
             />

@@ -7,7 +7,7 @@ interface ProfileDescriptionProps {
   imageUrl: string;
   name: string;
   categories: string[] | undefined;
-  description: string;
+  description: string | undefined;
   isVerified?: boolean;
 }
 

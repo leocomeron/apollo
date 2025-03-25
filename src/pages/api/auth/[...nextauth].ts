@@ -90,6 +90,7 @@ export default NextAuth({
           categories: dbUser.categories || [],
           contact: dbUser.contact || null,
           birthDate: dbUser.birthDate || null,
+          description: dbUser.description || null,
           documents: dbUser.documents || [],
         };
       }

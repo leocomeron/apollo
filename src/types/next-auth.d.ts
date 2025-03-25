@@ -10,7 +10,8 @@ declare module 'next-auth' {
     isVerified?: boolean;
     isWorker?: boolean;
     isOnboardingCompleted?: boolean;
-    profilePicture?: string | null;
+    description?: string;
+    profilePicture?: string;
     createdAt?: Date;
     categories?: string[];
     contact?: {
@@ -33,6 +34,7 @@ declare module 'next-auth' {
       isVerified?: boolean;
       isWorker?: boolean;
       isOnboardingCompleted?: boolean;
+      description?: string | null;
       profilePicture?: string | null;
       createdAt?: Date;
       categories?: string[];

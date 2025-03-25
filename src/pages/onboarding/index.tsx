@@ -24,7 +24,7 @@ import { disableNextStepButtonHandler } from '../../utils/helpers';
 
 export default function Onboarding() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session, status, update: updateSession } = useSession();
   const { step, nextStep, prevStep, onboardingInfo } = useOnboarding();
   const isMobile = useBreakpointValue({ base: true, md: false });
   const toast = useToast();
@@ -49,7 +49,7 @@ export default function Onboarding() {
       if (!response.ok) {
         throw new Error(data.message || 'Failed to create user');
       }
-
+      await updateSession();
       return data;
     },
   );
@@ -114,13 +114,14 @@ export default function Onboarding() {
   const handleFinishOnboarding = async () => {
     try {
       await finishOnboarding();
+
       toast({
         title: 'Onboarding completado con éxito!',
         status: 'success',
         duration: 3000,
         isClosable: true,
       });
-      await router.push('/profile'); // Should take the user to the id of the user created
+      await router.push('/profile');
     } catch (error) {
       console.error('Error creating user:', error);
       toast({

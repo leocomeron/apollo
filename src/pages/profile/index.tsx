@@ -55,8 +55,8 @@ const Profile = () => {
             }
             name={user.firstName + ' ' + user.lastName}
             categories={user.categories}
-            description=""
-            isVerified
+            description={user.description}
+            isVerified={user.isVerified}
           />
           <ReviewRating reviews={reviewsMock} />
           <ContactDetails
