@@ -4,6 +4,7 @@ import ProfileDescription from '@/components/profile/ProfileDescription';
 import ReviewRating from '@/components/profile/ReviewRating';
 import WorkPortfolio from '@/components/profile/WorkPortfolio';
 import { reviewsMock } from '@/mocks/reviews';
+import { DocumentType } from '@/types/onboarding';
 import {
   Box,
   Center,
@@ -50,7 +51,9 @@ const Profile = () => {
         <VStack spacing={5} align="stretch">
           <ProfileDescription
             imageUrl={
-              user.image ||
+              user.documents?.find(
+                (document) => document.type === DocumentType.ProfilePicture,
+              )?.url ||
               'https://img.freepik.com/fotos-premium/trabajador-construccion-casco-amarillo_58409-13665.jpg'
             }
             name={user.firstName + ' ' + user.lastName}
