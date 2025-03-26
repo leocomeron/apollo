@@ -1,4 +1,6 @@
 import clientPromise from '@/lib/mongodb';
+import { Document } from '@/types/next-auth';
+import { DocumentType } from '@/types/onboarding';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -55,7 +57,7 @@ export default async function handler(
             );
 
             const profilePicture = reviewer?.documents?.find(
-              (doc: any) => doc.type === 'profilePicture',
+              (doc: Document) => doc.type === DocumentType.ProfilePicture,
             )?.url;
 
             return {

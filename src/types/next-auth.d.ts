@@ -1,6 +1,11 @@
 import 'next-auth';
 import { DocumentType } from './onboarding';
 
+export interface Document {
+  type: DocumentType;
+  url: string;
+}
+
 declare module 'next-auth' {
   interface User {
     id: string;
@@ -19,10 +24,7 @@ declare module 'next-auth' {
       location: string;
     } | null;
     birthDate?: string | null;
-    documents?: Array<{
-      type: DocumentType;
-      url: string;
-    }>;
+    documents?: Document[];
   }
 
   interface Session {
@@ -43,10 +45,7 @@ declare module 'next-auth' {
         location: string;
       } | null;
       birthDate?: string | null;
-      documents?: Array<{
-        type: DocumentType;
-        url: string;
-      }>;
+      documents?: Document[];
     };
   }
 }
