@@ -48,19 +48,30 @@ export default async function handler(
                 projection: {
                   firstName: 1,
                   lastName: 1,
-                  profilePicture: 1,
+                  documents: 1,
                   isVerified: 1,
                 },
               },
             );
 
+            const profilePicture = reviewer?.documents?.find(
+              (doc: any) => doc.type === 'profilePicture',
+            )?.url;
+
             return {
               ...review,
-              reviewer: reviewer || {
-                firstName: 'Usuario',
-                lastName: 'Anónimo',
-                isVerified: false,
-              },
+              reviewer: reviewer
+                ? {
+                    firstName: reviewer.firstName,
+                    lastName: reviewer.lastName,
+                    profilePicture,
+                    isVerified: reviewer.isVerified,
+                  }
+                : {
+                    firstName: 'Usuario',
+                    lastName: 'Anónimo',
+                    isVerified: false,
+                  },
             } as ReviewDocument;
           }),
         );

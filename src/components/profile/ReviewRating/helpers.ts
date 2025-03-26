@@ -1,4 +1,4 @@
-import { Review } from './ReviewRating';
+import { Review } from '@/types/review';
 
 /**
  * Calculates review statistics including the average rating, total number of reviews,
