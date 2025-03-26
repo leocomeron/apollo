@@ -1,27 +1,26 @@
 import StarIcon from '@/components/icons/StarIcon';
 import { HStack, Progress, Text, VStack } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
-import { getReviewDetails } from './helpers';
-
-export interface Review {
-  userName: string;
-  userAvatarUrl: string;
-  isVerified: boolean;
-  date: string;
-  imageUrl?: string;
-  score: number;
-  comment?: string;
-}
 
 interface ReviewRatingProps {
-  reviews: Review[];
+  reviewStats: {
+    totalReviews: number;
+    averageRating: number;
+    breakdown: Array<{ score: number; count: number }>;
+  };
 }
 
-const ReviewRating: React.FC<ReviewRatingProps> = ({ reviews }) => {
-  const { rating, totalReviews, breakdown } = useMemo(
-    () => getReviewDetails(reviews),
-    [reviews],
-  );
+const ReviewRating: React.FC<ReviewRatingProps> = ({ reviewStats }) => {
+  const { rating, totalReviews, breakdown } = useMemo(() => {
+    return {
+      rating: reviewStats.averageRating,
+      totalReviews: reviewStats.totalReviews,
+      breakdown: reviewStats.breakdown.map((item) => ({
+        stars: item.score,
+        reviews: item.count,
+      })),
+    };
+  }, [reviewStats]);
 
   const getProgressValue = (reviews: number) => {
     return totalReviews > 0 ? (reviews / totalReviews) * 100 : 0;
@@ -71,4 +70,5 @@ const ReviewRating: React.FC<ReviewRatingProps> = ({ reviews }) => {
     </HStack>
   );
 };
+
 export default ReviewRating;

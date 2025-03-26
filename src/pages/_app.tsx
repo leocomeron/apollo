@@ -12,7 +12,11 @@ export default function App({
   pageProps: { session, ...pageProps },
 }: AppProps) {
   return (
-    <SessionProvider session={session}>
+    <SessionProvider
+      session={session}
+      refetchOnWindowFocus={false}
+      refetchInterval={0}
+    >
       <ChakraProvider theme={theme}>
         <Head>
           <title>Manos a la obra</title>

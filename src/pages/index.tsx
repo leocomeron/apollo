@@ -52,7 +52,6 @@ export default function Home({ initialWorkers, initialCategories }: HomeProps) {
     {
       fallbackData: initialWorkers,
       revalidateOnMount: false,
-      refreshInterval: 30000,
     },
   );
   const { data: categories } = useSWR<Category[]>(

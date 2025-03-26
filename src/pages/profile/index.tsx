@@ -1,12 +1,11 @@
 import ContactDetails from '@/components/profile/ContactDetails/ContactDetails';
-import DetailedReview from '@/components/profile/DetailedReview';
+import DetailedReviewSection from '@/components/profile/DetailedReviewSection/DetailedReviewSection';
 import ProfileDescription from '@/components/profile/ProfileDescription';
-import ReviewRating from '@/components/profile/ReviewRating';
+import ReviewRating from '@/components/profile/ReviewRating/ReviewRating';
 import WorkPortfolio from '@/components/profile/WorkPortfolio';
-import { reviewsMock } from '@/mocks/reviews';
+import { useUserReviews } from '@/hooks/useUserReviews';
 import { DocumentType } from '@/types/onboarding';
 import {
-  Box,
   Center,
   Divider,
   Grid,
@@ -22,6 +21,11 @@ import { useEffect } from 'react';
 const Profile = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const {
+    reviews,
+    reviewStats,
+    isLoading: isLoadingReviews,
+  } = useUserReviews(session?.user?.id);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -61,7 +65,7 @@ const Profile = () => {
             description={user.description}
             isVerified={user.isVerified}
           />
-          <ReviewRating reviews={reviewsMock} />
+          <ReviewRating reviewStats={reviewStats} />
           <ContactDetails
             initialPhoneNumber={user.contact?.phone}
             email={user.email || 'juan-valdez@gmail.com'}
@@ -93,11 +97,10 @@ const Profile = () => {
           <Text fontSize="xl" mb={1}>
             Opiniones de contrataciones
           </Text>
-          {reviewsMock.map((review, index) => (
-            <Box key={index}>
-              <DetailedReview review={review} />
-            </Box>
-          ))}
+          <DetailedReviewSection
+            reviews={reviews}
+            isLoading={isLoadingReviews}
+          />
         </VStack>
       </GridItem>
     </Grid>

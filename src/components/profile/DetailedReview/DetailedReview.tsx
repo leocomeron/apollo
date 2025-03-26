@@ -1,8 +1,8 @@
 import StarIcon from '@/components/icons/StarIcon';
+import { Review } from '@/types/review';
 import { Avatar, HStack, Text, VStack } from '@chakra-ui/react';
 import Image from 'next/image';
 import React from 'react';
-import { Review } from '../ReviewRating/ReviewRating';
 import { timeAgo } from './helpers';
 
 interface DetailedReviewProps {
@@ -10,6 +10,7 @@ interface DetailedReviewProps {
 }
 
 const DetailedReview: React.FC<DetailedReviewProps> = ({ review }) => {
+  // Skip rendering if no comment
   if (!review.comment) return null;
 
   const renderStars = () => {
@@ -24,6 +25,14 @@ const DetailedReview: React.FC<DetailedReviewProps> = ({ review }) => {
     });
   };
 
+  const reviewerInfo = {
+    name: `${review.reviewer.firstName} ${review.reviewer.lastName}`,
+    avatarUrl: review.reviewer.profilePicture || '',
+    isVerified: review.reviewer.isVerified,
+  };
+
+  const formattedDate = timeAgo(new Date(review.date).toISOString());
+
   return (
     <VStack
       align="flex-start"
@@ -35,12 +44,12 @@ const DetailedReview: React.FC<DetailedReviewProps> = ({ review }) => {
     >
       {/* First section: Avatar, UserName, and Verified Status */}
       <HStack spacing={4} w="100%">
-        <Avatar size="md" src={review.userAvatarUrl} />
+        <Avatar size="md" src={reviewerInfo.avatarUrl} />
         <VStack align="flex-start" spacing={0}>
           <Text fontWeight="bold" fontSize="sm">
-            {review.userName}
+            {reviewerInfo.name}
           </Text>
-          {review.isVerified && (
+          {reviewerInfo.isVerified && (
             <Text fontSize="sm" color="brand.700">
               Perfil verificado
             </Text>
@@ -52,7 +61,7 @@ const DetailedReview: React.FC<DetailedReviewProps> = ({ review }) => {
       <HStack spacing={2}>
         <HStack spacing={1}>{renderStars()}</HStack>
         <Text fontSize="x-small" color="gray.500">
-          {timeAgo(review.date)}
+          {formattedDate}
         </Text>
       </HStack>
 
