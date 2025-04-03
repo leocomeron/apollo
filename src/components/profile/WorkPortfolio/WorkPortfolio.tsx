@@ -1,12 +1,14 @@
 import FileDropzone from '@/components/FileDropzone';
 import { CompletedJob } from '@/types/completedJob';
 import { DocumentType } from '@/types/onboarding';
-import { InfoOutlineIcon } from '@chakra-ui/icons';
+import { DeleteIcon, EditIcon, InfoOutlineIcon } from '@chakra-ui/icons';
 import {
+  AspectRatio,
   Box,
   Button,
   Flex,
   Icon,
+  IconButton,
   Image,
   Modal,
   ModalBody,
@@ -23,8 +25,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
-import { useCallback, useEffect, useState } from 'react';
-import DescriptionText from '../ProfileDescription/DescriptionText';
+import { useEffect, useState } from 'react';
 
 interface WorkPortfolioProps {
   initialJobs?: CompletedJob[];
@@ -52,7 +53,7 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({
     setIsTooltipOpen((prev) => !prev);
   };
 
-  const fetchCompletedJobs = useCallback(async () => {
+  const fetchCompletedJobs = async () => {
     if (!userId && !session?.user?.id) return;
 
     try {
@@ -79,11 +80,11 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [userId, session, toast]);
+  };
 
   useEffect(() => {
     void fetchCompletedJobs();
-  }, [userId, session, fetchCompletedJobs]);
+  }, [userId, session]);
 
   const handleImageUpload = (url: string) => {
     setPendingImageUrl(url);
@@ -222,9 +223,11 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({
 
   return (
     <>
-      <Text fontSize="xl">Trabajos realizados</Text>
+      <Text fontSize="xl" mb={4}>
+        Trabajos realizados
+      </Text>
       {isEditable && (
-        <Box display="flex" alignItems="center">
+        <Box display="flex" alignItems="center" mb={4}>
           <Box>
             <FileDropzone
               text="Añadir trabajos realizados"
@@ -250,64 +253,102 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({
           </Tooltip>
         </Box>
       )}
-      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} mb={5}>
-        {!isLoading && completedJobs.length > 0 ? (
-          completedJobs.map((job, index) => (
-            <Box key={job._id?.toString() || index} position="relative">
-              <Image
-                src={job.imageUrl}
-                alt={`Trabajo realizado ${index + 1}`}
-                borderRadius="md"
-                boxSize="100%"
-                objectFit="cover"
-                maxH={350}
-                maxW={350}
-              />
-              {job.description ? (
-                <Box
-                  onClick={() => isEditable && handleEditDescription(job)}
-                  cursor={isEditable ? 'pointer' : 'default'}
-                >
-                  <DescriptionText
-                    initialDescription={job.description}
-                    maxLength={90}
-                    justifyContent="flex-start"
+
+      {isLoading ? (
+        <Text fontSize="large" color="gray.500" textAlign="center" py={10}>
+          Cargando trabajos realizados...
+        </Text>
+      ) : completedJobs.length > 0 ? (
+        <SimpleGrid
+          columns={{ base: 1, sm: 2, md: 3 }}
+          spacing={{ base: 4, md: 6 }}
+          mb={5}
+        >
+          {completedJobs.map((job, index) => (
+            <Box
+              key={job._id?.toString() || index}
+              borderWidth="1px"
+              borderRadius="lg"
+              overflow="hidden"
+              boxShadow="sm"
+              transition="all 0.2s"
+              _hover={{ boxShadow: 'md' }}
+            >
+              <Box position="relative">
+                <AspectRatio ratio={1}>
+                  <Image
+                    src={job.imageUrl}
+                    alt={`Trabajo realizado ${index + 1}`}
+                    objectFit="cover"
+                    w="100%"
+                    h="100%"
                   />
-                </Box>
-              ) : isEditable ? (
-                <Button
-                  size="xs"
-                  mt={2}
-                  colorScheme="brand"
-                  onClick={() => handleEditDescription(job)}
-                >
-                  Añadir descripción
-                </Button>
-              ) : null}
-              {isEditable && (
-                <Button
-                  position="absolute"
-                  top="5px"
-                  right="5px"
-                  size="xs"
-                  colorScheme="red"
-                  onClick={() =>
-                    void handleDeleteJob(job._id?.toString() || '')
-                  }
-                >
-                  Eliminar
-                </Button>
-              )}
+                </AspectRatio>
+
+                {isEditable && (
+                  <Flex position="absolute" top="8px" right="8px" gap={2}>
+                    <IconButton
+                      aria-label="Editar descripción"
+                      icon={<EditIcon />}
+                      size="sm"
+                      colorScheme="brand"
+                      onClick={() => handleEditDescription(job)}
+                      borderRadius="full"
+                    />
+                    <IconButton
+                      aria-label="Eliminar trabajo"
+                      icon={<DeleteIcon />}
+                      size="sm"
+                      colorScheme="red"
+                      onClick={() =>
+                        void handleDeleteJob(job._id?.toString() || '')
+                      }
+                      borderRadius="full"
+                    />
+                  </Flex>
+                )}
+              </Box>
+
+              <Box p={3}>
+                {job.description ? (
+                  <Text fontSize="sm">{job.description}</Text>
+                ) : isEditable ? (
+                  <Button
+                    size="xs"
+                    colorScheme="brand"
+                    onClick={() => handleEditDescription(job)}
+                    width="100%"
+                  >
+                    Añadir descripción
+                  </Button>
+                ) : (
+                  <Text color="gray.400" fontSize="sm" fontStyle="italic">
+                    Sin descripción
+                  </Text>
+                )}
+              </Box>
             </Box>
-          ))
-        ) : (
+          ))}
+        </SimpleGrid>
+      ) : (
+        <Box
+          py={10}
+          textAlign="center"
+          borderWidth="1px"
+          borderRadius="lg"
+          borderStyle="dashed"
+        >
           <Text fontSize="large" color="gray.500">
-            {isLoading
-              ? 'Cargando trabajos realizados...'
-              : 'No hay trabajos realizados aún.'}
+            No hay trabajos realizados aún.
           </Text>
-        )}
-      </SimpleGrid>
+          {isEditable && (
+            <Text fontSize="sm" color="gray.400" mt={2}>
+              Añade fotos de tus trabajos para mostrar tu experiencia a los
+              clientes
+            </Text>
+          )}
+        </Box>
+      )}
 
       {/* Modal para agregar o editar descripción */}
       <Modal isOpen={isOpen} onClose={onClose}>
