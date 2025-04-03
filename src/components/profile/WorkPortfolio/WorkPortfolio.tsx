@@ -273,11 +273,6 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({
                     maxLength={90}
                     justifyContent="flex-start"
                   />
-                  {isEditable && (
-                    <Text fontSize="xs" color="brand.500" mt={1}>
-                      (Clic para editar)
-                    </Text>
-                  )}
                 </Box>
               ) : isEditable ? (
                 <Button
