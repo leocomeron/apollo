@@ -9,12 +9,14 @@ export interface FileDropzoneProps {
   text?: string;
   documentType: DocumentType;
   displayCheckIcon?: boolean;
+  onUploadComplete?: (url: string) => void;
 }
 
 const FileDropzone: React.FC<FileDropzoneProps> = ({
   text = 'Arrastra y suelta algunos archivos aquí, o haz clic para seleccionar archivos',
   documentType,
   displayCheckIcon,
+  onUploadComplete,
 }) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const { setOnboardingInfo } = useOnboarding();
@@ -60,6 +62,10 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
 
       setSelectedFile(newFile);
       const cloudinaryUrl = await uploadToCloudinary(newFile);
+
+      if (onUploadComplete) {
+        onUploadComplete(cloudinaryUrl);
+      }
 
       const newDocument: Document = {
         type: documentType,
