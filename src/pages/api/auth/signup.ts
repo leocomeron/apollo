@@ -30,6 +30,7 @@ export default async function handler(
     birthDate: null,
     location: null,
     isOnboardingCompleted: false,
+    isVerified: false,
   });
 
   res.status(201).json({ message: 'User created successfully' });
