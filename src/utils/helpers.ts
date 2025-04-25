@@ -25,11 +25,18 @@ export const disableNextStepButtonHandler = (
     case 1:
       return isWorker === undefined;
     case 2:
-      return !categories.length || !contact.location;
+      if (isWorker) {
+        return !categories.length || !contact.location;
+      }
+      return !contact.location;
     case 3:
       return !firstName || !lastName || !contact.phone || !birthDate;
     case 4:
-      return disableDocumentsStep;
+      if (isWorker) {
+        return disableDocumentsStep;
+      }
+      // For non-workers, we only need the 3 basic documents (profile picture, DNI front and back)
+      return mandatoryDocuments.length !== 3;
     default:
       return true;
   }
