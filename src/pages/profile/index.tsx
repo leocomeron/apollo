@@ -67,7 +67,7 @@ const Profile = () => {
             isVerified={user.isVerified}
             isWorker={isWorker}
           />
-          {isWorker && <ReviewRating reviewStats={reviewStats} />}
+          <ReviewRating reviewStats={reviewStats} />
           <ContactDetails
             initialPhoneNumber={user.contact?.phone}
             email={user.email || 'juan-valdez@gmail.com'}
