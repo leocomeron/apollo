@@ -34,6 +34,7 @@ const Profile = () => {
   }, [status, router]);
 
   const user = session?.user;
+  const isWorker = user?.isWorker;
 
   if (status === 'loading') {
     return (
@@ -64,8 +65,9 @@ const Profile = () => {
             categories={user.categories}
             description={user.description}
             isVerified={user.isVerified}
+            isWorker={isWorker}
           />
-          <ReviewRating reviewStats={reviewStats} />
+          {isWorker && <ReviewRating reviewStats={reviewStats} />}
           <ContactDetails
             initialPhoneNumber={user.contact?.phone}
             email={user.email || 'juan-valdez@gmail.com'}
@@ -75,8 +77,8 @@ const Profile = () => {
       {/* Right Column - 2/3 of the screen */}
       <GridItem>
         <VStack spacing={5} align="stretch" mt={{ base: 0, lg: 16 }}>
-          <WorkPortfolio initialJobs={[]} />
-          <Divider mt={5} />
+          {isWorker && <WorkPortfolio initialJobs={[]} />}
+          {isWorker && <Divider mt={5} />}
           {/* Detailed Reviews */}
           <Text fontSize="xl" mb={1}>
             Opiniones de contrataciones

@@ -22,7 +22,7 @@ const OnboardingSecondStep: React.FC<OnboardingSecondStepProps> = ({
 }) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const { onboardingInfo, setOnboardingInfo } = useOnboarding();
-  const { categories } = onboardingInfo;
+  const { categories, isWorker } = onboardingInfo;
 
   const handleCategoryClick = (value: string) => {
     if (categories.includes(value)) {
@@ -58,34 +58,38 @@ const OnboardingSecondStep: React.FC<OnboardingSecondStepProps> = ({
         priority
       />
       <Box maxWidth="600px" mx="auto">
-        <Heading textAlign="center" mb="8">
-          ¿A qué rubros te dedicas?
-        </Heading>
-        <Wrap spacing={4} justify="center">
-          {categoriesCatalog.map((category) => (
-            <WrapItem key={category.value}>
-              <Tag
-                size="lg"
-                variant="solid"
-                bgColor="brand.600"
-                cursor="pointer"
-                px={{ base: 2, md: 6 }}
-                py={{ base: 1, md: 3 }}
-                borderRadius="50px"
-                borderWidth="3px"
-                borderColor={
-                  categories.includes(category.value)
-                    ? 'brand.900'
-                    : 'transparent'
-                }
-                onClick={() => handleCategoryClick(category.value)}
-              >
-                {category.label}
-              </Tag>
-            </WrapItem>
-          ))}
-        </Wrap>
-        <Heading textAlign="center" mb="4" mt="12">
+        {isWorker && (
+          <>
+            <Heading textAlign="center" mb="8">
+              ¿A qué rubros te dedicas?
+            </Heading>
+            <Wrap spacing={4} justify="center">
+              {categoriesCatalog.map((category) => (
+                <WrapItem key={category.value}>
+                  <Tag
+                    size="lg"
+                    variant="solid"
+                    bgColor="brand.600"
+                    cursor="pointer"
+                    px={{ base: 2, md: 6 }}
+                    py={{ base: 1, md: 3 }}
+                    borderRadius="50px"
+                    borderWidth="3px"
+                    borderColor={
+                      categories.includes(category.value)
+                        ? 'brand.900'
+                        : 'transparent'
+                    }
+                    onClick={() => handleCategoryClick(category.value)}
+                  >
+                    {category.label}
+                  </Tag>
+                </WrapItem>
+              ))}
+            </Wrap>
+          </>
+        )}
+        <Heading textAlign="center" mb="4" mt={isWorker ? '12' : '0'}>
           ¿Dónde te ubicas?
         </Heading>
         <Box maxWidth="400px" mx="auto">

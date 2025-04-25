@@ -9,6 +9,7 @@ interface ProfileDescriptionProps {
   categories: string[] | undefined;
   description: string | undefined;
   isVerified?: boolean;
+  isWorker?: boolean;
 }
 
 const ProfileDescription: React.FC<ProfileDescriptionProps> = ({
@@ -17,6 +18,7 @@ const ProfileDescription: React.FC<ProfileDescriptionProps> = ({
   categories,
   description,
   isVerified,
+  isWorker = true,
 }) => {
   return (
     <VStack align="center" p={5} spacing={0}>
@@ -58,10 +60,10 @@ const ProfileDescription: React.FC<ProfileDescriptionProps> = ({
       </Text>
 
       {/* Actividad o actividades */}
-      <Categories initialCategories={categories} />
+      {isWorker && <Categories initialCategories={categories} />}
 
       {/* Descripción con ícono de lápiz */}
-      <DescriptionText initialDescription={description} />
+      {isWorker && <DescriptionText initialDescription={description} />}
     </VStack>
   );
 };

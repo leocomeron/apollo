@@ -1,4 +1,5 @@
 import FileDropzone from '@/components/FileDropzone';
+import { useOnboarding } from '@/context/OnboardingContext';
 import { DocumentType } from '@/types/onboarding';
 import { Link } from '@chakra-ui/next-js';
 import {
@@ -12,6 +13,9 @@ import Image from 'next/image';
 
 const OnboardingFourthStep: React.FC = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const { onboardingInfo } = useOnboarding();
+  const { isWorker } = onboardingInfo;
+
   return (
     <>
       <Image
@@ -40,35 +44,38 @@ const OnboardingFourthStep: React.FC = () => {
         documentType={DocumentType.IdentificationBack}
         displayCheckIcon
       />
-      <FileDropzone
-        text="Certificado de antecedentes"
-        documentType={DocumentType.BackgroundVerification}
-        displayCheckIcon
-      />
-      <Box mt={2} maxW={460}>
-        <Alert
-          status="info"
-          variant="subtle"
-          borderRadius="md"
-          fontSize="small"
-        >
-          <AlertIcon />
-
-          <span>
-            El certificado de antecedentes lo puedes subir luego, pero para
-            poder operar necesitas tener tus antecedentes cargados. Cómo
-            obtenerlo?{' '}
-            <Link
-              href="https://www.argentina.gob.ar/servicio/solicitar-certificado-de-antecedentes-penales-con-clave-fiscal"
-              target="_blank"
-              textDecoration="underline"
-              fontWeight="bold"
+      {isWorker && (
+        <>
+          <FileDropzone
+            text="Certificado de antecedentes"
+            documentType={DocumentType.BackgroundVerification}
+            displayCheckIcon
+          />
+          <Box mt={2} maxW={460}>
+            <Alert
+              status="info"
+              variant="subtle"
+              borderRadius="md"
+              fontSize="small"
             >
-              Más info aquí
-            </Link>
-          </span>
-        </Alert>
-      </Box>
+              <AlertIcon />
+              <span>
+                El certificado de antecedentes lo puedes subir luego, pero para
+                poder operar necesitas tener tus antecedentes cargados. Cómo
+                obtenerlo?{' '}
+                <Link
+                  href="https://www.argentina.gob.ar/servicio/solicitar-certificado-de-antecedentes-penales-con-clave-fiscal"
+                  target="_blank"
+                  textDecoration="underline"
+                  fontWeight="bold"
+                >
+                  Más info aquí
+                </Link>
+              </span>
+            </Alert>
+          </Box>
+        </>
+      )}
     </>
   );
 };
