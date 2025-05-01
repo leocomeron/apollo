@@ -30,8 +30,14 @@ const Profile = () => {
   useEffect(() => {
     if (status === 'unauthenticated') {
       void router.push('/login');
+      return;
     }
-  }, [status, router]);
+
+    if (status === 'authenticated' && !session.user?.isOnboardingCompleted) {
+      void router.push('/onboarding');
+      return;
+    }
+  }, [status, router, session]);
 
   const user = session?.user;
   const isWorker = user?.isWorker;
