@@ -1,13 +1,7 @@
-import {
-  Box,
-  Button,
-  Grid,
-  GridItem,
-  Input,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Grid, GridItem, Input, Text, VStack } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
+import CallToAction from '../../CallToAction/CallToAction';
 import OpportunityCard from '../OpportunityCard/OpportunityCard';
 
 interface Opportunity {
@@ -50,6 +44,7 @@ const mockOpportunities: Opportunity[] = [
 ];
 
 const OpportunitiesSection: React.FC = () => {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +73,9 @@ const OpportunitiesSection: React.FC = () => {
           onChange={handleSearchChange}
           flex={1}
         />
-        <Button bgColor="brand.600">Crear nueva oportunidad</Button>
+        <CallToAction onClick={() => router.push('/opportunities/create')}>
+          Crear nueva oportunidad
+        </CallToAction>
       </Box>
 
       <Grid templateColumns="repeat(3, 1fr)" gap={6}>
