@@ -24,6 +24,8 @@ const OpportunityCard: React.FC<OpportunityCardProps> = ({
       alignItems="center"
       _hover={{ shadow: 'md' }}
       transition="all 0.2s"
+      h="120px"
+      minH="120px"
     >
       <Image
         src={imageUrl}
@@ -31,8 +33,9 @@ const OpportunityCard: React.FC<OpportunityCardProps> = ({
         boxSize="80px"
         objectFit="cover"
         borderRadius="md"
+        flexShrink={0}
       />
-      <VStack align="start" spacing={1}>
+      <VStack align="start" spacing={1} flex={1} minW={0}>
         <Text fontWeight="bold" noOfLines={2} fontSize="md">
           {title}
         </Text>

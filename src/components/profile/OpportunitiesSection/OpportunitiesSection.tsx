@@ -78,9 +78,7 @@ const OpportunitiesSection: React.FC = () => {
           onChange={handleSearchChange}
           flex={1}
         />
-        <Button colorScheme="brand" minW="200px">
-          Crear nueva oportunidad
-        </Button>
+        <Button bgColor="brand.600">Crear nueva oportunidad</Button>
       </Box>
 
       <Grid templateColumns="repeat(3, 1fr)" gap={6}>
