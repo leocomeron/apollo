@@ -95,7 +95,9 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({
   return (
     <Box>
       <VStack>
-        <Text>Datos de contacto</Text>
+        <Text fontSize="lg" fontWeight="bold">
+          Datos de contacto
+        </Text>
         <Box display="flex" justifyContent="center" alignItems="center">
           <CallToAction minW={300} onClick={() => openWhatsApp(phoneNumber)}>
             {phoneNumber}{' '}

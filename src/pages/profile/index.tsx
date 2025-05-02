@@ -1,5 +1,6 @@
 import ContactDetails from '@/components/profile/ContactDetails/ContactDetails';
 import DetailedReviewSection from '@/components/profile/DetailedReviewSection/DetailedReviewSection';
+import OpportunitiesSection from '@/components/profile/OpportunitiesSection/OpportunitiesSection';
 import ProfileDescription from '@/components/profile/ProfileDescription';
 import ReviewRating from '@/components/profile/ReviewRating/ReviewRating';
 import WorkPortfolio from '@/components/profile/WorkPortfolio';
@@ -83,16 +84,21 @@ const Profile = () => {
       {/* Right Column - 2/3 of the screen */}
       <GridItem>
         <VStack spacing={5} align="stretch" mt={{ base: 0, lg: 16 }}>
-          {isWorker && <WorkPortfolio initialJobs={[]} />}
-          {isWorker && <Divider mt={5} />}
-          {/* Detailed Reviews */}
-          <Text fontSize="xl" mb={1}>
-            Opiniones de contrataciones
-          </Text>
-          <DetailedReviewSection
-            reviews={reviews}
-            isLoading={isLoadingReviews}
-          />
+          {isWorker ? (
+            <>
+              <WorkPortfolio initialJobs={[]} />
+              <Divider mt={5} />
+              <Text fontSize="xl" mb={1}>
+                Opiniones de contrataciones
+              </Text>
+              <DetailedReviewSection
+                reviews={reviews}
+                isLoading={isLoadingReviews}
+              />
+            </>
+          ) : (
+            <OpportunitiesSection />
+          )}
         </VStack>
       </GridItem>
     </Grid>
