@@ -46,9 +46,16 @@ const mockOpportunities: Opportunity[] = [
 const OpportunitiesSection: React.FC = () => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
+  };
+
+  const handleCreateOpportunity = async () => {
+    setIsRedirecting(true);
+    await router.push('/opportunities/create');
+    setIsRedirecting(false);
   };
 
   const filteredOpportunities = mockOpportunities.filter((opportunity) =>
@@ -73,7 +80,11 @@ const OpportunitiesSection: React.FC = () => {
           onChange={handleSearchChange}
           flex={1}
         />
-        <CallToAction onClick={() => router.push('/opportunities/create')}>
+        <CallToAction
+          onClick={handleCreateOpportunity}
+          isLoading={isRedirecting}
+          loadingText="Cargando..."
+        >
           Crear nueva oportunidad
         </CallToAction>
       </Box>
