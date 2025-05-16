@@ -1,9 +1,29 @@
-import { Box, Center, Spinner, Text } from '@chakra-ui/react';
+import CreateOpportunityForm from '@/components/opportunities/CreateOpportunityForm';
+import { getCategories } from '@/services/catalogs';
+import { Category } from '@/types/onboarding';
+import { Box, Center, Grid, GridItem, Spinner, Text } from '@chakra-ui/react';
+import { GetServerSideProps } from 'next';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
-const CreateOpportunity = () => {
+interface CreateOpportunityProps {
+  categories: Category[];
+}
+
+export const getServerSideProps: GetServerSideProps<
+  CreateOpportunityProps
+> = async () => {
+  const categories = await getCategories();
+
+  return {
+    props: {
+      categories,
+    },
+  };
+};
+
+const CreateOpportunity = ({ categories }: CreateOpportunityProps) => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -33,11 +53,22 @@ const CreateOpportunity = () => {
   }
 
   return (
-    <Box maxW="800px" mx="auto" p={6}>
-      <Text fontSize="2xl" fontWeight="bold" mb={6}>
+    <Box>
+      <Text fontSize="2xl" fontWeight="bold" mb={8}>
         Crear nueva oportunidad
       </Text>
-      {/* Aquí irá el formulario de creación de oportunidades */}
+
+      <Grid templateColumns="1fr 3fr" gap={8}>
+        {/* Left column - Form */}
+        <GridItem bg="white" rounded="lg" shadow="base">
+          <CreateOpportunityForm categories={categories} />
+        </GridItem>
+
+        {/* Right column - Preview */}
+        <GridItem bg="white" rounded="lg" shadow="base" p={6}>
+          {/* Preview content will go here */}
+        </GridItem>
+      </Grid>
     </Box>
   );
 };
