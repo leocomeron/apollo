@@ -31,6 +31,7 @@ export default function CreateOpportunityForm({ categories }: Props) {
     description: '',
     department: '',
     type: '',
+    startDate: '',
   });
 
   const handleInputChange = (
@@ -133,6 +134,17 @@ export default function CreateOpportunityForm({ categories }: Props) {
               </option>
             ))}
           </Select>
+        </FormControl>
+
+        {/* Start Date */}
+        <FormControl>
+          <FormLabel>Cuándo quiero iniciar</FormLabel>
+          <Input
+            name="startDate"
+            type="date"
+            value={formData.startDate}
+            onChange={handleInputChange}
+          />
         </FormControl>
       </VStack>
     </Box>
