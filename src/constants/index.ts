@@ -34,3 +34,10 @@ export const categories: Category[] = [
   { label: 'Electricidad', value: 'electricity' },
   { label: 'Otros', value: 'others' },
 ];
+
+export const OPPORTUNITY_TYPES = [
+  { label: 'Rápido / casual', value: 'quick' },
+  { label: 'Varios días', value: 'days' },
+  { label: 'Varias semanas', value: 'weeks' },
+  { label: 'Oferta de trabajo permanente', value: 'permanent' },
+];

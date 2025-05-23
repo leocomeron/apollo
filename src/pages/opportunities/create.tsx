@@ -1,11 +1,13 @@
 import CreateOpportunityForm from '@/components/opportunities/CreateOpportunityForm';
+import CreateOpportunityPreview from '@/components/opportunities/CreateOpportunityPreview';
 import { getCategories } from '@/services/catalogs';
 import { Category } from '@/types/onboarding';
+import { OpportunityFormData } from '@/types/opportunities';
 import { Box, Center, Grid, GridItem, Spinner, Text } from '@chakra-ui/react';
 import { GetServerSideProps } from 'next';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface CreateOpportunityProps {
   categories: Category[];
@@ -26,6 +28,15 @@ export const getServerSideProps: GetServerSideProps<
 const CreateOpportunity = ({ categories }: CreateOpportunityProps) => {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [formData, setFormData] = useState<OpportunityFormData>({
+    image: '',
+    title: '',
+    category: [],
+    description: '',
+    department: '',
+    type: '',
+    startDate: '',
+  });
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -60,13 +71,20 @@ const CreateOpportunity = ({ categories }: CreateOpportunityProps) => {
 
       <Grid templateColumns={{ sm: '1fr 4fr' }} gap={8}>
         {/* Left column - Form */}
-        <GridItem bg="white" rounded="lg" shadow="base">
-          <CreateOpportunityForm categories={categories} />
+        <GridItem bg="white" rounded="lg" shadow="base" minW="400px">
+          <CreateOpportunityForm
+            categories={categories}
+            formData={formData}
+            onFormChange={setFormData}
+          />
         </GridItem>
 
         {/* Right column - Preview */}
-        <GridItem bg="white" rounded="lg" shadow="base" p={6}>
-          {/* Preview content will go here */}
+        <GridItem bg="white" rounded="lg" shadow="base" p={6} maxW="900px">
+          <CreateOpportunityPreview
+            formData={formData}
+            categories={categories}
+          />
         </GridItem>
       </Grid>
     </Box>
