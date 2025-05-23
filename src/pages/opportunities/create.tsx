@@ -71,7 +71,7 @@ const CreateOpportunity = ({ categories }: CreateOpportunityProps) => {
 
       <Grid templateColumns={{ sm: '1fr 4fr' }} gap={8}>
         {/* Left column - Form */}
-        <GridItem bg="white" rounded="lg" shadow="base" minW="400px">
+        <GridItem bg="white" rounded="lg" shadow="base" minW="320px">
           <CreateOpportunityForm
             categories={categories}
             formData={formData}
