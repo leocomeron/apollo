@@ -1,7 +1,19 @@
 import { OPPORTUNITY_TYPES } from '@/constants';
 import { Category } from '@/types/onboarding';
 import { OpportunityFormData } from '@/types/opportunities';
-import { Box, Image, SimpleGrid, Text, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Image,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalOverlay,
+  SimpleGrid,
+  Text,
+  useDisclosure,
+  VStack,
+} from '@chakra-ui/react';
+import { useState } from 'react';
 
 interface Props {
   formData: OpportunityFormData;
@@ -12,6 +24,14 @@ export default function CreateOpportunityPreview({
   formData,
   categories,
 }: Props) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedImage, setSelectedImage] = useState('');
+
+  const handleImageClick = (image: string) => {
+    setSelectedImage(image);
+    onOpen();
+  };
+
   const getOpportunityTypeLabel = (value: string) => {
     return OPPORTUNITY_TYPES.find((type) => type.value === value)?.label || '';
   };
@@ -42,9 +62,13 @@ export default function CreateOpportunityPreview({
       )}
 
       {images.length > 0 && (
-        <Box display="flex" gap={4}>
+        <Box
+          display="flex"
+          flexDirection={{ base: 'column', md: 'row' }}
+          gap={4}
+        >
           {/* Main image */}
-          <Box flex="1" height="300px">
+          <Box flex="1" height={{ base: '200px', md: '300px' }}>
             <Image
               src={images[0]}
               alt="Preview principal"
@@ -52,15 +76,17 @@ export default function CreateOpportunityPreview({
               width="100%"
               height="100%"
               rounded="md"
+              cursor="pointer"
+              onClick={() => handleImageClick(images[0])}
             />
           </Box>
 
           {/* Thumbnails */}
           {images.length > 1 && (
-            <Box width="200px">
-              <SimpleGrid columns={1} spacing={2}>
+            <Box width={{ base: '100%', md: '150px' }}>
+              <SimpleGrid columns={{ base: 3, md: 1 }} spacing={2}>
                 {images.slice(1).map((image: string, index: number) => (
-                  <Box key={index} height="90px">
+                  <Box key={index} height={{ base: '80px', md: '70px' }}>
                     <Image
                       src={image}
                       alt={`Preview ${index + 2}`}
@@ -68,6 +94,8 @@ export default function CreateOpportunityPreview({
                       width="100%"
                       height="100%"
                       rounded="md"
+                      cursor="pointer"
+                      onClick={() => handleImageClick(image)}
                     />
                   </Box>
                 ))}
@@ -76,6 +104,27 @@ export default function CreateOpportunityPreview({
           )}
         </Box>
       )}
+
+      <Modal isOpen={isOpen} onClose={onClose} size="full">
+        <ModalOverlay onClick={onClose} />
+        <ModalContent bg="transparent" boxShadow="none" onClick={onClose}>
+          <ModalBody
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            p={0}
+          >
+            <Image
+              src={selectedImage}
+              alt="Preview full size"
+              maxH="90vh"
+              maxW="90vw"
+              objectFit="contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
 
       {formData.description && (
         <Text fontSize="md" color="gray.600" whiteSpace="pre-wrap">
