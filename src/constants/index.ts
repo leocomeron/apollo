@@ -1,7 +1,7 @@
 import { Category } from '@/types/onboarding';
 
 // Departaments from the province of San Juan
-export const sanJuanDepartments: string[] = [
+export const sanJuanLocations: string[] = [
   'Albardón',
   'Angaco',
   'Calingasta',

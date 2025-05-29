@@ -1,4 +1,4 @@
-import { sanJuanDepartments } from '@/constants';
+import { sanJuanLocations } from '@/constants';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { Category } from '@/types/onboarding';
 import {
@@ -99,9 +99,9 @@ const OnboardingSecondStep: React.FC<OnboardingSecondStepProps> = ({
             onChange={handleLocationChange}
             value={onboardingInfo.contact.location}
           >
-            {sanJuanDepartments.map((department) => (
-              <option value={department} key={department}>
-                {department}
+            {sanJuanLocations.map((location) => (
+              <option value={location} key={location}>
+                {location}
               </option>
             ))}
           </Select>

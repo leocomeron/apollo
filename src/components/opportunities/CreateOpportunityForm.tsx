@@ -1,4 +1,4 @@
-import { OPPORTUNITY_TYPES, sanJuanDepartments } from '@/constants';
+import { OPPORTUNITY_TYPES, sanJuanLocations } from '@/constants';
 import { Category } from '@/types/onboarding';
 import { OpportunityFormData } from '@/types/opportunities';
 import {
@@ -10,6 +10,7 @@ import {
   Textarea,
   VStack,
 } from '@chakra-ui/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import DragAndDropImage from '../DragAndDrop/DragAndDropImage';
 import MultiSelect from '../form/MultiSelect';
@@ -27,6 +28,7 @@ export default function CreateOpportunityForm({
   onFormChange,
 }: Props) {
   const router = useRouter();
+  const { data: session } = useSession();
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -55,14 +57,34 @@ export default function CreateOpportunityForm({
   };
 
   const handleAddOpportunity = async () => {
-    console.log('Oportunidad:', formData);
-    await router.push('/profile');
+    try {
+      const response = await fetch('/api/opportunities', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          userId: session?.user?.id,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Error al crear la oportunidad');
+      }
+
+      await router.push('/profile');
+    } catch (error) {
+      console.error('Error al crear la oportunidad:', error);
+      // Aquí podrías agregar un toast o notificación de error
+    }
   };
 
   const isFormValid =
     formData.title &&
     formData.description &&
-    formData.department &&
+    formData.location &&
     formData.type &&
     formData.startDate &&
     formData.categories.length > 0 &&
@@ -119,14 +141,14 @@ export default function CreateOpportunityForm({
           />
         </FormControl>
 
-        {/* Department */}
+        {/* Location */}
         <Select
-          name="department"
-          value={formData.department}
+          name="location"
+          value={formData.location}
           onChange={handleInputChange}
-          options={sanJuanDepartments.map((dept) => ({
-            label: dept,
-            value: dept,
+          options={sanJuanLocations.map((location) => ({
+            label: location,
+            value: location,
           }))}
           placeholder="Departamento"
           label="Departamento"

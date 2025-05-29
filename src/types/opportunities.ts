@@ -3,7 +3,8 @@ export interface OpportunityFormData {
   title: string;
   categories: string[];
   description: string;
-  department: string;
+  location: string;
   type: string;
   startDate: string;
+  status: 'open' | 'ongoing' | 'closed';
 }

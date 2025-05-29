@@ -33,9 +33,10 @@ const CreateOpportunity = ({ categories }: CreateOpportunityProps) => {
     title: '',
     categories: [],
     description: '',
-    department: '',
+    location: '',
     type: '',
     startDate: '',
+    status: 'open',
   });
 
   useEffect(() => {
