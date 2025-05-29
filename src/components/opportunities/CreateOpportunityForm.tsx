@@ -3,15 +3,17 @@ import { Category } from '@/types/onboarding';
 import { OpportunityFormData } from '@/types/opportunities';
 import {
   Box,
+  Button,
   FormControl,
   FormLabel,
   Input,
-  Select,
   Textarea,
   VStack,
 } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import DragAndDropImage from '../DragAndDrop/DragAndDropImage';
 import MultiSelect from '../form/MultiSelect';
+import Select from '../form/Select';
 
 interface Props {
   categories: Category[];
@@ -24,6 +26,8 @@ export default function CreateOpportunityForm({
   formData,
   onFormChange,
 }: Props) {
+  const router = useRouter();
+
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -49,6 +53,20 @@ export default function CreateOpportunityForm({
       image: imageData,
     });
   };
+
+  const handleAddOpportunity = async () => {
+    console.log('Oportunidad:', formData);
+    await router.push('/profile');
+  };
+
+  const isFormValid =
+    formData.title &&
+    formData.description &&
+    formData.department &&
+    formData.type &&
+    formData.startDate &&
+    formData.category.length > 0 &&
+    formData.image;
 
   return (
     <Box p={6}>
@@ -102,42 +120,27 @@ export default function CreateOpportunityForm({
         </FormControl>
 
         {/* Department */}
-        <FormControl>
-          <FormLabel fontSize="xs" mb={1}>
-            Departamento
-          </FormLabel>
-          <Select
-            name="department"
-            value={formData.department}
-            onChange={handleInputChange}
-            placeholder="Departamento"
-          >
-            {sanJuanDepartments.map((dept) => (
-              <option key={dept} value={dept}>
-                {dept}
-              </option>
-            ))}
-          </Select>
-        </FormControl>
+        <Select
+          name="department"
+          value={formData.department}
+          onChange={handleInputChange}
+          options={sanJuanDepartments.map((dept) => ({
+            label: dept,
+            value: dept,
+          }))}
+          placeholder="Departamento"
+          label="Departamento"
+        />
 
         {/* Opportunity Type */}
-        <FormControl>
-          <FormLabel fontSize="xs" mb={1}>
-            Tipo de oportunidad
-          </FormLabel>
-          <Select
-            name="type"
-            value={formData.type}
-            onChange={handleInputChange}
-            placeholder="Tipo de oportunidad"
-          >
-            {OPPORTUNITY_TYPES.map((type) => (
-              <option key={type.value} value={type.value}>
-                {type.label}
-              </option>
-            ))}
-          </Select>
-        </FormControl>
+        <Select
+          name="type"
+          value={formData.type}
+          onChange={handleInputChange}
+          options={OPPORTUNITY_TYPES}
+          placeholder="Tipo de oportunidad"
+          label="Tipo de oportunidad"
+        />
 
         {/* Start Date */}
         <FormControl>
@@ -152,6 +155,17 @@ export default function CreateOpportunityForm({
             placeholder="Fecha de inicio"
           />
         </FormControl>
+
+        {/* Submit Button */}
+        <Button
+          colorScheme="orange"
+          size="lg"
+          onClick={handleAddOpportunity}
+          mt={4}
+          isDisabled={!isFormValid}
+        >
+          Publicar oportunidad
+        </Button>
       </VStack>
     </Box>
   );
