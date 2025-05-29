@@ -74,7 +74,6 @@ const DragAndDropImage = ({
           bg: 'gray.50',
           borderColor: 'brand.600',
         }}
-        minH="100px"
         display="flex"
         flexDirection="column"
         alignItems="center"
@@ -89,13 +88,11 @@ const DragAndDropImage = ({
             {error}
           </Text>
         )}
-        {images.length === 0 && (
-          <Text fontSize="sm" color="gray.500">
-            {maxImages
-              ? `Agregar hasta ${maxImages} fotos (la primera es la principal) o arrastra y suelta`
-              : 'Agregar foto o arrastra y suelta'}
-          </Text>
-        )}
+        <Text fontSize="sm" color="gray.500">
+          {maxImages
+            ? `Agregar hasta ${maxImages} fotos (la primera es la principal) o arrastra y suelta`
+            : 'Agregar foto o arrastra y suelta'}
+        </Text>
       </Box>
 
       {images.length > 0 && (
@@ -112,15 +109,19 @@ const DragAndDropImage = ({
               />
               <IconButton
                 aria-label="Eliminar imagen"
-                icon={<DeleteIcon />}
-                size="sm"
+                icon={<DeleteIcon boxSize="12px" />}
+                size="xs"
                 colorScheme="red"
+                variant="ghost"
                 position="absolute"
-                top={2}
-                right={2}
+                top={1}
+                right={1}
                 onClick={(e) => {
                   e.stopPropagation();
                   removeImage(index);
+                }}
+                _hover={{
+                  bg: 'red.100',
                 }}
               />
             </Box>

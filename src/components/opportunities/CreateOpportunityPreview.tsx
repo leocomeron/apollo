@@ -1,8 +1,10 @@
 import { OPPORTUNITY_TYPES } from '@/constants';
 import { Category } from '@/types/onboarding';
 import { OpportunityFormData } from '@/types/opportunities';
+import { CloseIcon } from '@chakra-ui/icons';
 import {
   Box,
+  IconButton,
   Image,
   Modal,
   ModalBody,
@@ -107,12 +109,25 @@ export default function CreateOpportunityPreview({
 
       <Modal isOpen={isOpen} onClose={onClose} size="full">
         <ModalOverlay onClick={onClose} />
-        <ModalContent bg="transparent" boxShadow="none" onClick={onClose}>
+        <ModalContent bg="transparent" boxShadow="none">
+          <Box position="absolute" top={4} left={4} zIndex={1}>
+            <IconButton
+              aria-label="Cerrar"
+              icon={<CloseIcon />}
+              size="sm"
+              colorScheme="blackAlpha"
+              onClick={onClose}
+              _hover={{
+                bg: 'blackAlpha.700',
+              }}
+            />
+          </Box>
           <ModalBody
             display="flex"
             alignItems="center"
             justifyContent="center"
             p={0}
+            onClick={onClose}
           >
             <Image
               src={selectedImage}
@@ -120,7 +135,6 @@ export default function CreateOpportunityPreview({
               maxH="90vh"
               maxW="90vw"
               objectFit="contain"
-              onClick={(e) => e.stopPropagation()}
             />
           </ModalBody>
         </ModalContent>
