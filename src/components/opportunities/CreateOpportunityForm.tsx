@@ -47,10 +47,10 @@ export default function CreateOpportunityForm({
     });
   };
 
-  const handleImageChange = (imageData: string) => {
+  const handleImageChange = (imageData: string[]) => {
     onFormChange({
       ...formData,
-      image: imageData,
+      images: imageData,
     });
   };
 
@@ -66,7 +66,7 @@ export default function CreateOpportunityForm({
     formData.type &&
     formData.startDate &&
     formData.category.length > 0 &&
-    formData.image;
+    formData.images.length > 0;
 
   return (
     <Box p={6}>
@@ -76,7 +76,7 @@ export default function CreateOpportunityForm({
           <FormLabel fontSize="xs" mb={1}>
             Imagen
           </FormLabel>
-          <DragAndDropImage onImageChange={handleImageChange} />
+          <DragAndDropImage onImageChange={handleImageChange} maxImages={5} />
         </FormControl>
 
         {/* Title */}

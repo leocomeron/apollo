@@ -1,7 +1,7 @@
 import { OPPORTUNITY_TYPES } from '@/constants';
 import { Category } from '@/types/onboarding';
 import { OpportunityFormData } from '@/types/opportunities';
-import { Box, Image, Text, VStack } from '@chakra-ui/react';
+import { Box, Image, SimpleGrid, Text, VStack } from '@chakra-ui/react';
 
 interface Props {
   formData: OpportunityFormData;
@@ -23,9 +23,15 @@ export default function CreateOpportunityPreview({
   const getCategoriesText = () => {
     const categoryLabels = formData.category
       .map((cat) => getCategoryLabel(cat))
-      .filter(Boolean); // Remove any empty labels
+      .filter(Boolean);
     return categoryLabels.join(', ');
   };
+
+  const images: string[] = Array.isArray(formData.images)
+    ? formData.images
+    : formData.images
+      ? [formData.images]
+      : [];
 
   return (
     <VStack spacing={4} align="stretch">
@@ -35,23 +41,46 @@ export default function CreateOpportunityPreview({
         </Text>
       )}
 
+      {images.length > 0 && (
+        <Box display="flex" gap={4}>
+          {/* Main image */}
+          <Box flex="1" height="300px">
+            <Image
+              src={images[0]}
+              alt="Preview principal"
+              objectFit="cover"
+              width="100%"
+              height="100%"
+              rounded="md"
+            />
+          </Box>
+
+          {/* Thumbnails */}
+          {images.length > 1 && (
+            <Box width="200px">
+              <SimpleGrid columns={1} spacing={2}>
+                {images.slice(1).map((image: string, index: number) => (
+                  <Box key={index} height="90px">
+                    <Image
+                      src={image}
+                      alt={`Preview ${index + 2}`}
+                      objectFit="cover"
+                      width="100%"
+                      height="100%"
+                      rounded="md"
+                    />
+                  </Box>
+                ))}
+              </SimpleGrid>
+            </Box>
+          )}
+        </Box>
+      )}
+
       {formData.description && (
         <Text fontSize="md" color="gray.600" whiteSpace="pre-wrap">
           {formData.description}
         </Text>
-      )}
-
-      {formData.image && (
-        <Box position="relative" width="100%" height="200px">
-          <Image
-            src={formData.image}
-            alt="Preview"
-            objectFit="cover"
-            width="100%"
-            height="100%"
-            rounded="md"
-          />
-        </Box>
       )}
 
       {formData.startDate && (

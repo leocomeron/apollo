@@ -1,5 +1,5 @@
 export interface OpportunityFormData {
-  image: string;
+  images: string[];
   title: string;
   category: string[];
   description: string;

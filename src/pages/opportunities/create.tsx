@@ -29,7 +29,7 @@ const CreateOpportunity = ({ categories }: CreateOpportunityProps) => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [formData, setFormData] = useState<OpportunityFormData>({
-    image: '',
+    images: [],
     title: '',
     category: [],
     description: '',
