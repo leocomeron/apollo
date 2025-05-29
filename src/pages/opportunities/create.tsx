@@ -31,7 +31,7 @@ const CreateOpportunity = ({ categories }: CreateOpportunityProps) => {
   const [formData, setFormData] = useState<OpportunityFormData>({
     images: [],
     title: '',
-    category: [],
+    categories: [],
     description: '',
     department: '',
     type: '',

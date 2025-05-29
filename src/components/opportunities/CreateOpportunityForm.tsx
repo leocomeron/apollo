@@ -43,7 +43,7 @@ export default function CreateOpportunityForm({
   const handleCategoryChange = (selectedCategories: string[]) => {
     onFormChange({
       ...formData,
-      category: selectedCategories,
+      categories: selectedCategories,
     });
   };
 
@@ -65,7 +65,7 @@ export default function CreateOpportunityForm({
     formData.department &&
     formData.type &&
     formData.startDate &&
-    formData.category.length > 0 &&
+    formData.categories.length > 0 &&
     formData.images.length > 0;
 
   return (
@@ -99,7 +99,7 @@ export default function CreateOpportunityForm({
           </FormLabel>
           <MultiSelect
             options={categories}
-            selectedValues={formData.category}
+            selectedValues={formData.categories}
             onChange={handleCategoryChange}
             placeholder="Seleccionar rubros"
           />

@@ -43,7 +43,7 @@ export default function CreateOpportunityPreview({
   };
 
   const getCategoriesText = () => {
-    const categoryLabels = formData.category
+    const categoryLabels = formData.categories
       .map((cat) => getCategoryLabel(cat))
       .filter(Boolean);
     return categoryLabels.join(', ');
@@ -164,7 +164,7 @@ export default function CreateOpportunityPreview({
         </Text>
       )}
 
-      {formData.category && formData.category.length > 0 && (
+      {formData.categories?.length > 0 && (
         <Text>
           <Text as="span" fontWeight="semibold">
             Rubros:{' '}
