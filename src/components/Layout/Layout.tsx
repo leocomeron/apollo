@@ -11,7 +11,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <Box m={4}>
       <Menu />
-      <Box pt={16} px={8}>
+      <Box pt={8} px={8}>
         {children}
       </Box>
     </Box>
