@@ -21,7 +21,7 @@ const ProfileDescription: React.FC<ProfileDescriptionProps> = ({
   isWorker = true,
 }) => {
   return (
-    <VStack align="center" p={5} spacing={0}>
+    <VStack align="center" spacing={0}>
       {/* Foto de perfil */}
       <Box position="relative">
         <Image

@@ -42,7 +42,7 @@ const ReviewRating: React.FC<ReviewRatingProps> = ({ reviewStats }) => {
   };
 
   return (
-    <HStack align="flex-start" spacing={8} w="100%">
+    <HStack align="flex-start" spacing={8}>
       {/* Left side: rating, stars and total reviews */}
       <VStack align="flex-start" spacing={0} alignItems="center">
         <Text fontSize="2xl" lineHeight={1}>

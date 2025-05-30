@@ -56,9 +56,12 @@ const Profile = () => {
   }
 
   return (
-    <Grid templateColumns={{ base: '1fr', md: '1fr 4fr' }} gap={6}>
+    <Grid
+      display={{ base: 'block', md: 'grid' }}
+      templateColumns={{ base: '1fr', md: '1fr 4fr' }}
+      gap={6}
+    >
       {/* Left Column - 1/3 of the screen */}
-      {/* Profile Description */}
       <GridItem mt={{ base: 0, lg: 10 }}>
         <VStack spacing={5} align="stretch">
           <ProfileDescription
