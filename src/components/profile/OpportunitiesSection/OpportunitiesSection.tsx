@@ -1,52 +1,46 @@
-import { Box, Grid, GridItem, Input, Text, VStack } from '@chakra-ui/react';
+import fetcher from '@/lib/fetcher';
+import { Box, Button, Input, Text, VStack } from '@chakra-ui/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import useSWR from 'swr';
 import CallToAction from '../../CallToAction/CallToAction';
 import OpportunityCard from '../OpportunityCard/OpportunityCard';
 
 interface Opportunity {
-  id: string;
+  _id: string;
   title: string;
-  imageUrl: string;
-  createdAt: Date;
+  images: string[];
+  createdAt: string;
   status: 'open' | 'in_progress' | 'closed';
+  description: string;
+  categories: string[];
+  location: string;
+  type: string;
+  startDate: string;
 }
 
-const mockOpportunities: Opportunity[] = [
-  {
-    id: '1',
-    title: 'Necesito un albañil para remodelar mi cocina',
-    imageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c',
-    createdAt: new Date('2024-03-15'),
-    status: 'open',
-  },
-  {
-    id: '2',
-    title: 'Buscando electricista para instalación de aire acondicionado',
-    imageUrl: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c',
-    createdAt: new Date('2024-03-10'),
-    status: 'in_progress',
-  },
-  {
-    id: '3',
-    title: 'Pintor para pintar interior de casa',
-    imageUrl: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c',
-    createdAt: new Date('2024-02-28'),
-    status: 'closed',
-  },
-  {
-    id: '4',
-    title: 'Carpintero para construir muebles a medida',
-    imageUrl: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d',
-    createdAt: new Date('2024-03-20'),
-    status: 'open',
-  },
-];
+type OpportunityStatus = Opportunity['status'];
 
 const OpportunitiesSection: React.FC = () => {
   const router = useRouter();
+  const { data: session } = useSession();
   const [searchTerm, setSearchTerm] = useState('');
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [selectedStatus, setSelectedStatus] =
+    useState<OpportunityStatus>('open');
+
+  const {
+    data: opportunities,
+    error,
+    isLoading,
+  } = useSWR<Opportunity[]>(
+    session?.user?.id ? `/api/opportunities?userId=${session.user.id}` : null,
+    fetcher,
+    {
+      revalidateOnMount: true,
+    },
+  );
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -58,14 +52,48 @@ const OpportunitiesSection: React.FC = () => {
     setIsRedirecting(false);
   };
 
-  const filteredOpportunities = mockOpportunities.filter((opportunity) =>
-    opportunity.title.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const filteredOpportunities =
+    opportunities?.filter((opportunity) =>
+      opportunity.title.toLowerCase().includes(searchTerm.toLowerCase()),
+    ) || [];
 
-  const getOpportunitiesByStatus = (status: Opportunity['status']) =>
+  const getOpportunitiesByStatus = (status: OpportunityStatus) =>
     filteredOpportunities.filter(
       (opportunity) => opportunity.status === status,
     );
+
+  const getStatusLabel = (status: OpportunityStatus) => {
+    switch (status) {
+      case 'open':
+        return 'Abiertas';
+      case 'in_progress':
+        return 'En Curso';
+      case 'closed':
+        return 'Cerradas';
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <VStack spacing={6} align="stretch">
+        <Text fontSize="2xl" fontWeight="bold">
+          Mis Oportunidades
+        </Text>
+        <Text>Cargando oportunidades...</Text>
+      </VStack>
+    );
+  }
+
+  if (error) {
+    return (
+      <VStack spacing={6} align="stretch">
+        <Text fontSize="2xl" fontWeight="bold">
+          Mis Oportunidades
+        </Text>
+        <Text color="red.500">Error al cargar las oportunidades</Text>
+      </VStack>
+    );
+  }
 
   return (
     <VStack spacing={6} align="stretch">
@@ -89,55 +117,32 @@ const OpportunitiesSection: React.FC = () => {
         </CallToAction>
       </Box>
 
-      <Grid templateColumns="repeat(3, 1fr)" gap={6}>
-        <GridItem>
-          <VStack align="stretch" spacing={4}>
-            <Text fontSize="lg" fontWeight="bold">
-              Abiertas
-            </Text>
-            {getOpportunitiesByStatus('open').map((opportunity) => (
-              <OpportunityCard
-                key={opportunity.id}
-                imageUrl={opportunity.imageUrl}
-                title={opportunity.title}
-                createdAt={opportunity.createdAt}
-              />
-            ))}
-          </VStack>
-        </GridItem>
+      <Box display="flex" gap={2}>
+        {(['open', 'in_progress', 'closed'] as OpportunityStatus[]).map(
+          (status) => (
+            <Button
+              key={status}
+              variant={selectedStatus === status ? 'solid' : 'outline'}
+              colorScheme="brand"
+              onClick={() => setSelectedStatus(status)}
+              flex={1}
+            >
+              {getStatusLabel(status)}
+            </Button>
+          ),
+        )}
+      </Box>
 
-        <GridItem>
-          <VStack align="stretch" spacing={4}>
-            <Text fontSize="lg" fontWeight="bold">
-              En curso
-            </Text>
-            {getOpportunitiesByStatus('in_progress').map((opportunity) => (
-              <OpportunityCard
-                key={opportunity.id}
-                imageUrl={opportunity.imageUrl}
-                title={opportunity.title}
-                createdAt={opportunity.createdAt}
-              />
-            ))}
-          </VStack>
-        </GridItem>
-
-        <GridItem>
-          <VStack align="stretch" spacing={4}>
-            <Text fontSize="lg" fontWeight="bold">
-              Cerradas
-            </Text>
-            {getOpportunitiesByStatus('closed').map((opportunity) => (
-              <OpportunityCard
-                key={opportunity.id}
-                imageUrl={opportunity.imageUrl}
-                title={opportunity.title}
-                createdAt={opportunity.createdAt}
-              />
-            ))}
-          </VStack>
-        </GridItem>
-      </Grid>
+      <VStack spacing={4} align="stretch">
+        {getOpportunitiesByStatus(selectedStatus).map((opportunity) => (
+          <OpportunityCard
+            key={opportunity._id}
+            imageUrl={opportunity.images[0]}
+            title={opportunity.title}
+            createdAt={new Date(opportunity.createdAt)}
+          />
+        ))}
+      </VStack>
     </VStack>
   );
 };

@@ -6,5 +6,5 @@ export interface OpportunityFormData {
   location: string;
   type: string;
   startDate: string;
-  status: 'open' | 'ongoing' | 'closed';
+  status: 'open' | 'in_progress' | 'closed';
 }
