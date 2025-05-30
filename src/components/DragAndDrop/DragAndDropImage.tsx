@@ -1,8 +1,9 @@
+import { uploadToCloudinary } from '@/services/cloudinary';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { Box, IconButton, Image, SimpleGrid, Text } from '@chakra-ui/react';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { ACCEPTED_IMAGE_TYPES, handleImageFile } from './helpers';
+import { ACCEPTED_IMAGE_TYPES } from './helpers';
 
 interface DragAndDropImageProps {
   onImageChange?: (imageData: string[]) => void;
@@ -15,32 +16,36 @@ const DragAndDropImage = ({
 }: DragAndDropImageProps) => {
   const [images, setImages] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
       setError(null);
+      setIsUploading(true);
 
       if (maxImages && images.length + acceptedFiles.length > maxImages) {
         setError(`Solo puedes subir hasta ${maxImages} imágenes`);
+        setIsUploading(false);
         return;
       }
 
-      const newImages: string[] = [];
-      for (const file of acceptedFiles) {
-        const { imageData, error } = await handleImageFile(file);
-        if (error) {
-          setError(error);
-          return;
+      try {
+        const newImages: string[] = [];
+        for (const file of acceptedFiles) {
+          const imageUrl = await uploadToCloudinary(file);
+          newImages.push(imageUrl);
         }
-        if (imageData) {
-          newImages.push(imageData);
-        }
-      }
 
-      if (newImages.length > 0) {
-        const updatedImages = [...images, ...newImages];
-        setImages(updatedImages);
-        onImageChange?.(updatedImages);
+        if (newImages.length > 0) {
+          const updatedImages = [...images, ...newImages];
+          setImages(updatedImages);
+          onImageChange?.(updatedImages);
+        }
+      } catch (error) {
+        setError('Error al subir las imágenes');
+        console.error('Error uploading images:', error);
+      } finally {
+        setIsUploading(false);
       }
     },
     [onImageChange, images, maxImages],
@@ -58,6 +63,7 @@ const DragAndDropImage = ({
     maxFiles: maxImages ? maxImages - images.length : 1,
     noClick: false,
     noKeyboard: false,
+    disabled: isUploading,
   });
 
   return (
@@ -69,7 +75,7 @@ const DragAndDropImage = ({
         p={4}
         rounded="md"
         textAlign="center"
-        cursor="pointer"
+        cursor={isUploading ? 'wait' : 'pointer'}
         _hover={{
           bg: 'gray.50',
           borderColor: 'brand.600',
@@ -79,8 +85,9 @@ const DragAndDropImage = ({
         alignItems="center"
         justifyContent="center"
         onClick={() => {
-          open();
+          if (!isUploading) open();
         }}
+        opacity={isUploading ? 0.7 : 1}
       >
         <input {...getInputProps()} />
         {error && (
@@ -89,9 +96,11 @@ const DragAndDropImage = ({
           </Text>
         )}
         <Text fontSize="sm" color="gray.500">
-          {maxImages
-            ? `Agregar hasta ${maxImages} fotos (la primera es la principal) o arrastra y suelta`
-            : 'Agregar foto o arrastra y suelta'}
+          {isUploading
+            ? 'Subiendo imágenes...'
+            : maxImages
+              ? `Agregar hasta ${maxImages} fotos (la primera es la principal) o arrastra y suelta`
+              : 'Agregar foto o arrastra y suelta'}
         </Text>
       </Box>
 
@@ -123,6 +132,7 @@ const DragAndDropImage = ({
                 _hover={{
                   bg: 'red.100',
                 }}
+                isDisabled={isUploading}
               />
             </Box>
           ))}

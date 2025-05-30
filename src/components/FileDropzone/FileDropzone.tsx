@@ -1,4 +1,5 @@
 import { useOnboarding } from '@/context/OnboardingContext';
+import { uploadToCloudinary } from '@/services/cloudinary';
 import { Document, DocumentType } from '@/types/onboarding';
 import { CheckIcon } from '@chakra-ui/icons';
 import { Box, Icon, Text, useBreakpointValue, VStack } from '@chakra-ui/react';
@@ -23,44 +24,13 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
   const [selectedFile, setSelectedFile] = useState<File | undefined>();
   const [isUploading, setIsUploading] = useState(false);
 
-  const uploadToCloudinary = async (file: File) => {
-    try {
-      setIsUploading(true);
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append(
-        'upload_preset',
-        process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || '',
-      );
-
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-        {
-          method: 'POST',
-          body: formData,
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error('Error al subir la imagen');
-      }
-
-      const data = await response.json();
-      return data.secure_url;
-    } catch (error) {
-      console.error('Error uploading to Cloudinary:', error);
-      throw error;
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
   const onDrop = async (acceptedFiles: File[]) => {
     try {
       const newFile = acceptedFiles[0];
       if (!newFile) return;
 
       setSelectedFile(newFile);
+      setIsUploading(true);
       const cloudinaryUrl = await uploadToCloudinary(newFile);
 
       if (onUploadComplete) {
@@ -100,6 +70,8 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
       alert('Error al subir el archivo');
       console.error(error);
       setSelectedFile(undefined);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -111,6 +83,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
       'image/gif': ['.gif'],
     },
     multiple: false,
+    disabled: isUploading,
   });
 
   return (
