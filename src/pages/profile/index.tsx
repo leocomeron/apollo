@@ -56,7 +56,7 @@ const Profile = () => {
   }
 
   return (
-    <Grid templateColumns={{ base: '1fr', md: '1fr 4fr' }} gap={6} p={6}>
+    <Grid templateColumns={{ base: '1fr', md: '1fr 4fr' }} gap={6}>
       {/* Left Column - 1/3 of the screen */}
       {/* Profile Description */}
       <GridItem mt={{ base: 0, lg: 10 }}>

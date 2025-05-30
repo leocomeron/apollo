@@ -1,5 +1,5 @@
 import fetcher from '@/lib/fetcher';
-import { Box, Button, Input, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Text, VStack } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -25,7 +25,6 @@ type OpportunityStatus = Opportunity['status'];
 const OpportunitiesSection: React.FC = () => {
   const router = useRouter();
   const { data: session } = useSession();
-  const [searchTerm, setSearchTerm] = useState('');
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [selectedStatus, setSelectedStatus] =
     useState<OpportunityStatus>('open');
@@ -42,25 +41,14 @@ const OpportunitiesSection: React.FC = () => {
     },
   );
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
   const handleCreateOpportunity = async () => {
     setIsRedirecting(true);
     await router.push('/opportunities/create');
     setIsRedirecting(false);
   };
 
-  const filteredOpportunities =
-    opportunities?.filter((opportunity) =>
-      opportunity.title.toLowerCase().includes(searchTerm.toLowerCase()),
-    ) || [];
-
   const getOpportunitiesByStatus = (status: OpportunityStatus) =>
-    filteredOpportunities.filter(
-      (opportunity) => opportunity.status === status,
-    );
+    opportunities?.filter((opportunity) => opportunity.status === status) || [];
 
   const getStatusLabel = (status: OpportunityStatus) => {
     switch (status) {
@@ -102,12 +90,6 @@ const OpportunitiesSection: React.FC = () => {
       </Text>
 
       <Box display="flex" gap={4}>
-        <Input
-          placeholder="Buscar oportunidades..."
-          value={searchTerm}
-          onChange={handleSearchChange}
-          flex={1}
-        />
         <CallToAction
           onClick={handleCreateOpportunity}
           isLoading={isRedirecting}
