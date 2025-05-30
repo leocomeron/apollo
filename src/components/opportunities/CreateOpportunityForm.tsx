@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 import DragAndDropImage from '../DragAndDrop/DragAndDropImage';
 import MultiSelect from '../form/MultiSelect';
 import Select from '../form/Select';
@@ -29,6 +30,7 @@ export default function CreateOpportunityForm({
 }: Props) {
   const router = useRouter();
   const { data: session } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -58,6 +60,7 @@ export default function CreateOpportunityForm({
 
   const handleAddOpportunity = async () => {
     try {
+      setIsLoading(true);
       const response = await fetch('/api/opportunities', {
         method: 'POST',
         headers: {
@@ -77,7 +80,8 @@ export default function CreateOpportunityForm({
       await router.push('/profile');
     } catch (error) {
       console.error('Error al crear la oportunidad:', error);
-      // Aquí podrías agregar un toast o notificación de error
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -185,6 +189,7 @@ export default function CreateOpportunityForm({
           onClick={handleAddOpportunity}
           mt={4}
           isDisabled={!isFormValid}
+          isLoading={isLoading}
         >
           Publicar oportunidad
         </Button>
