@@ -17,15 +17,15 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 
-interface Props {
+interface OpportunityPreviewProps {
   formData: OpportunityFormData;
   categories: Category[];
 }
 
-export default function CreateOpportunityPreview({
+export default function OpportunityPreview({
   formData,
   categories,
-}: Props) {
+}: OpportunityPreviewProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedImage, setSelectedImage] = useState('');
 

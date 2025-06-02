@@ -64,9 +64,6 @@ const OpportunitiesSection: React.FC = () => {
   if (isLoading) {
     return (
       <VStack spacing={6} align="stretch">
-        <Text fontSize="2xl" fontWeight="bold">
-          Mis Oportunidades
-        </Text>
         <Text>Cargando oportunidades...</Text>
       </VStack>
     );
@@ -122,6 +119,7 @@ const OpportunitiesSection: React.FC = () => {
             imageUrl={opportunity.images[0]}
             title={opportunity.title}
             createdAt={new Date(opportunity.createdAt)}
+            id={opportunity._id}
           />
         ))}
       </VStack>

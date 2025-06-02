@@ -12,12 +12,13 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --background-brand: #fff4ec;
 }
 
 body {
   font-family: 'Agrandir', sans-serif;
   color: var(--foreground);
-  background: var(--background);
+  background: var(--background-brand);
   height: 100vh;
 }
 

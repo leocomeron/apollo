@@ -22,7 +22,7 @@ export default function App({
           <title>Manos a la obra</title>
         </Head>
         <OnboardingProvider>
-          <Box minH="100vh">
+          <Box minH="100vh" bg="brand.100">
             <Layout>
               <Component {...pageProps} />
             </Layout>

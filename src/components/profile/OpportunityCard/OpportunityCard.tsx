@@ -1,11 +1,13 @@
 import { Box, Image, Text, VStack } from '@chakra-ui/react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { useRouter } from 'next/router';
 
 interface OpportunityCardProps {
   imageUrl: string;
   title: string;
   createdAt: Date;
+  id: string;
   applicationsCount?: number;
 }
 
@@ -13,41 +15,34 @@ const OpportunityCard: React.FC<OpportunityCardProps> = ({
   imageUrl,
   title,
   createdAt,
+  id,
   applicationsCount = 5,
 }) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    void router.push(`/opportunities/${id}`);
+  };
+
   return (
     <Box
       borderWidth="1px"
       borderRadius="lg"
       overflow="hidden"
-      p={4}
-      display="flex"
-      gap={4}
-      alignItems="center"
-      _hover={{ shadow: 'md' }}
-      transition="all 0.2s"
-      h="160px"
-      minH="160px"
-      maxW="500px"
+      cursor="pointer"
+      onClick={handleClick}
+      _hover={{ transform: 'scale(1.02)', transition: 'transform 0.2s' }}
+      maxW={{ base: 'full', md: '600px' }}
     >
-      <Image
-        src={imageUrl}
-        alt={title}
-        boxSize="120px"
-        objectFit="cover"
-        borderRadius="md"
-        flexShrink={0}
-      />
-      <VStack align="start" spacing={3} flex={1} minW={0}>
-        <Text fontWeight="bold" noOfLines={2} fontSize="lg">
+      <Image src={imageUrl} alt={title} h="200px" w="full" objectFit="cover" />
+      <VStack p={4} align="stretch">
+        <Text fontSize="lg" fontWeight="bold">
           {title}
         </Text>
-        <Text fontSize="sm" color="gray.500">
+        <Text color="gray.500">
           {format(createdAt, 'd MMM yyyy', { locale: es })}
         </Text>
-        <Text fontSize="sm" color="gray.500">
-          {applicationsCount} aplicaciones
-        </Text>
+        <Text color="gray.500">{applicationsCount} aplicaciones</Text>
       </VStack>
     </Box>
   );

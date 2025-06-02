@@ -1,5 +1,5 @@
 import CreateOpportunityForm from '@/components/opportunities/CreateOpportunityForm';
-import CreateOpportunityPreview from '@/components/opportunities/CreateOpportunityPreview';
+import CreateOpportunityPreview from '@/components/opportunities/OpportunityPreview';
 import { getCategories } from '@/services/catalogs';
 import { Category } from '@/types/onboarding';
 import { OpportunityFormData } from '@/types/opportunities';
