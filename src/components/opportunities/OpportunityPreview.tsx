@@ -4,6 +4,7 @@ import { OpportunityFormData } from '@/types/opportunities';
 import { CloseIcon } from '@chakra-ui/icons';
 import {
   Box,
+  HStack,
   IconButton,
   Image,
   Modal,
@@ -16,6 +17,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useState } from 'react';
+import StatusBadge from './StatusBadge';
 
 interface OpportunityPreviewProps {
   formData: OpportunityFormData;
@@ -58,9 +60,12 @@ export default function OpportunityPreview({
   return (
     <VStack spacing={4} align="stretch">
       {formData.title && (
-        <Text fontSize="2xl" fontWeight="bold">
-          {formData.title}
-        </Text>
+        <HStack justify="space-between" align="center">
+          <Text fontSize="2xl" fontWeight="bold">
+            {formData.title}
+          </Text>
+          {formData.status && <StatusBadge status={formData.status} />}
+        </HStack>
       )}
 
       {images.length > 0 && (

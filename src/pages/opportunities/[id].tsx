@@ -84,24 +84,24 @@ export default function OpportunityPage({
         templateColumns={{ base: '1fr', md: '1fr', lg: '2fr 1fr' }}
         gap={{ base: 6, lg: 8 }}
       >
-        {/* Main content */}
         <GridItem>
-          <OpportunityPreview
-            formData={{
-              images: opportunity.images,
-              title: opportunity.title,
-              description: opportunity.description,
-              categories: opportunity.categories,
-              location: opportunity.location,
-              type: opportunity.type,
-              startDate: opportunity.startDate,
-              status: opportunity.status,
-            }}
-            categories={categories}
-          />
+          <VStack align="stretch" spacing={4}>
+            <OpportunityPreview
+              formData={{
+                images: opportunity.images,
+                title: opportunity.title,
+                description: opportunity.description,
+                categories: opportunity.categories,
+                location: opportunity.location,
+                type: opportunity.type,
+                startDate: opportunity.startDate,
+                status: opportunity.status,
+              }}
+              categories={categories}
+            />
+          </VStack>
         </GridItem>
 
-        {/* Proposals section */}
         <GridItem>
           <Box rounded="lg" shadow="base" p={2}>
             <Text fontSize="xl" fontWeight="bold" mb={2}>
