@@ -45,7 +45,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
           </Text>
         </VStack>
 
-        <VStack spacing={2} width="full" maxW="140px">
+        <VStack spacing={2} width="full" maxW="80px">
           <Button colorScheme="brand" size="xs" onClick={onAccept} width="full">
             Aceptar
           </Button>
