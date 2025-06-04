@@ -105,7 +105,7 @@ export default function OpportunityPage({
         <GridItem>
           <Box rounded="lg" shadow="base" p={2}>
             <Text fontSize="xl" fontWeight="bold" mb={2}>
-              Sección de propuestas
+              Propuestas de interesados
             </Text>
             <VStack spacing={4} align="stretch">
               {mockProposals.map((proposal) => (

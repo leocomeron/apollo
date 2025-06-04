@@ -33,7 +33,13 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
           <Text fontWeight="bold">
             {name} {lastName}
           </Text>
-          <ReviewRating reviewStats={reviewStats} />
+          <ReviewRating
+            reviewStats={reviewStats}
+            hideTotalReviews
+            hideProgressBars
+            size="xs"
+            ratingAverageAlignment="left"
+          />
           <Text color="brand.900" fontWeight="bold">
             Presupuesto: ${budget.toLocaleString()}
           </Text>
