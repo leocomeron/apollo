@@ -1,5 +1,6 @@
 import DeleteButton from '@/components/common/DeleteButton';
 import EditButton from '@/components/common/EditButton';
+import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 import EditOpportunityForm from '@/components/opportunities/EditOpportunityForm';
 import OpportunityPreview from '@/components/opportunities/OpportunityPreview';
 import ProposalCard from '@/components/opportunities/ProposalCard';
@@ -108,6 +109,7 @@ export default function OpportunityPage({
     startDate: opportunity.startDate,
     status: opportunity.status,
   });
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const handleAcceptProposal = (proposalId: string) => {
     console.log('Accept proposal:', proposalId);
@@ -143,15 +145,14 @@ export default function OpportunityPage({
     }
   };
 
-  const handleDelete = async () => {
-    if (
-      !window.confirm('¿Estás seguro de que deseas eliminar esta oportunidad?')
-    ) {
-      return;
-    }
+  const handleDelete = () => {
+    setIsAlertOpen(true);
+  };
 
+  const confirmDelete = async () => {
     try {
       setIsDeleting(true);
+      setIsAlertOpen(false);
       await deleteOpportunity(opportunity._id);
 
       toast({
@@ -234,6 +235,17 @@ export default function OpportunityPage({
           </ModalBody>
         </ModalContent>
       </Modal>
+
+      <DeleteConfirmationModal
+        isOpen={isAlertOpen}
+        onClose={() => setIsAlertOpen(false)}
+        onConfirm={confirmDelete}
+        isLoading={isDeleting}
+        title="Eliminar oportunidad"
+        message="¿Estás seguro de que deseas eliminar esta oportunidad?"
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+      />
     </Container>
   );
 }
