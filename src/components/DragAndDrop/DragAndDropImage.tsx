@@ -1,22 +1,28 @@
 import { uploadToCloudinary } from '@/services/cloudinary';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { Box, IconButton, Image, SimpleGrid, Text } from '@chakra-ui/react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { ACCEPTED_IMAGE_TYPES } from './helpers';
 
 interface DragAndDropImageProps {
   onImageChange?: (imageData: string[]) => void;
   maxImages?: number;
+  initialImages?: string[];
 }
 
 const DragAndDropImage = ({
   onImageChange,
   maxImages,
+  initialImages = [],
 }: DragAndDropImageProps) => {
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<string[]>(initialImages);
   const [error, setError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+
+  useEffect(() => {
+    setImages(initialImages);
+  }, [initialImages]);
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {

@@ -1,11 +1,34 @@
+import DeleteButton from '@/components/common/DeleteButton';
+import EditButton from '@/components/common/EditButton';
+import EditOpportunityForm from '@/components/opportunities/EditOpportunityForm';
 import OpportunityPreview from '@/components/opportunities/OpportunityPreview';
 import ProposalCard from '@/components/opportunities/ProposalCard';
 import fetcher from '@/lib/fetcher';
 import { getCategories } from '@/services/catalogs';
+import { deleteOpportunity, updateOpportunity } from '@/services/opportunities';
 import { Category } from '@/types/onboarding';
-import { Box, Container, Grid, GridItem, Text, VStack } from '@chakra-ui/react';
+import { OpportunityFormData } from '@/types/opportunities';
+import {
+  Box,
+  Container,
+  Grid,
+  GridItem,
+  HStack,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+  useDisclosure,
+  useToast,
+  VStack,
+} from '@chakra-ui/react';
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 interface Opportunity {
   _id: string;
@@ -70,12 +93,86 @@ export default function OpportunityPage({
   opportunity,
   categories,
 }: OpportunityPageProps) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
+  const toast = useToast();
+  const [formData, setFormData] = useState<OpportunityFormData>({
+    images: opportunity.images,
+    title: opportunity.title,
+    description: opportunity.description,
+    categories: opportunity.categories,
+    location: opportunity.location,
+    type: opportunity.type,
+    startDate: opportunity.startDate,
+    status: opportunity.status,
+  });
+
   const handleAcceptProposal = (proposalId: string) => {
     console.log('Accept proposal:', proposalId);
   };
 
   const handleRejectProposal = (proposalId: string) => {
     console.log('Reject proposal:', proposalId);
+  };
+
+  const handleSave = async () => {
+    try {
+      setIsSaving(true);
+      await updateOpportunity(opportunity._id, formData);
+
+      toast({
+        title: 'Oportunidad actualizada',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+
+      onClose();
+    } catch (error) {
+      console.error('Error al actualizar la oportunidad:', error);
+      toast({
+        title: 'Error al actualizar la oportunidad',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (
+      !window.confirm('¿Estás seguro de que deseas eliminar esta oportunidad?')
+    ) {
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      await deleteOpportunity(opportunity._id);
+
+      toast({
+        title: 'Oportunidad eliminada',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+
+      await router.push('/profile');
+    } catch (error) {
+      console.error('Error al eliminar la oportunidad:', error);
+      toast({
+        title: 'Error al eliminar la oportunidad',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -86,24 +183,20 @@ export default function OpportunityPage({
       >
         <GridItem>
           <VStack align="stretch" spacing={4}>
-            <OpportunityPreview
-              formData={{
-                images: opportunity.images,
-                title: opportunity.title,
-                description: opportunity.description,
-                categories: opportunity.categories,
-                location: opportunity.location,
-                type: opportunity.type,
-                startDate: opportunity.startDate,
-                status: opportunity.status,
-              }}
-              categories={categories}
-            />
+            <Box position="relative" w="100%">
+              <Box display="flex" justifyContent="flex-end" mb={1}>
+                <HStack spacing={2}>
+                  <EditButton onClick={onOpen} />
+                  <DeleteButton onClick={handleDelete} isLoading={isDeleting} />
+                </HStack>
+              </Box>
+              <OpportunityPreview formData={formData} categories={categories} />
+            </Box>
           </VStack>
         </GridItem>
 
         <GridItem>
-          <Box rounded="lg" shadow="base" p={2}>
+          <Box rounded="lg" shadow="base" p={4}>
             <Text fontSize="xl" fontWeight="bold" mb={2}>
               Propuestas de interesados
             </Text>
@@ -124,6 +217,23 @@ export default function OpportunityPage({
           </Box>
         </GridItem>
       </Grid>
+
+      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Editar oportunidad</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <EditOpportunityForm
+              categories={categories}
+              formData={formData}
+              onFormChange={setFormData}
+              onSave={handleSave}
+              isSaving={isSaving}
+            />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </Container>
   );
 }
