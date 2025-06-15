@@ -8,7 +8,7 @@ import fetcher from '@/lib/fetcher';
 import { getCategories } from '@/services/catalogs';
 import { deleteOpportunity, updateOpportunity } from '@/services/opportunities';
 import { Category } from '@/types/onboarding';
-import { OpportunityFormData } from '@/types/opportunities';
+import { Opportunity, OpportunityFormData } from '@/types/opportunities';
 import {
   Box,
   Container,
@@ -30,19 +30,6 @@ import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-
-interface Opportunity {
-  _id: string;
-  title: string;
-  images: string[];
-  createdAt: string;
-  status: 'open' | 'in_progress' | 'closed';
-  description: string;
-  categories: string[];
-  location: string;
-  type: string;
-  startDate: string;
-}
 
 interface OpportunityPageProps {
   opportunity: Opportunity;
@@ -118,7 +105,7 @@ export default function OpportunityPage({
   const handleRejectProposal = (proposalId: string) => {
     console.log('Reject proposal:', proposalId);
   };
-
+  console.log(opportunity);
   const handleSave = async () => {
     try {
       setIsSaving(true);

@@ -1,4 +1,5 @@
 import fetcher from '@/lib/fetcher';
+import { Opportunity } from '@/types/opportunities';
 import { Box, Button, Text, VStack } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -6,19 +7,6 @@ import { useState } from 'react';
 import useSWR from 'swr';
 import CallToAction from '../../CallToAction/CallToAction';
 import OpportunityCard from '../OpportunityCard/OpportunityCard';
-
-interface Opportunity {
-  _id: string;
-  title: string;
-  images: string[];
-  createdAt: string;
-  status: 'open' | 'in_progress' | 'closed';
-  description: string;
-  categories: string[];
-  location: string;
-  type: string;
-  startDate: string;
-}
 
 type OpportunityStatus = Opportunity['status'];
 
