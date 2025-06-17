@@ -30,7 +30,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         <Avatar size="lg" src={profileImage} name={`${name} ${lastName}`} />
 
         <VStack align="start" flex={1} spacing={1}>
-          <Text fontWeight="bold">
+          <Text fontSize="sm" fontWeight="bold">
             {name} {lastName}
           </Text>
           <ReviewRating
@@ -40,7 +40,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
             size="xs"
             ratingAverageAlignment="left"
           />
-          <Text color="brand.900" fontWeight="bold">
+          <Text fontSize="sm" color="brand.900" fontWeight="bold">
             Presupuesto: ${budget.toLocaleString()}
           </Text>
         </VStack>
