@@ -1,6 +1,7 @@
 import clientPromise from '@/lib/mongodb';
 import { User } from '@/pages/api/users/types';
 import { DocumentType } from '@/types/onboarding';
+import { calculateReviewStats } from '@/utils/reviewStats';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -38,6 +39,22 @@ export default async function handler(
       .find({ _id: { $in: workerIds } })
       .toArray();
 
+    // Get all reviews for these workers
+    const reviews = await db
+      .collection('reviews')
+      .find({ userId: { $in: workerIds } })
+      .toArray();
+
+    // Create a map of reviews by worker ID
+    const reviewsByWorker: Record<string, number[]> = {};
+    reviews.forEach((review) => {
+      const workerId = review.userId.toString();
+      if (!reviewsByWorker[workerId]) {
+        reviewsByWorker[workerId] = [];
+      }
+      reviewsByWorker[workerId].push(review.score);
+    });
+
     // Create a map of worker data for easy lookup
     const workerMap: Record<string, User> = workers.reduce(
       (acc, worker) => {
@@ -57,24 +74,17 @@ export default async function handler(
         worker?.profilePicture ||
         '';
 
+      const workerReviews = reviewsByWorker[proposal.workerId.toString()] || [];
+      const reviewStats = calculateReviewStats(workerReviews);
+
       return {
         id: proposal._id.toString(),
+        workerId: proposal.workerId.toString(),
         name: worker?.firstName || '',
         lastName: worker?.lastName || '',
         profileImage: profilePictureUrl,
         budget: proposal.budget,
-        // TODO: Add review stats
-        reviewStats: {
-          totalReviews: 0,
-          averageRating: 0,
-          breakdown: [
-            { score: 5, count: 0 },
-            { score: 4, count: 0 },
-            { score: 3, count: 0 },
-            { score: 2, count: 0 },
-            { score: 1, count: 0 },
-          ],
-        },
+        reviewStats,
         status: proposal.status,
       };
     });
