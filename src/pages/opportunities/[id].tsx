@@ -7,6 +7,7 @@ import ProposalCard from '@/components/opportunities/ProposalCard';
 import fetcher from '@/lib/fetcher';
 import { getCategories } from '@/services/catalogs';
 import { deleteOpportunity, updateOpportunity } from '@/services/opportunities';
+import { updateAllProposalsForOpportunity } from '@/services/proposals';
 import { Category } from '@/types/onboarding';
 import { Opportunity, OpportunityFormData } from '@/types/opportunities';
 import {
@@ -30,7 +31,7 @@ import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 interface OpportunityPageProps {
   opportunity: Opportunity;
@@ -39,7 +40,7 @@ interface OpportunityPageProps {
 
 interface Proposal {
   id: string;
-  name: string;
+  firstName: string;
   lastName: string;
   profileImage: string;
   budget: number;
@@ -48,7 +49,7 @@ interface Proposal {
     averageRating: number;
     breakdown: Array<{ score: number; count: number }>;
   };
-  status: string;
+  status: 'pending' | 'accepted' | 'rejected';
 }
 
 export default function OpportunityPage({
@@ -83,8 +84,31 @@ export default function OpportunityPage({
 
   const handleAcceptProposal = async (proposalId: string) => {
     try {
-      // TODO: Implement accept proposal logic
-      console.log('Accept proposal:', proposalId);
+      // Update opportunity status to "in_progress"
+      await updateOpportunity(opportunity._id, {
+        ...formData,
+        status: 'in_progress',
+      });
+
+      // Update all proposals for this opportunity
+      await updateAllProposalsForOpportunity(opportunity._id, proposalId);
+
+      // Update local form data
+      setFormData((prev) => ({
+        ...prev,
+        status: 'in_progress',
+      }));
+
+      // Refresh proposals data using SWR mutate
+      await mutate(`/api/opportunities/${opportunity._id}/proposals`);
+
+      toast({
+        title: 'Propuesta aceptada',
+        description: 'La oportunidad ha sido marcada como en progreso',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
       console.error('Error accepting proposal:', error);
       toast({
@@ -98,8 +122,28 @@ export default function OpportunityPage({
 
   const handleRejectProposal = async (proposalId: string) => {
     try {
-      // TODO: Implement reject proposal logic
-      console.log('Reject proposal:', proposalId);
+      // Update the specific proposal to 'rejected' status
+      const response = await fetch(`/api/proposals/${proposalId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: 'rejected' }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al rechazar la propuesta');
+      }
+
+      // Refresh proposals data using SWR mutate
+      await mutate(`/api/opportunities/${opportunity._id}/proposals`);
+
+      toast({
+        title: 'Propuesta rechazada',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
       console.error('Error rejecting proposal:', error);
       toast({
@@ -201,18 +245,29 @@ export default function OpportunityPage({
               ) : proposals?.length === 0 ? (
                 <Text>No hay propuestas aún</Text>
               ) : (
-                proposals?.map((proposal) => (
-                  <ProposalCard
-                    key={proposal.id}
-                    name={proposal.name}
-                    lastName={proposal.lastName}
-                    profileImage={proposal.profileImage}
-                    budget={proposal.budget}
-                    reviewStats={proposal.reviewStats}
-                    onAccept={() => handleAcceptProposal(proposal.id)}
-                    onReject={() => handleRejectProposal(proposal.id)}
-                  />
-                ))
+                proposals
+                  ?.sort((a, b) => {
+                    // Sort: accepted first, then pending, then rejected
+                    const statusOrder = {
+                      accepted: 0,
+                      pending: 1,
+                      rejected: 2,
+                    };
+                    return statusOrder[a.status] - statusOrder[b.status];
+                  })
+                  .map((proposal) => (
+                    <ProposalCard
+                      key={proposal.id}
+                      firstName={proposal.firstName}
+                      lastName={proposal.lastName}
+                      profileImage={proposal.profileImage}
+                      budget={proposal.budget}
+                      reviewStats={proposal.reviewStats}
+                      status={proposal.status}
+                      onAccept={() => handleAcceptProposal(proposal.id)}
+                      onReject={() => handleRejectProposal(proposal.id)}
+                    />
+                  ))
               )}
             </VStack>
           </Box>

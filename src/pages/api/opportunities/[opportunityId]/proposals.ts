@@ -12,8 +12,8 @@ export default async function handler(
   const client = await clientPromise;
   const db = client.db('worker_hub');
 
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', ['GET']);
+  if (req.method !== 'GET' && req.method !== 'PUT') {
+    res.setHeader('Allow', ['GET', 'PUT']);
     return res.status(405).end(`Method ${req.method} not allowed`);
   }
 
@@ -24,7 +24,37 @@ export default async function handler(
       return res.status(400).json({ message: 'Opportunity ID is required' });
     }
 
-    // Get all proposals for this opportunity
+    if (req.method === 'PUT') {
+      const { acceptedProposalId } = req.body;
+
+      if (!acceptedProposalId) {
+        return res
+          .status(400)
+          .json({ message: 'Accepted proposal ID is required' });
+      }
+
+      // Update the accepted proposal to 'accepted' status
+      await db
+        .collection('proposals')
+        .updateOne(
+          { _id: new ObjectId(acceptedProposalId) },
+          { $set: { status: 'accepted', updatedAt: new Date() } },
+        );
+
+      // Update all other proposals for this opportunity to 'rejected' status
+      await db.collection('proposals').updateMany(
+        {
+          opportunityId: opportunityId,
+          _id: { $ne: new ObjectId(acceptedProposalId) },
+        },
+        { $set: { status: 'rejected', updatedAt: new Date() } },
+      );
+
+      res.status(200).json({ message: 'Proposals updated successfully' });
+      return;
+    }
+
+    // GET method - existing logic
     const proposals = await db
       .collection('proposals')
       .find({ opportunityId: opportunityId })
@@ -80,7 +110,7 @@ export default async function handler(
       return {
         id: proposal._id.toString(),
         workerId: proposal.workerId.toString(),
-        name: worker?.firstName || '',
+        firstName: worker?.firstName || '',
         lastName: worker?.lastName || '',
         profileImage: profilePictureUrl,
         budget: proposal.budget,
