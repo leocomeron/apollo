@@ -30,52 +30,26 @@ import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import useSWR from 'swr';
 
 interface OpportunityPageProps {
   opportunity: Opportunity;
   categories: Category[];
 }
 
-const mockProposals = [
-  {
-    id: '1',
-    name: 'Juan',
-    lastName: 'Pérez',
-    profileImage:
-      'https://img.freepik.com/fotos-premium/trabajador-construccion-casco-amarillo_58409-13665.jpg',
-    budget: 150000,
-    reviewStats: {
-      totalReviews: 25,
-      averageRating: 4.5,
-      breakdown: [
-        { score: 5, count: 15 },
-        { score: 4, count: 7 },
-        { score: 3, count: 2 },
-        { score: 2, count: 1 },
-        { score: 1, count: 0 },
-      ],
-    },
-  },
-  {
-    id: '2',
-    name: 'María',
-    lastName: 'González',
-    profileImage:
-      'https://img.freepik.com/fotos-premium/trabajador-construccion-casco-amarillo_58409-13665.jpg',
-    budget: 180000,
-    reviewStats: {
-      totalReviews: 18,
-      averageRating: 4.8,
-      breakdown: [
-        { score: 5, count: 12 },
-        { score: 4, count: 5 },
-        { score: 3, count: 1 },
-        { score: 2, count: 0 },
-        { score: 1, count: 0 },
-      ],
-    },
-  },
-];
+interface Proposal {
+  id: string;
+  name: string;
+  lastName: string;
+  profileImage: string;
+  budget: number;
+  reviewStats: {
+    totalReviews: number;
+    averageRating: number;
+    breakdown: Array<{ score: number; count: number }>;
+  };
+  status: string;
+}
 
 export default function OpportunityPage({
   opportunity,
@@ -98,14 +72,45 @@ export default function OpportunityPage({
   });
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
-  const handleAcceptProposal = (proposalId: string) => {
-    console.log('Accept proposal:', proposalId);
+  const {
+    data: proposals,
+    error: proposalsError,
+    isLoading: isLoadingProposals,
+  } = useSWR<Proposal[]>(
+    `/api/opportunities/${opportunity._id}/proposals`,
+    fetcher,
+  );
+
+  const handleAcceptProposal = async (proposalId: string) => {
+    try {
+      // TODO: Implement accept proposal logic
+      console.log('Accept proposal:', proposalId);
+    } catch (error) {
+      console.error('Error accepting proposal:', error);
+      toast({
+        title: 'Error al aceptar la propuesta',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
-  const handleRejectProposal = (proposalId: string) => {
-    console.log('Reject proposal:', proposalId);
+  const handleRejectProposal = async (proposalId: string) => {
+    try {
+      // TODO: Implement reject proposal logic
+      console.log('Reject proposal:', proposalId);
+    } catch (error) {
+      console.error('Error rejecting proposal:', error);
+      toast({
+        title: 'Error al rechazar la propuesta',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
-  console.log(opportunity);
+
   const handleSave = async () => {
     try {
       setIsSaving(true);
@@ -189,18 +194,26 @@ export default function OpportunityPage({
               Propuestas de interesados
             </Text>
             <VStack spacing={4} align="stretch">
-              {mockProposals.map((proposal) => (
-                <ProposalCard
-                  key={proposal.id}
-                  name={proposal.name}
-                  lastName={proposal.lastName}
-                  profileImage={proposal.profileImage}
-                  budget={proposal.budget}
-                  reviewStats={proposal.reviewStats}
-                  onAccept={() => handleAcceptProposal(proposal.id)}
-                  onReject={() => handleRejectProposal(proposal.id)}
-                />
-              ))}
+              {isLoadingProposals ? (
+                <Text>Cargando propuestas...</Text>
+              ) : proposalsError ? (
+                <Text color="red.500">Error al cargar las propuestas</Text>
+              ) : proposals?.length === 0 ? (
+                <Text>No hay propuestas aún</Text>
+              ) : (
+                proposals?.map((proposal) => (
+                  <ProposalCard
+                    key={proposal.id}
+                    name={proposal.name}
+                    lastName={proposal.lastName}
+                    profileImage={proposal.profileImage}
+                    budget={proposal.budget}
+                    reviewStats={proposal.reviewStats}
+                    onAccept={() => handleAcceptProposal(proposal.id)}
+                    onReject={() => handleRejectProposal(proposal.id)}
+                  />
+                ))
+              )}
             </VStack>
           </Box>
         </GridItem>
