@@ -1,13 +1,6 @@
-import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
-import {
-  Avatar,
-  Box,
-  Button,
-  HStack,
-  Icon,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Avatar, Box, Button, HStack, Text, VStack } from '@chakra-ui/react';
+import CheckIconComponent from '../common/CheckIcon';
+import CloseIconComponent from '../common/CloseIcon';
 import ReviewRating from '../profile/ReviewRating/ReviewRating';
 
 interface ProposalCardProps {
@@ -39,32 +32,8 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
 
   return (
     <Box bg="white" p={2} borderRadius="lg" shadow="sm" position="relative">
-      {status === 'accepted' && (
-        <Box
-          position="absolute"
-          top={0}
-          left={0}
-          bg="green.500"
-          borderRadius="full"
-          p={1}
-          zIndex={1}
-        >
-          <Icon as={CheckIcon} color="white" boxSize={4} p={0.5} />
-        </Box>
-      )}
-      {status === 'rejected' && (
-        <Box
-          position="absolute"
-          top={0}
-          left={0}
-          bg="red.500"
-          borderRadius="full"
-          p={1}
-          zIndex={1}
-        >
-          <Icon as={CloseIcon} color="white" boxSize={4} p={0.5} />
-        </Box>
-      )}
+      {status === 'accepted' && <CheckIconComponent />}
+      {status === 'rejected' && <CloseIconComponent />}
 
       <HStack spacing={2} align="start">
         <Avatar
