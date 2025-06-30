@@ -1,6 +1,7 @@
 import DeleteButton from '@/components/common/DeleteButton';
 import EditButton from '@/components/common/EditButton';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
+import CloseOpportunityModal from '@/components/opportunities/CloseOpportunityModal';
 import EditOpportunityForm from '@/components/opportunities/EditOpportunityForm';
 import OpportunityPreview from '@/components/opportunities/OpportunityPreview';
 import ProposalCard from '@/components/opportunities/ProposalCard';
@@ -12,6 +13,7 @@ import { Category } from '@/types/onboarding';
 import { Opportunity, OpportunityFormData } from '@/types/opportunities';
 import {
   Box,
+  Button,
   Container,
   Grid,
   GridItem,
@@ -40,6 +42,7 @@ interface OpportunityPageProps {
 
 interface Proposal {
   id: string;
+  workerId: string;
   firstName: string;
   lastName: string;
   profileImage: string;
@@ -57,10 +60,16 @@ export default function OpportunityPage({
   categories,
 }: OpportunityPageProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isReviewOpen,
+    onOpen: onReviewOpen,
+    onClose: onReviewClose,
+  } = useDisclosure();
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
   const toast = useToast();
+
   const [formData, setFormData] = useState<OpportunityFormData>({
     images: opportunity.images,
     title: opportunity.title,
@@ -71,6 +80,7 @@ export default function OpportunityPage({
     startDate: opportunity.startDate,
     status: opportunity.status,
   });
+
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const {
@@ -81,6 +91,27 @@ export default function OpportunityPage({
     `/api/opportunities/${opportunity._id}/proposals`,
     fetcher,
   );
+
+  // Get the accepted proposal (worker to review)
+  const acceptedProposal = proposals?.find((p) => p.status === 'accepted');
+
+  const handleCloseAndReview = () => {
+    if (!acceptedProposal) {
+      toast({
+        title: 'Error',
+        description: 'No se encontró una propuesta aceptada para evaluar',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+    onReviewOpen();
+  };
+
+  const handleOpportunityUpdate = (newFormData: OpportunityFormData) => {
+    setFormData(newFormData);
+  };
 
   const handleAcceptProposal = async (proposalId: string) => {
     try {
@@ -233,44 +264,60 @@ export default function OpportunityPage({
         </GridItem>
 
         <GridItem>
-          <Box rounded="lg" shadow="base" p={4}>
-            <Text fontSize="xl" fontWeight="bold" mb={2}>
-              Propuestas de interesados
-            </Text>
-            <VStack spacing={4} align="stretch">
-              {isLoadingProposals ? (
-                <Text>Cargando propuestas...</Text>
-              ) : proposalsError ? (
-                <Text color="red.500">Error al cargar las propuestas</Text>
-              ) : proposals?.length === 0 ? (
-                <Text>No hay propuestas aún</Text>
-              ) : (
-                proposals
-                  ?.sort((a, b) => {
-                    // Sort: accepted first, then pending, then rejected
-                    const statusOrder = {
-                      accepted: 0,
-                      pending: 1,
-                      rejected: 2,
-                    };
-                    return statusOrder[a.status] - statusOrder[b.status];
-                  })
-                  .map((proposal) => (
-                    <ProposalCard
-                      key={proposal.id}
-                      firstName={proposal.firstName}
-                      lastName={proposal.lastName}
-                      profileImage={proposal.profileImage}
-                      budget={proposal.budget}
-                      reviewStats={proposal.reviewStats}
-                      status={proposal.status}
-                      onAccept={() => handleAcceptProposal(proposal.id)}
-                      onReject={() => handleRejectProposal(proposal.id)}
-                    />
-                  ))
-              )}
-            </VStack>
-          </Box>
+          <VStack spacing={4} align="stretch">
+            <Box rounded="lg" shadow="base" p={4}>
+              <Text fontSize="xl" fontWeight="bold" mb={2}>
+                Propuestas de interesados
+              </Text>
+              <VStack spacing={4} align="stretch">
+                {isLoadingProposals ? (
+                  <Text>Cargando propuestas...</Text>
+                ) : proposalsError ? (
+                  <Text color="red.500">Error al cargar las propuestas</Text>
+                ) : proposals?.length === 0 ? (
+                  <Text>No hay propuestas aún</Text>
+                ) : (
+                  proposals
+                    ?.sort((a, b) => {
+                      // Sort: accepted first, then pending, then rejected
+                      const statusOrder = {
+                        accepted: 0,
+                        pending: 1,
+                        rejected: 2,
+                      };
+                      return statusOrder[a.status] - statusOrder[b.status];
+                    })
+                    .map((proposal) => (
+                      <ProposalCard
+                        key={proposal.id}
+                        firstName={proposal.firstName}
+                        lastName={proposal.lastName}
+                        profileImage={proposal.profileImage}
+                        budget={proposal.budget}
+                        reviewStats={proposal.reviewStats}
+                        status={proposal.status}
+                        onAccept={() => handleAcceptProposal(proposal.id)}
+                        onReject={() => handleRejectProposal(proposal.id)}
+                      />
+                    ))
+                )}
+              </VStack>
+            </Box>
+
+            {/* Close and Review Button */}
+            {formData.status === 'in_progress' && acceptedProposal && (
+              <Box display="flex" justifyContent="flex-end">
+                <Button
+                  colorScheme="brand"
+                  backgroundColor="brand.700"
+                  onClick={handleCloseAndReview}
+                  size="md"
+                >
+                  Cerrar y Evaluar
+                </Button>
+              </Box>
+            )}
+          </VStack>
         </GridItem>
       </Grid>
 
@@ -283,7 +330,7 @@ export default function OpportunityPage({
             <EditOpportunityForm
               categories={categories}
               formData={formData}
-              onFormChange={setFormData}
+              onFormChange={handleOpportunityUpdate}
               onSave={handleSave}
               isSaving={isSaving}
             />
@@ -300,6 +347,16 @@ export default function OpportunityPage({
         message="¿Estás seguro de que deseas eliminar esta oportunidad?"
         confirmText="Eliminar"
         cancelText="Cancelar"
+      />
+
+      {/* Close Opportunity Modal */}
+      <CloseOpportunityModal
+        isOpen={isReviewOpen}
+        onClose={onReviewClose}
+        acceptedProposal={acceptedProposal}
+        opportunityId={opportunity._id}
+        formData={formData}
+        onOpportunityUpdate={handleOpportunityUpdate}
       />
     </Container>
   );
