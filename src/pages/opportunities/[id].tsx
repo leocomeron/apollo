@@ -6,7 +6,6 @@ import EditOpportunityForm from '@/components/opportunities/EditOpportunityForm'
 import OpportunityPreview from '@/components/opportunities/OpportunityPreview';
 import ProposalCard from '@/components/opportunities/ProposalCard';
 import fetcher from '@/lib/fetcher';
-import { getCategories } from '@/services/catalogs';
 import { deleteOpportunity, updateOpportunity } from '@/services/opportunities';
 import { updateAllProposalsForOpportunity } from '@/services/proposals';
 import { Category } from '@/types/onboarding';
@@ -24,21 +23,15 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Spinner,
   Text,
   useDisclosure,
   useToast,
   VStack,
 } from '@chakra-ui/react';
-import { GetServerSideProps } from 'next';
-import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import useSWR, { mutate } from 'swr';
-
-interface OpportunityPageProps {
-  opportunity: Opportunity;
-  categories: Category[];
-}
 
 interface Proposal {
   id: string;
@@ -55,10 +48,7 @@ interface Proposal {
   status: 'pending' | 'accepted' | 'rejected';
 }
 
-export default function OpportunityPage({
-  opportunity,
-  categories,
-}: OpportunityPageProps) {
+export default function OpportunityPage() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isReviewOpen,
@@ -69,17 +59,25 @@ export default function OpportunityPage({
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
   const toast = useToast();
+  const { id } = router.query;
 
-  const [formData, setFormData] = useState<OpportunityFormData>({
-    images: opportunity.images,
-    title: opportunity.title,
-    description: opportunity.description,
-    categories: opportunity.categories,
-    location: opportunity.location,
-    type: opportunity.type,
-    startDate: opportunity.startDate,
-    status: opportunity.status,
-  });
+  // Local state only for editing
+  const [editedOpportunity, setEditedOpportunity] =
+    useState<OpportunityFormData | null>(null);
+
+  // Get opportunity data
+  const {
+    data: opportunity,
+    error: opportunityError,
+    isLoading: isLoadingOpportunity,
+  } = useSWR<Opportunity>(id ? `/api/opportunities/${id}` : null, fetcher);
+
+  // Get categories data
+  const {
+    data: categories,
+    error: categoriesError,
+    isLoading: isLoadingCategories,
+  } = useSWR<Category[]>('/api/catalogs/categories', fetcher);
 
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
@@ -88,9 +86,49 @@ export default function OpportunityPage({
     error: proposalsError,
     isLoading: isLoadingProposals,
   } = useSWR<Proposal[]>(
-    `/api/opportunities/${opportunity._id}/proposals`,
+    id ? `/api/opportunities/${id}/proposals` : null,
     fetcher,
   );
+
+  // Loading state
+  if (isLoadingOpportunity || isLoadingCategories) {
+    return (
+      <Container maxW="container.xl">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minH="400px"
+        >
+          <Spinner size="xl" color="brand.500" />
+        </Box>
+      </Container>
+    );
+  }
+
+  // Error state
+  if (opportunityError || categoriesError) {
+    return (
+      <Container maxW="container.xl">
+        <Box textAlign="center" py={10}>
+          <Text fontSize="xl" color="red.500">
+            Error al cargar la oportunidad
+          </Text>
+        </Box>
+      </Container>
+    );
+  }
+
+  // Not found state
+  if (!opportunity || !categories) {
+    return (
+      <Container maxW="container.xl">
+        <Box textAlign="center" py={10}>
+          <Text fontSize="xl">Oportunidad no encontrada</Text>
+        </Box>
+      </Container>
+    );
+  }
 
   // Get the accepted proposal (worker to review)
   const acceptedProposal = proposals?.find((p) => p.status === 'accepted');
@@ -109,27 +147,19 @@ export default function OpportunityPage({
     onReviewOpen();
   };
 
-  const handleOpportunityUpdate = (newFormData: OpportunityFormData) => {
-    setFormData(newFormData);
-  };
-
   const handleAcceptProposal = async (proposalId: string) => {
     try {
       // Update opportunity status to "in_progress"
       await updateOpportunity(opportunity._id, {
-        ...formData,
+        ...opportunity,
         status: 'in_progress',
       });
 
       // Update all proposals for this opportunity
       await updateAllProposalsForOpportunity(opportunity._id, proposalId);
 
-      // Update local form data
-      setFormData((prev) => ({
-        ...prev,
-        status: 'in_progress',
-      }));
-
+      // Refresh opportunity data using SWR mutate
+      await mutate(`/api/opportunities/${id}`);
       // Refresh proposals data using SWR mutate
       await mutate(`/api/opportunities/${opportunity._id}/proposals`);
 
@@ -187,9 +217,14 @@ export default function OpportunityPage({
   };
 
   const handleSave = async () => {
+    if (!editedOpportunity) return;
+
     try {
       setIsSaving(true);
-      await updateOpportunity(opportunity._id, formData);
+      await updateOpportunity(opportunity._id, editedOpportunity);
+
+      // Refresh opportunity data using SWR mutate
+      await mutate(`/api/opportunities/${id}`);
 
       toast({
         title: 'Oportunidad actualizada',
@@ -198,6 +233,7 @@ export default function OpportunityPage({
         isClosable: true,
       });
 
+      setEditedOpportunity(null);
       onClose();
     } catch (error) {
       console.error('Error al actualizar la oportunidad:', error);
@@ -253,12 +289,25 @@ export default function OpportunityPage({
           <VStack align="stretch" spacing={4}>
             <Box position="relative" w="100%">
               <Box display="flex" justifyContent="flex-end" mb={1}>
-                <HStack spacing={2}>
-                  <EditButton onClick={onOpen} />
-                  <DeleteButton onClick={handleDelete} isLoading={isDeleting} />
-                </HStack>
+                {opportunity.status === 'open' && (
+                  <HStack spacing={2}>
+                    <EditButton
+                      onClick={() => {
+                        setEditedOpportunity(opportunity);
+                        onOpen();
+                      }}
+                    />
+                    <DeleteButton
+                      onClick={handleDelete}
+                      isLoading={isDeleting}
+                    />
+                  </HStack>
+                )}
               </Box>
-              <OpportunityPreview formData={formData} categories={categories} />
+              <OpportunityPreview
+                formData={opportunity}
+                categories={categories}
+              />
             </Box>
           </VStack>
         </GridItem>
@@ -305,7 +354,7 @@ export default function OpportunityPage({
             </Box>
 
             {/* Close and Review Button */}
-            {formData.status === 'in_progress' && acceptedProposal && (
+            {opportunity.status === 'in_progress' && acceptedProposal && (
               <Box display="flex" justifyContent="flex-end">
                 <Button
                   colorScheme="brand"
@@ -321,16 +370,28 @@ export default function OpportunityPage({
         </GridItem>
       </Grid>
 
-      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          setEditedOpportunity(null);
+          onClose();
+        }}
+        size="xl"
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Editar oportunidad</ModalHeader>
-          <ModalCloseButton />
+          <ModalCloseButton
+            onClick={() => {
+              setEditedOpportunity(null);
+              onClose();
+            }}
+          />
           <ModalBody>
             <EditOpportunityForm
               categories={categories}
-              formData={formData}
-              onFormChange={handleOpportunityUpdate}
+              formData={editedOpportunity || opportunity}
+              onFormChange={setEditedOpportunity}
               onSave={handleSave}
               isSaving={isSaving}
             />
@@ -355,42 +416,9 @@ export default function OpportunityPage({
         onClose={onReviewClose}
         acceptedProposal={acceptedProposal}
         opportunityId={opportunity._id}
-        formData={formData}
-        onOpportunityUpdate={handleOpportunityUpdate}
+        formData={opportunity}
+        onOpportunityUpdate={() => mutate(`/api/opportunities/${id}`)}
       />
     </Container>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getSession(context);
-  const { id } = context.params as { id: string };
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/auth/signin',
-        permanent: false,
-      },
-    };
-  }
-
-  try {
-    const [opportunity, categories] = await Promise.all([
-      fetcher(`${process.env.NEXT_PUBLIC_API_URL}/api/opportunities/${id}`),
-      getCategories(),
-    ]);
-
-    return {
-      props: {
-        opportunity,
-        categories,
-      },
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      notFound: true,
-    };
-  }
-};
