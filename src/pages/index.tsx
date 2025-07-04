@@ -79,23 +79,23 @@ export default function Home({
   );
 
   return (
-    <div className="items-center justify-items-center p-2 pb-20 gap-8 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <Tabs variant="enclosed" size="lg" colorScheme="brand">
+    <div className="items-center p-2 pb-20 gap-8 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      <Tabs size="lg" colorScheme="brand">
         <TabList>
-          <Tab>Trabajadores</Tab>
           <Tab>Oportunidades</Tab>
+          <Tab>Trabajadores</Tab>
         </TabList>
 
         <TabPanels>
+          <TabPanel>
+            <OpportunitiesSection opportunities={opportunities || []} />
+          </TabPanel>
+
           <TabPanel>
             <WorkersSection
               workers={workers || []}
               categories={categories || []}
             />
-          </TabPanel>
-
-          <TabPanel>
-            <OpportunitiesSection opportunities={opportunities || []} />
           </TabPanel>
         </TabPanels>
       </Tabs>
