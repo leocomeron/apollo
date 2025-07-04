@@ -1,34 +1,37 @@
-import WorkerCard from '@/components/WorkerCard';
+import { OpportunitiesSection, WorkersSection } from '@/components/sections';
 import fetcher from '@/lib/fetcher';
 import { Category } from '@/types/onboarding';
-import { getProfilePictureUrl } from '@/utils/user';
-import { Box, Grid, Input, Tag, Wrap, WrapItem } from '@chakra-ui/react';
+import { Opportunity } from '@/types/opportunities';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { GetServerSideProps } from 'next';
-import { useState } from 'react';
 import useSWR from 'swr';
 import { User } from './api/users/types';
 
 interface HomeProps {
   initialWorkers: User[];
   initialCategories: Category[];
+  initialOpportunities: Opportunity[];
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
   try {
-    const [workersRes, categoriesRes] = await Promise.all([
+    const [workersRes, categoriesRes, opportunitiesRes] = await Promise.all([
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users?isWorker=true`),
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/catalogs/categories`),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/opportunities?status=open`),
     ]);
 
-    const [workers, categories] = await Promise.all([
+    const [workers, categories, opportunities] = await Promise.all([
       workersRes.json(),
       categoriesRes.json(),
+      opportunitiesRes.json(),
     ]);
 
     return {
       props: {
         initialWorkers: workers,
         initialCategories: categories,
+        initialOpportunities: opportunities,
       },
     };
   } catch (error) {
@@ -37,15 +40,17 @@ export const getServerSideProps: GetServerSideProps = async () => {
       props: {
         initialWorkers: [],
         initialCategories: [],
+        initialOpportunities: [],
       },
     };
   }
 };
 
-export default function Home({ initialWorkers, initialCategories }: HomeProps) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-
+export default function Home({
+  initialWorkers,
+  initialCategories,
+  initialOpportunities,
+}: HomeProps) {
   const { data: workers } = useSWR<User[]>(
     '/api/users?isWorker=true',
     fetcher,
@@ -54,6 +59,7 @@ export default function Home({ initialWorkers, initialCategories }: HomeProps) {
       revalidateOnMount: false,
     },
   );
+
   const { data: categories } = useSWR<Category[]>(
     '/api/catalogs/categories',
     fetcher,
@@ -63,96 +69,38 @@ export default function Home({ initialWorkers, initialCategories }: HomeProps) {
     },
   );
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const handleCategoryClick = (category: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(category)
-        ? prev.filter((cat) => cat !== category)
-        : [...prev, category],
-    );
-  };
-
-  const filteredWorkers = workers?.filter((worker) => {
-    const searchLower = searchTerm.toLowerCase();
-    const matchesSearchTerm =
-      worker.firstName.toLowerCase().includes(searchLower) ||
-      worker.lastName.toLowerCase().includes(searchLower) ||
-      worker?.categories?.includes(searchLower) ||
-      worker?.description?.toLowerCase().includes(searchLower) ||
-      worker.contact.location.toLowerCase().includes(searchLower);
-
-    const matchesCategory =
-      selectedCategories.length === 0 ||
-      selectedCategories.some((category) =>
-        worker?.categories?.includes(category),
-      );
-
-    return matchesSearchTerm && matchesCategory;
-  });
+  const { data: opportunities } = useSWR<Opportunity[]>(
+    '/api/opportunities?status=open',
+    fetcher,
+    {
+      fallbackData: initialOpportunities,
+      revalidateOnMount: false,
+    },
+  );
 
   return (
-    <div
-      className={
-        'items-center justify-items-center p-2 pb-20 gap-8 sm:p-20 font-[family-name:var(--font-geist-sans)]'
-      }
-    >
-      <Box width="100%" maxW="600px" m={4}>
-        <Input
-          placeholder="Busca tu profesional..."
-          value={searchTerm}
-          onChange={handleSearchChange}
-        />
-      </Box>
-      <Wrap spacing={2} mb={4}>
-        {categories?.map((category) => (
-          <WrapItem key={category.value}>
-            <Tag
-              size="lg"
-              variant="solid"
-              bgColor="brand.600"
-              cursor="pointer"
-              px={{ base: 2, md: 6 }}
-              py={{ base: 1, md: 3 }}
-              borderRadius="50px"
-              borderWidth="3px"
-              borderColor={
-                selectedCategories.includes(category.value)
-                  ? 'brand.900'
-                  : 'transparent'
-              }
-              onClick={() => handleCategoryClick(category.value)}
-            >
-              {category.label}
-            </Tag>
-          </WrapItem>
-        ))}
-      </Wrap>
-      <Grid
-        templateColumns={{
-          base: 'repeat(1, 1fr)',
-          md: 'repeat(2, 1fr)',
-          xl: 'repeat(4, 1fr)',
-        }}
-        gap={4}
-      >
-        {filteredWorkers?.map((worker) => (
-          <WorkerCard
-            key={worker._id}
-            profilePicture={getProfilePictureUrl(worker)}
-            rating={worker.rating?.average ?? 0}
-            firstName={worker.firstName}
-            lastName={worker.lastName}
-            professions={worker.categories ?? []}
-            description={worker?.description ?? ''}
-            location={worker.contact.location}
-          />
-        ))}
-      </Grid>
+    <div className="items-center justify-items-center p-2 pb-20 gap-8 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      <Tabs variant="enclosed" size="lg" colorScheme="brand">
+        <TabList>
+          <Tab>Trabajadores</Tab>
+          <Tab>Oportunidades</Tab>
+        </TabList>
 
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
+        <TabPanels>
+          <TabPanel>
+            <WorkersSection
+              workers={workers || []}
+              categories={categories || []}
+            />
+          </TabPanel>
+
+          <TabPanel>
+            <OpportunitiesSection opportunities={opportunities || []} />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+
+      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center mt-8">
         HOME FOOTER
       </footer>
     </div>

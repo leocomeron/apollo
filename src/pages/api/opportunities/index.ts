@@ -12,15 +12,19 @@ export default async function handler(
   switch (req.method) {
     case 'GET':
       try {
-        const { userId } = req.query;
+        const { userId, status } = req.query;
 
-        if (!userId) {
-          return res.status(400).json({ message: 'User ID is required' });
+        const query: any = {};
+        if (userId) {
+          query.userId = new ObjectId(userId as string);
+        }
+        if (status) {
+          query.status = status;
         }
 
         const opportunities = await db
           .collection('opportunities')
-          .find({ userId: new ObjectId(userId as string) })
+          .find(query)
           .sort({ createdAt: -1 })
           .toArray();
 
