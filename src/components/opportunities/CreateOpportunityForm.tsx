@@ -77,10 +77,11 @@ export default function CreateOpportunityForm({
         throw new Error(error.message || 'Error al crear la oportunidad');
       }
 
-      await router.push('/profile');
+      const result = await response.json();
+
+      void router.push(`/opportunities/${result.opportunityId}`);
     } catch (error) {
       console.error('Error al crear la oportunidad:', error);
-    } finally {
       setIsLoading(false);
     }
   };

@@ -20,10 +20,6 @@ const DragAndDropImage = ({
   const [error, setError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  useEffect(() => {
-    setImages(initialImages);
-  }, [initialImages]);
-
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
       setError(null);
