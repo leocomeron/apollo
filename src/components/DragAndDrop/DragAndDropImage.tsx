@@ -1,7 +1,7 @@
 import { uploadToCloudinary } from '@/services/cloudinary';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { Box, IconButton, Image, SimpleGrid, Text } from '@chakra-ui/react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { ACCEPTED_IMAGE_TYPES } from './helpers';
 
