@@ -1,6 +1,6 @@
-# Apollo - Marketplace Platform
+# Apollo - Services Marketplace Platform
 
-Apollo is a modern marketplace platform built with Next.js that connects service providers with clients through opportunities, proposals, and reviews. The platform features user onboarding, profile management, opportunity creation, and a comprehensive review system.
+Apollo is a modern services marketplace platform built with Next.js that connects service providers with clients through opportunities, proposals, and reviews. The platform features user onboarding, profile management, opportunity creation, and a comprehensive review system.
 
 ## 🚀 Technologies Used
 
@@ -75,7 +75,7 @@ src/
 - **Review Statistics**: Aggregate ratings and performance metrics
 - **Detailed Feedback**: Written reviews with star ratings
 
-### 4. Marketplace Features
+### 4. Services Marketplace Features
 
 - **Worker Discovery**: Browse and filter service providers
 - **Category System**: Organized service categories
