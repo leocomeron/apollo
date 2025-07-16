@@ -1,0 +1,167 @@
+# Cursor Rules for Apollo Project
+
+## General Guidelines
+
+- Always code in English, including comments
+- For user-facing text/copy, check existing code language patterns (Spanish or English)
+- Minimize code comments - prefer self-documenting code
+- Use TypeScript strictly - no `any` types unless absolutely necessary
+- Follow functional programming principles where possible
+
+## File Organization
+
+- Use barrel exports (`index.ts`) for clean imports
+- Group related components in folders with index files
+- Keep API routes organized by feature in `/pages/api/`
+- Place reusable utilities in `/src/utils/`
+- Store types in `/src/types/` organized by domain
+
+## Component Structure
+
+- Use PascalCase for component names and file names
+- Prefer named exports over default exports for components
+- Structure components with this order:
+  1. Imports (external libs first, then internal)
+  2. Types/interfaces
+  3. Component definition
+  4. Export statement
+
+## TypeScript Guidelines
+
+- Define interfaces for all props and data structures
+- Use strict typing - avoid `any`, prefer `unknown` when needed
+- Create custom types in dedicated files under `/src/types/`
+- Use discriminated unions for state management
+- Prefer `interface` over `type` for object shapes
+
+## Naming Conventions
+
+- Files: PascalCase for components, camelCase for utilities
+- Variables: camelCase
+- Constants: SCREAMING_SNAKE_CASE
+- Functions: camelCase, descriptive names
+- Types/Interfaces: PascalCase, prefix interfaces with `I` if needed for clarity
+
+## React Patterns
+
+- Use functional components with hooks
+- Prefer `const` arrow functions for component definitions
+- Use React.FC sparingly - prefer explicit prop typing
+- Implement proper error boundaries for user-facing components
+- Use React.memo() for performance optimization when appropriate
+
+## State Management
+
+- Use Context API for global state (like OnboardingContext)
+- Prefer useState for local component state
+- Use useReducer for complex state logic
+- Keep state as close to where it's used as possible
+
+## API Guidelines
+
+- Follow RESTful conventions in `/pages/api/`
+- Use proper HTTP status codes
+- Implement proper error handling with try/catch
+- Type API responses with interfaces
+- Use environment variables for configuration
+
+## Styling Guidelines
+
+- Use Tailwind CSS for styling
+- Prefer utility classes over custom CSS
+- Create custom components for repeated UI patterns
+- Use the custom theme configuration in `/src/theme/theme.ts`
+- Maintain responsive design principles mobile first
+
+## Import/Export Patterns
+
+```typescript
+// Preferred import order:
+// 1. React imports
+// 2. Third-party libraries
+// 3. Internal components (absolute paths)
+// 4. Types and utilities
+// 5. Relative imports
+
+import React from 'react';
+import { NextPage } from 'next';
+import { Button } from '@chakra-ui/react';
+
+import { Layout } from 'components/Layout';
+import { WorkerCard } from 'components/WorkerCard';
+
+import { User } from 'types/user';
+import { formatDate } from 'utils/helpers';
+
+import styles from './Component.module.css';
+```
+
+## Form Handling
+
+- Use controlled components for forms
+- Implement proper validation (client and server-side)
+- Use custom form components from `/src/components/form/`
+- Handle loading and error states appropriately
+
+## Data Fetching
+
+- Use SWR or similar for client-side data fetching
+- Implement proper loading states
+- Handle errors gracefully with user feedback
+- Use the fetcher utility from `/src/lib/fetcher.ts`
+
+## Database Interactions
+
+- Use the MongoDB connection from `/src/lib/mongodb.ts`
+- Implement proper error handling for database operations
+- Use aggregation pipelines for complex queries
+- Validate data before database operations
+
+## Authentication
+
+- Use NextAuth.js properly with custom types
+- Implement proper session management
+- Protect API routes with authentication middleware
+- Handle authentication state in components
+
+## Error Handling
+
+- Implement try/catch blocks in API routes
+- Use proper error boundaries in React components
+- Provide meaningful error messages to users
+- Log errors appropriately for debugging
+
+## Performance Guidelines
+
+- Use dynamic imports for large components
+- Implement proper image optimization
+- Use React.memo for expensive components
+- Optimize bundle size with proper imports
+
+## Security Guidelines
+
+- Validate all inputs on both client and server
+- Use environment variables for sensitive data
+- Implement proper CORS policies
+- Sanitize user inputs before database operations
+
+## Testing Guidelines
+
+- Write unit tests for utility functions
+- Test API endpoints with proper mocking
+- Use descriptive test names
+- Mock external dependencies properly
+
+## Code Quality
+
+- Use ESLint and Prettier configurations
+- Run type checking before commits
+- Use meaningful commit messages
+- Review code for potential improvements
+
+## Documentation
+
+- Document complex business logic
+- Use JSDoc for public API functions
+- Keep README updated with setup instructions
+- Document environment variables and their purposes
