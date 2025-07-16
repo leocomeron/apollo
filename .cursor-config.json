@@ -1,0 +1,183 @@
+{
+  "version": "1.0",
+  "project": {
+    "name": "Apollo Services Marketplace",
+    "type": "next.js",
+    "language": "typescript"
+  },
+  "codeGeneration": {
+    "language": "english",
+    "commentStyle": "minimal",
+    "preferSelfDocumentingCode": true,
+    "includeTypeAnnotations": true,
+    "strictMode": true,
+    "preferFunctionalComponents": true,
+    "useArrowFunctions": true,
+    "preferConstAssertions": true
+  },
+  "typescript": {
+    "strict": true,
+    "noImplicitAny": true,
+    "preferInterfaceOverType": true,
+    "enforceExplicitReturnTypes": false,
+    "preferUnknownOverAny": true,
+    "requirePropsInterface": true
+  },
+  "formatting": {
+    "usePrettier": true,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "semicolons": true,
+    "tabWidth": 2,
+    "printWidth": 80
+  },
+  "imports": {
+    "organizeOnSave": true,
+    "removeUnused": true,
+    "sortOrder": [
+      "react",
+      "next",
+      "third-party",
+      "internal-components",
+      "types",
+      "utilities",
+      "relative"
+    ],
+    "preferAbsolutePaths": true,
+    "groupSeparator": true
+  },
+  "refactoring": {
+    "extractComponentThreshold": 15,
+    "preferExplicitPropsInterface": true,
+    "suggestMemoization": true,
+    "extractCustomHooks": true,
+    "preferNamedExports": true,
+    "consolidateDuplicateCode": true
+  },
+  "errorHandling": {
+    "preferTryCatch": true,
+    "requireErrorBoundaries": true,
+    "suggestLoadingStates": true,
+    "validateApiResponses": true,
+    "enforceInputValidation": true
+  },
+  "testing": {
+    "framework": "jest",
+    "generateTests": "onRequest",
+    "testFileNaming": "*.test.ts",
+    "preferDescriptiveTestNames": true,
+    "mockExternalDependencies": true
+  },
+  "apiRoutes": {
+    "enforceStatusCodes": true,
+    "requireErrorHandling": true,
+    "validateRequestBodies": true,
+    "enforceAuthentication": true,
+    "preferRESTfulConventions": true
+  },
+  "components": {
+    "enforcePropsInterface": true,
+    "preferFunctionalComponents": true,
+    "suggestReactMemo": "performance-critical",
+    "extractReusableComponents": true,
+    "enforceAccessibility": true
+  },
+  "styling": {
+    "framework": "tailwind",
+    "approach": "mobile-first",
+    "preferUtilityClasses": true,
+    "componentLibrary": "chakra-ui",
+    "enforceResponsiveDesign": true,
+    "customTheme": "src/theme/theme.ts"
+  },
+  "database": {
+    "orm": "mongoose",
+    "enforceValidation": true,
+    "preferAggregationPipelines": true,
+    "requireErrorHandling": true,
+    "enforceDataSanitization": true
+  },
+  "security": {
+    "validateInputs": "always",
+    "enforceAuthentication": true,
+    "preferEnvironmentVariables": true,
+    "sanitizeUserData": true,
+    "enforceCORS": true
+  },
+  "performance": {
+    "suggestDynamicImports": true,
+    "optimizeImages": true,
+    "preferSWRCaching": true,
+    "bundleAnalysis": true,
+    "suggestCodeSplitting": true
+  },
+  "fileStructure": {
+    "enforceBarrelExports": true,
+    "groupByFeature": true,
+    "preferFolderIndex": true,
+    "enforceNamingConventions": true,
+    "separateTypesByDomain": true
+  },
+  "linting": {
+    "enforceESLint": true,
+    "autoFixOnSave": true,
+    "preferESLintOverTSLint": true,
+    "enforceAccessibilityRules": true
+  },
+  "documentation": {
+    "generateJSDoc": "publicAPIsOnly",
+    "preferInlineDocumentation": false,
+    "updateReadmeOnChanges": false,
+    "documentComplexLogic": true
+  },
+  "ai": {
+    "contextFiles": [
+      "README.md",
+      ".cursor-rules",
+      "src/types/**/*.ts",
+      "src/models/**/*.ts",
+      "package.json"
+    ],
+    "preferSpecificQuestions": true,
+    "includeErrorContext": true,
+    "suggestBestPractices": true,
+    "considerProjectPatterns": true
+  },
+  "workflows": {
+    "onFileCreate": {
+      "addBarrelExport": true,
+      "createTypeDefinitions": true,
+      "addBasicStructure": true
+    },
+    "onComponentCreate": {
+      "addPropsInterface": true,
+      "addExportStatement": true,
+      "suggestFolder": true
+    },
+    "onAPICreate": {
+      "addErrorHandling": true,
+      "addValidation": true,
+      "addAuthentication": "suggest"
+    }
+  },
+  "marketplace": {
+    "businessLogic": {
+      "opportunities": "src/types/opportunities.ts",
+      "reviews": "src/types/review.ts",
+      "users": "src/models/User.ts"
+    },
+    "keyFeatures": [
+      "user-onboarding",
+      "opportunity-management",
+      "proposal-system",
+      "review-ratings",
+      "profile-management"
+    ],
+    "criticalPaths": [
+      "authentication-flow",
+      "opportunity-creation",
+      "proposal-submission",
+      "review-system"
+    ]
+  }
+}
