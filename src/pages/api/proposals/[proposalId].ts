@@ -18,18 +18,27 @@ export default async function handler(
   switch (req.method) {
     case 'PUT':
       try {
-        const { status } = req.body;
+        const { status, budget } = req.body;
 
-        if (!status) {
-          return res.status(400).json({ message: 'Status is required' });
+        if (!status && !budget) {
+          return res
+            .status(400)
+            .json({ message: 'Status or budget is required' });
+        }
+
+        const updateFields: any = { updatedAt: new Date() };
+
+        if (status) {
+          updateFields.status = status;
+        }
+
+        if (budget) {
+          updateFields.budget = Number(budget);
         }
 
         const result = await db
           .collection('proposals')
-          .updateOne(
-            { _id: new ObjectId(proposalId) },
-            { $set: { status, updatedAt: new Date() } },
-          );
+          .updateOne({ _id: new ObjectId(proposalId) }, { $set: updateFields });
 
         if (result.matchedCount === 0) {
           return res.status(404).json({ message: 'Proposal not found' });

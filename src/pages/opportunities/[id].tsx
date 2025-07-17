@@ -5,6 +5,7 @@ import CloseOpportunityModal from '@/components/opportunities/CloseOpportunityMo
 import EditOpportunityForm from '@/components/opportunities/EditOpportunityForm';
 import OpportunityPreview from '@/components/opportunities/OpportunityPreview';
 import ProposalCard from '@/components/opportunities/ProposalCard';
+import SubmitProposalForm from '@/components/opportunities/SubmitProposalForm';
 import fetcher from '@/lib/fetcher';
 import { deleteOpportunity, updateOpportunity } from '@/services/opportunities';
 import { updateAllProposalsForOpportunity } from '@/services/proposals';
@@ -29,6 +30,7 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import useSWR, { mutate } from 'swr';
@@ -49,6 +51,7 @@ interface Proposal {
 }
 
 export default function OpportunityPage() {
+  const { data: session } = useSession();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isReviewOpen,
@@ -129,6 +132,9 @@ export default function OpportunityPage() {
       </Container>
     );
   }
+
+  // Check if current user is the owner of the opportunity
+  const isOwner = session?.user?.id === opportunity.userId?.toString();
 
   // Get the accepted proposal (worker to review)
   const acceptedProposal = proposals?.find((p) => p.status === 'accepted');
@@ -279,6 +285,11 @@ export default function OpportunityPage() {
     }
   };
 
+  const handleProposalSubmitted = () => {
+    // Refresh proposals data after submission
+    void mutate(`/api/opportunities/${opportunity._id}/proposals`);
+  };
+
   return (
     <Container maxW="container.xl">
       <Grid
@@ -289,7 +300,7 @@ export default function OpportunityPage() {
           <VStack align="stretch" spacing={4}>
             <Box position="relative" w="100%">
               <Box display="flex" justifyContent="flex-end" mb={1}>
-                {opportunity.status === 'open' && (
+                {isOwner && opportunity.status === 'open' && (
                   <HStack spacing={2}>
                     <EditButton
                       onClick={() => {
@@ -314,57 +325,94 @@ export default function OpportunityPage() {
 
         <GridItem>
           <VStack spacing={4} align="stretch">
-            <Box rounded="lg" shadow="base" p={4}>
-              <Text fontSize="xl" fontWeight="bold" mb={2}>
-                Propuestas de interesados
-              </Text>
-              <VStack spacing={4} align="stretch">
-                {isLoadingProposals ? (
-                  <Text>Cargando propuestas...</Text>
-                ) : proposalsError ? (
-                  <Text color="red.500">Error al cargar las propuestas</Text>
-                ) : proposals?.length === 0 ? (
-                  <Text>No hay propuestas aún</Text>
-                ) : (
-                  proposals
-                    ?.sort((a, b) => {
-                      // Sort: accepted first, then pending, then rejected
-                      const statusOrder = {
-                        accepted: 0,
-                        pending: 1,
-                        rejected: 2,
-                      };
-                      return statusOrder[a.status] - statusOrder[b.status];
-                    })
-                    .map((proposal) => (
-                      <ProposalCard
-                        key={proposal.id}
-                        firstName={proposal.firstName}
-                        lastName={proposal.lastName}
-                        profileImage={proposal.profileImage}
-                        budget={proposal.budget}
-                        reviewStats={proposal.reviewStats}
-                        status={proposal.status}
-                        onAccept={() => handleAcceptProposal(proposal.id)}
-                        onReject={() => handleRejectProposal(proposal.id)}
-                      />
-                    ))
-                )}
-              </VStack>
-            </Box>
+            {/* Show different content based on ownership */}
+            {isOwner ? (
+              /* Owner view - Show proposals */
+              <>
+                <Box rounded="lg" shadow="base" p={4}>
+                  <Text fontSize="xl" fontWeight="bold" mb={2}>
+                    Propuestas de interesados
+                  </Text>
+                  <VStack spacing={4} align="stretch">
+                    {isLoadingProposals ? (
+                      <Text>Cargando propuestas...</Text>
+                    ) : proposalsError ? (
+                      <Text color="red.500">
+                        Error al cargar las propuestas
+                      </Text>
+                    ) : proposals?.length === 0 ? (
+                      <Text>No hay propuestas aún</Text>
+                    ) : (
+                      proposals
+                        ?.sort((a, b) => {
+                          // Sort: accepted first, then pending, then rejected
+                          const statusOrder = {
+                            accepted: 0,
+                            pending: 1,
+                            rejected: 2,
+                          };
+                          return statusOrder[a.status] - statusOrder[b.status];
+                        })
+                        .map((proposal) => (
+                          <ProposalCard
+                            key={proposal.id}
+                            firstName={proposal.firstName}
+                            lastName={proposal.lastName}
+                            profileImage={proposal.profileImage}
+                            budget={proposal.budget}
+                            reviewStats={proposal.reviewStats}
+                            status={proposal.status}
+                            onAccept={() => handleAcceptProposal(proposal.id)}
+                            onReject={() => handleRejectProposal(proposal.id)}
+                          />
+                        ))
+                    )}
+                  </VStack>
+                </Box>
 
-            {/* Close and Review Button */}
-            {opportunity.status === 'in_progress' && acceptedProposal && (
-              <Box display="flex" justifyContent="flex-end">
-                <Button
-                  colorScheme="brand"
-                  backgroundColor="brand.700"
-                  onClick={handleCloseAndReview}
-                  size="md"
-                >
-                  Cerrar y Evaluar
-                </Button>
-              </Box>
+                {/* Close and Review Button */}
+                {opportunity.status === 'in_progress' && acceptedProposal && (
+                  <Box display="flex" justifyContent="flex-end">
+                    <Button
+                      colorScheme="brand"
+                      backgroundColor="brand.700"
+                      onClick={handleCloseAndReview}
+                      size="md"
+                    >
+                      Cerrar y Evaluar
+                    </Button>
+                  </Box>
+                )}
+              </>
+            ) : (
+              /* Non-owner view - Show proposal form or status */
+              <>
+                {opportunity.status === 'open' ? (
+                  session?.user?.isWorker ? (
+                    <SubmitProposalForm
+                      opportunityId={opportunity._id}
+                      onProposalSubmitted={handleProposalSubmitted}
+                    />
+                  ) : (
+                    <Box rounded="lg" shadow="base" p={6} textAlign="center">
+                      <Text fontSize="lg" fontWeight="bold" mb={2}>
+                        Solo trabajadores pueden enviar propuestas
+                      </Text>
+                    </Box>
+                  )
+                ) : (
+                  <Box rounded="lg" shadow="base" p={6} textAlign="center">
+                    <Text fontSize="lg" fontWeight="bold" mb={2}>
+                      Esta oportunidad ya no está disponible
+                    </Text>
+                    <Text color="gray.600">
+                      {opportunity.status === 'in_progress'
+                        ? 'La oportunidad está en progreso'
+                        : 'La oportunidad ha sido cerrada'}
+                    </Text>
+                  </Box>
+                )}
+              </>
             )}
           </VStack>
         </GridItem>

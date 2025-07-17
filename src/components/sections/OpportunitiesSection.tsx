@@ -13,6 +13,7 @@ import {
   Wrap,
   WrapItem,
 } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 
 interface OpportunitiesSectionProps {
   opportunities: Opportunity[];
@@ -21,6 +22,12 @@ interface OpportunitiesSectionProps {
 export default function OpportunitiesSection({
   opportunities,
 }: OpportunitiesSectionProps) {
+  const router = useRouter();
+
+  const handleOpportunityClick = (opportunityId: string) => {
+    void router.push(`/opportunities/${opportunityId}`);
+  };
+
   return (
     <Box>
       <Text fontSize="2xl" fontWeight="bold" mb={6}>
@@ -32,7 +39,10 @@ export default function OpportunitiesSection({
           <Card
             key={opportunity._id}
             variant="outline"
-            _hover={{ shadow: 'md' }}
+            _hover={{ shadow: 'md', transform: 'translateY(-2px)' }}
+            cursor="pointer"
+            transition="all 0.2s"
+            onClick={() => handleOpportunityClick(opportunity._id)}
           >
             <CardBody p={{ base: 4, md: 6 }}>
               <Stack spacing={{ base: 3, md: 4 }}>

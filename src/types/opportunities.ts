@@ -11,6 +11,7 @@ export interface OpportunityFormData {
 
 export interface Opportunity {
   _id: string;
+  userId: string;
   title: string;
   images: string[];
   createdAt: string;
