@@ -137,7 +137,7 @@ export default function EditProposalModal({
                 rounded="md"
               >
                 ⚠️ Tu propuesta fue rechazada anteriormente. Al actualizar el
-                presupuesto, se enviará nuevamente para revisión.
+                presupuesto, se enviará nuevamente.
               </Text>
             )}
 
