@@ -159,18 +159,45 @@ export default function SubmitProposalForm({
 
         {existingProposal ? (
           <Stack spacing={4}>
-            <Box p={4} bg="gray.50" rounded="md">
+            <Box
+              p={4}
+              bg={existingProposal.status === 'rejected' ? 'red.50' : 'gray.50'}
+              rounded="md"
+              border={
+                existingProposal.status === 'rejected' ? '1px solid' : 'none'
+              }
+              borderColor={
+                existingProposal.status === 'rejected'
+                  ? 'red.200'
+                  : 'transparent'
+              }
+            >
               <Text fontSize="sm" color="gray.600" mb={1}>
                 Presupuesto actual:
               </Text>
               <Text fontSize="lg" fontWeight="bold">
                 ${existingProposal.budget.toLocaleString()}
               </Text>
-              <Text fontSize="sm" color="gray.500" mt={1}>
+              <Text
+                fontSize="sm"
+                color={
+                  existingProposal.status === 'rejected'
+                    ? 'red.600'
+                    : 'gray.500'
+                }
+                mt={1}
+                fontWeight={
+                  existingProposal.status === 'rejected' ? 'medium' : 'normal'
+                }
+              >
                 Estado:{' '}
                 {existingProposal.status === 'pending'
                   ? 'Pendiente'
-                  : existingProposal.status}
+                  : existingProposal.status === 'rejected'
+                    ? 'Rechazada'
+                    : existingProposal.status === 'accepted'
+                      ? 'Aceptada'
+                      : existingProposal.status}
               </Text>
             </Box>
 
@@ -181,7 +208,9 @@ export default function SubmitProposalForm({
               size="lg"
               width="full"
             >
-              Modificar Propuesta
+              {existingProposal.status === 'rejected'
+                ? 'Actualizar y Reenviar'
+                : 'Modificar Propuesta'}
             </Button>
           </Stack>
         ) : (
@@ -221,6 +250,7 @@ export default function SubmitProposalForm({
           onClose={onClose}
           proposalId={existingProposal.id}
           currentBudget={existingProposal.budget}
+          currentStatus={existingProposal.status}
           onProposalUpdated={handleProposalUpdated}
         />
       )}

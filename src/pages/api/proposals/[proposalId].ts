@@ -26,6 +26,15 @@ export default async function handler(
             .json({ message: 'Status or budget is required' });
         }
 
+        // Get current proposal to check its status
+        const currentProposal = await db
+          .collection('proposals')
+          .findOne({ _id: new ObjectId(proposalId) });
+
+        if (!currentProposal) {
+          return res.status(404).json({ message: 'Proposal not found' });
+        }
+
         const updateFields: any = { updatedAt: new Date() };
 
         if (status) {
@@ -34,6 +43,11 @@ export default async function handler(
 
         if (budget) {
           updateFields.budget = Number(budget);
+
+          // If proposal was rejected and budget is being updated, change status to pending
+          if (currentProposal.status === 'rejected') {
+            updateFields.status = 'pending';
+          }
         }
 
         const result = await db
@@ -47,6 +61,8 @@ export default async function handler(
         res.status(200).json({
           message: 'Proposal updated successfully',
           modifiedCount: result.modifiedCount,
+          statusChanged:
+            currentProposal.status === 'rejected' && budget ? true : false,
         });
       } catch (error) {
         console.error('Error updating proposal:', error);

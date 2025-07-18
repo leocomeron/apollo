@@ -22,6 +22,7 @@ interface EditProposalModalProps {
   onClose: () => void;
   proposalId: string;
   currentBudget: number;
+  currentStatus: string;
   onProposalUpdated: () => void;
 }
 
@@ -30,11 +31,14 @@ export default function EditProposalModal({
   onClose,
   proposalId,
   currentBudget,
+  currentStatus,
   onProposalUpdated,
 }: EditProposalModalProps) {
   const [budget, setBudget] = useState<number>(currentBudget);
   const [isUpdating, setIsUpdating] = useState(false);
   const toast = useToast();
+
+  const isRejected = currentStatus === 'rejected';
 
   const handleUpdate = async () => {
     if (budget <= 0) {
@@ -78,11 +82,15 @@ export default function EditProposalModal({
         throw new Error(data.message || 'Error al actualizar la propuesta');
       }
 
+      const successMessage = isRejected
+        ? 'Tu propuesta ha sido actualizada y enviada nuevamente para revisión'
+        : 'Tu presupuesto ha sido actualizado exitosamente';
+
       toast({
         title: 'Propuesta actualizada',
-        description: 'Tu presupuesto ha sido actualizado exitosamente',
+        description: successMessage,
         status: 'success',
-        duration: 3000,
+        duration: 4000,
         isClosable: true,
       });
 
@@ -119,6 +127,20 @@ export default function EditProposalModal({
               tu presupuesto aquí.
             </Text>
 
+            {isRejected && (
+              <Text
+                color="orange.600"
+                textAlign="center"
+                fontSize="sm"
+                p={3}
+                bg="orange.50"
+                rounded="md"
+              >
+                ⚠️ Tu propuesta fue rechazada anteriormente. Al actualizar el
+                presupuesto, se enviará nuevamente para revisión.
+              </Text>
+            )}
+
             <FormControl isRequired>
               <FormLabel>Nuevo Presupuesto ($)</FormLabel>
               <NumberInput
@@ -146,7 +168,7 @@ export default function EditProposalModal({
             isLoading={isUpdating}
             loadingText="Actualizando..."
           >
-            Actualizar Propuesta
+            {isRejected ? 'Reenviar Propuesta' : 'Actualizar Propuesta'}
           </Button>
         </ModalFooter>
       </ModalContent>
