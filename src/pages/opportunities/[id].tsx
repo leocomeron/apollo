@@ -407,7 +407,7 @@ export default function OpportunityPage() {
                     </Text>
                     <Text color="gray.600">
                       {opportunity.status === 'in_progress'
-                        ? 'La oportunidad está en progreso'
+                        ? 'La oportunidad está en curso'
                         : 'La oportunidad ha sido cerrada'}
                     </Text>
                   </Box>

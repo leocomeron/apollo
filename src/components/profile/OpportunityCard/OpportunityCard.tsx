@@ -9,6 +9,7 @@ interface OpportunityCardProps {
   createdAt: Date;
   id: string;
   applicationsCount?: number;
+  ownerFirstName?: string;
 }
 
 const OpportunityCard: React.FC<OpportunityCardProps> = ({
@@ -17,6 +18,7 @@ const OpportunityCard: React.FC<OpportunityCardProps> = ({
   createdAt,
   id,
   applicationsCount = 5,
+  ownerFirstName,
 }) => {
   const router = useRouter();
 
@@ -36,9 +38,20 @@ const OpportunityCard: React.FC<OpportunityCardProps> = ({
     >
       <Image src={imageUrl} alt={title} h="200px" w="full" objectFit="cover" />
       <VStack p={4} align="stretch">
-        <Text fontSize="lg" fontWeight="bold">
+        <Text
+          fontSize="lg"
+          fontWeight="bold"
+          wordBreak="break-word"
+          overflowWrap="break-word"
+          maxW="100%"
+        >
           {title}
         </Text>
+        {ownerFirstName && (
+          <Text color="gray.600" fontSize="sm">
+            Creado por: {ownerFirstName}
+          </Text>
+        )}
         <Text color="gray.500">
           {format(createdAt, 'd MMM yyyy', { locale: es })}
         </Text>

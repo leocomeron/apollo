@@ -14,18 +14,38 @@ export default async function handler(
       try {
         const { userId, status } = req.query;
 
-        const query: any = {};
+        const matchStage: any = {};
         if (userId) {
-          query.userId = new ObjectId(userId as string);
+          matchStage.userId = new ObjectId(userId as string);
         }
         if (status) {
-          query.status = status;
+          matchStage.status = status;
         }
 
         const opportunities = await db
           .collection('opportunities')
-          .find(query)
-          .sort({ createdAt: -1 })
+          .aggregate([
+            { $match: matchStage },
+            {
+              $lookup: {
+                from: 'users',
+                localField: 'userId',
+                foreignField: '_id',
+                as: 'owner',
+              },
+            },
+            {
+              $addFields: {
+                ownerFirstName: { $arrayElemAt: ['$owner.firstName', 0] },
+              },
+            },
+            {
+              $project: {
+                owner: 0,
+              },
+            },
+            { $sort: { createdAt: -1 } },
+          ])
           .toArray();
 
         res.status(200).json(opportunities);

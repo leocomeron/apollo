@@ -12,6 +12,7 @@ export interface OpportunityFormData {
 export interface Opportunity {
   _id: string;
   userId: string;
+  ownerFirstName?: string;
   title: string;
   images: string[];
   createdAt: string;

@@ -311,7 +311,14 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({
 
               <Box p={3}>
                 {job.description ? (
-                  <Text fontSize="sm">{job.description}</Text>
+                  <Text
+                    fontSize="sm"
+                    wordBreak="break-word"
+                    overflowWrap="break-word"
+                    maxW="100%"
+                  >
+                    {job.description}
+                  </Text>
                 ) : isEditable ? (
                   <Button
                     size="xs"

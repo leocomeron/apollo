@@ -4,6 +4,7 @@ import OpportunitiesSection from '@/components/profile/OpportunitiesSection/Oppo
 import ProfileDescription from '@/components/profile/ProfileDescription';
 import ReviewRating from '@/components/profile/ReviewRating/ReviewRating';
 import WorkPortfolio from '@/components/profile/WorkPortfolio';
+import WorkerOpportunitiesSection from '@/components/profile/WorkerOpportunitiesSection';
 import { useUserReviews } from '@/hooks/useUserReviews';
 import { DocumentType } from '@/types/onboarding';
 import {
@@ -68,8 +69,7 @@ const Profile = () => {
             imageUrl={
               user.documents?.find(
                 (document) => document.type === DocumentType.ProfilePicture,
-              )?.url ||
-              'https://img.freepik.com/fotos-premium/trabajador-construccion-casco-amarillo_58409-13665.jpg'
+              )?.url || ''
             }
             name={user.firstName + ' ' + user.lastName}
             categories={user.categories}
@@ -80,7 +80,7 @@ const Profile = () => {
           <ReviewRating reviewStats={reviewStats} />
           <ContactDetails
             initialPhoneNumber={user.contact?.phone}
-            email={user.email || 'juan-valdez@gmail.com'}
+            email={user.email}
           />
         </VStack>
       </GridItem>
@@ -90,6 +90,8 @@ const Profile = () => {
           {isWorker ? (
             <>
               <WorkPortfolio initialJobs={[]} />
+              <Divider mt={5} />
+              <WorkerOpportunitiesSection />
               <Divider mt={5} />
               <Text fontSize="xl" mb={1}>
                 Opiniones de contrataciones

@@ -51,6 +51,9 @@ export default function OpportunitiesSection({
                     fontSize={{ base: 'lg', md: 'xl' }}
                     fontWeight="bold"
                     mb={2}
+                    wordBreak="break-word"
+                    overflowWrap="break-word"
+                    maxW="100%"
                   >
                     {opportunity.title}
                   </Text>
@@ -66,6 +69,20 @@ export default function OpportunitiesSection({
                   }}
                   gap={{ base: 3, md: 4 }}
                 >
+                  <Box>
+                    <Text
+                      fontSize="xs"
+                      color="gray.500"
+                      mb={1}
+                      fontWeight="medium"
+                    >
+                      👤 CREADOR
+                    </Text>
+                    <Text fontWeight="medium" fontSize="sm">
+                      {opportunity.ownerFirstName || 'Sin nombre'}
+                    </Text>
+                  </Box>
+
                   <Box>
                     <Text
                       fontSize="xs"

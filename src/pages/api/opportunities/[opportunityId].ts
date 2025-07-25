@@ -20,13 +20,34 @@ export default async function handler(
       try {
         const opportunity = await db
           .collection('opportunities')
-          .findOne({ _id: new ObjectId(opportunityId) });
+          .aggregate([
+            { $match: { _id: new ObjectId(opportunityId) } },
+            {
+              $lookup: {
+                from: 'users',
+                localField: 'userId',
+                foreignField: '_id',
+                as: 'owner',
+              },
+            },
+            {
+              $addFields: {
+                ownerFirstName: { $arrayElemAt: ['$owner.firstName', 0] },
+              },
+            },
+            {
+              $project: {
+                owner: 0,
+              },
+            },
+          ])
+          .toArray();
 
-        if (!opportunity) {
+        if (!opportunity || opportunity.length === 0) {
           return res.status(404).json({ message: 'Opportunity not found' });
         }
 
-        res.status(200).json(opportunity);
+        res.status(200).json(opportunity[0]);
       } catch (error) {
         console.error('Error fetching opportunity:', error);
         res.status(500).json({

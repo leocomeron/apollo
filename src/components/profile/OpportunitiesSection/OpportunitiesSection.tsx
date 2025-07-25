@@ -108,6 +108,7 @@ const OpportunitiesSection: React.FC = () => {
             title={opportunity.title}
             createdAt={new Date(opportunity.createdAt)}
             id={opportunity._id}
+            ownerFirstName={opportunity.ownerFirstName}
           />
         ))}
       </VStack>

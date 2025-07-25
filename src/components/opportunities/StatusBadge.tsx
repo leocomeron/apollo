@@ -23,7 +23,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
       case 'open':
         return 'Abierta';
       case 'in_progress':
-        return 'En progreso';
+        return 'En curso';
       case 'closed':
         return 'Cerrada';
       default:

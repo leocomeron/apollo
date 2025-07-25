@@ -110,7 +110,13 @@ const DescriptionText: React.FC<DescriptionTextProps> = ({
           />
         ) : (
           <div>
-            <Text fontSize="sm" textAlign="center">
+            <Text
+              fontSize="sm"
+              textAlign="center"
+              wordBreak="break-word"
+              overflowWrap="break-word"
+              maxW="100%"
+            >
               {description || 'Descripción sobre vos...'}
             </Text>
           </div>

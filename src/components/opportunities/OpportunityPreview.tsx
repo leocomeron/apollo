@@ -20,7 +20,7 @@ import { useState } from 'react';
 import StatusBadge from './StatusBadge';
 
 interface OpportunityPreviewProps {
-  formData: OpportunityFormData;
+  formData: OpportunityFormData & { ownerFirstName?: string };
   categories: Category[];
 }
 
@@ -66,6 +66,15 @@ export default function OpportunityPreview({
           </Text>
           {formData.status && <StatusBadge status={formData.status} />}
         </HStack>
+      )}
+
+      {formData.ownerFirstName && (
+        <Text>
+          <Text as="span" fontWeight="semibold">
+            Creado por:{' '}
+          </Text>
+          {formData.ownerFirstName}
+        </Text>
       )}
 
       {images.length > 0 && (
@@ -146,7 +155,14 @@ export default function OpportunityPreview({
       </Modal>
 
       {formData.description && (
-        <Text fontSize="md" color="gray.600" whiteSpace="pre-wrap">
+        <Text
+          fontSize="md"
+          color="gray.600"
+          whiteSpace="pre-wrap"
+          wordBreak="break-word"
+          overflowWrap="break-word"
+          maxW="100%"
+        >
           {formData.description}
         </Text>
       )}

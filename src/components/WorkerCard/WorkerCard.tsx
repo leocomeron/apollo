@@ -78,7 +78,13 @@ const WorkerCard: React.FC<WorkerCardProps> = ({
         <Text fontSize={{ base: 'sm', sm: 'md' }}>
           {getProfessionLabel(professions)}
         </Text>
-        <Text fontSize={{ base: 'xs', sm: 'sm' }} color="gray.500">
+        <Text
+          fontSize={{ base: 'xs', sm: 'sm' }}
+          color="gray.500"
+          wordBreak="break-word"
+          overflowWrap="break-word"
+          maxW="100%"
+        >
           {description}
         </Text>
         <HStack>
