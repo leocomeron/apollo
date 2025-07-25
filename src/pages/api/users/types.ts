@@ -2,7 +2,7 @@ import { Document } from '@/types/onboarding';
 
 export interface Rating {
   average: number;
-  details: { '1': number; '2': number; '3': number; '4': number; '5': number };
+  total: number;
 }
 
 export interface Contact {

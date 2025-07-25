@@ -25,7 +25,39 @@ export default async function handler(
         }
 
         const users = await db.collection('users').find(filter).toArray();
-        res.status(200).json(users);
+
+        // If fetching workers, include review statistics
+        if (filter.isWorker) {
+          const usersWithReviews = await Promise.all(
+            users.map(async (user) => {
+              // Get reviews for this user
+              const reviews = await db
+                .collection('reviews')
+                .find({ userId: user._id })
+                .toArray();
+
+              // Calculate review statistics
+              const totalReviews = reviews.length;
+              const averageRating =
+                totalReviews > 0
+                  ? reviews.reduce((sum, review) => sum + review.score, 0) /
+                    totalReviews
+                  : 0;
+
+              return {
+                ...user,
+                rating: {
+                  average: averageRating,
+                  total: totalReviews,
+                },
+              };
+            }),
+          );
+
+          res.status(200).json(usersWithReviews);
+        } else {
+          res.status(200).json(users);
+        }
       } catch (error) {
         res.status(500).json({ message: 'Error fetching users', error });
       }

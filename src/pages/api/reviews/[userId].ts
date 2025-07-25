@@ -12,7 +12,8 @@ interface ReviewDocument {
   comment?: string;
   imageUrl?: string;
   date: Date;
-  reviewer?: {
+  reviewer: {
+    _id: string;
     firstName: string;
     lastName: string;
     profilePicture?: string;
@@ -38,7 +39,7 @@ export default async function handler(
         // Get reviews for the specified user
         const reviews = await db
           .collection('reviews')
-          .find({ userId })
+          .find({ userId: new ObjectId(userId) })
           .toArray();
 
         // Get the reviewer details for each review
@@ -64,12 +65,14 @@ export default async function handler(
               ...review,
               reviewer: reviewer
                 ? {
+                    _id: reviewer._id.toString(),
                     firstName: reviewer.firstName,
                     lastName: reviewer.lastName,
                     profilePicture,
                     isVerified: reviewer.isVerified,
                   }
                 : {
+                    _id: 'anonymous',
                     firstName: 'Usuario',
                     lastName: 'Anónimo',
                     isVerified: false,
