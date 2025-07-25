@@ -147,7 +147,7 @@ const WorkerOpportunitiesSection: React.FC = () => {
             </Box>
             <Box
               position="absolute"
-              bottom={2}
+              top={10}
               right={2}
               bg="white"
               color="gray.700"
