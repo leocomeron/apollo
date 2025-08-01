@@ -94,6 +94,7 @@ export default function WorkersSection({
         {filteredWorkers?.map((worker) => (
           <WorkerCard
             key={worker._id}
+            userId={worker._id}
             profilePicture={getProfilePictureUrl(worker)}
             rating={worker.rating?.average ?? 0}
             firstName={worker.firstName}

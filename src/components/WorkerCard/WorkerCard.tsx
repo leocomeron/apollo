@@ -1,9 +1,11 @@
 import { getProfessionLabel } from '@/utils/strings';
 import { Avatar, Box, HStack, Image, Text, VStack } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import { MdLocationOn } from 'react-icons/md';
 import StarIcon from '../icons/StarIcon';
 
 export interface WorkerCardProps {
+  userId: string;
   profilePicture: string;
   rating: number;
   firstName: string;
@@ -14,6 +16,7 @@ export interface WorkerCardProps {
 }
 
 const WorkerCard: React.FC<WorkerCardProps> = ({
+  userId,
   profilePicture,
   rating,
   firstName,
@@ -22,6 +25,12 @@ const WorkerCard: React.FC<WorkerCardProps> = ({
   description,
   location,
 }) => {
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    void router.push(`/profile/${userId}`);
+  };
+
   const renderStars = (rating: number) => {
     if (!rating) {
       return (
@@ -47,6 +56,13 @@ const WorkerCard: React.FC<WorkerCardProps> = ({
       boxShadow="md"
       p={4}
       m={2}
+      cursor="pointer"
+      transition="all 0.2s"
+      _hover={{
+        transform: 'translateY(-2px)',
+        boxShadow: 'lg',
+      }}
+      onClick={handleCardClick}
     >
       {profilePicture ? (
         <Image

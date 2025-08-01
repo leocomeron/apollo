@@ -31,12 +31,14 @@ interface WorkPortfolioProps {
   initialJobs?: CompletedJob[];
   userId?: string;
   isEditable?: boolean;
+  isReadOnly?: boolean;
 }
 
 const WorkPortfolio: React.FC<WorkPortfolioProps> = ({
   initialJobs = [],
   userId,
   isEditable = true,
+  isReadOnly = false,
 }) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const [completedJobs, setCompletedJobs] =
@@ -70,13 +72,15 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({
       setCompletedJobs(data);
     } catch (error) {
       console.error('Error fetching completed jobs:', error);
-      toast({
-        title: 'Error',
-        description: 'No se pudieron cargar los trabajos realizados',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
+      if (isEditable) {
+        toast({
+          title: 'Error',
+          description: 'No se pudieron cargar los trabajos realizados',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -87,6 +91,7 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({
   }, [userId, session]);
 
   const handleImageUpload = (url: string) => {
+    if (isReadOnly) return;
     setPendingImageUrl(url);
     setEditingJobId(null);
     setNewJobDescription('');
@@ -99,79 +104,88 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({
       await handleUpdateJob(editingJobId, newJobDescription);
     } else {
       // Crear nuevo trabajo
-      if (!pendingImageUrl || !session?.user?.id) return;
-
-      try {
-        const response = await fetch('/api/completed-jobs', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId: session.user.id,
-            imageUrl: pendingImageUrl,
-            description: newJobDescription,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to save completed job');
-        }
-
-        toast({
-          title: 'Éxito',
-          description: 'Trabajo realizado guardado correctamente',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        });
-      } catch (error) {
-        console.error('Error saving completed job:', error);
-        toast({
-          title: 'Error',
-          description: 'No se pudo guardar el trabajo realizado',
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        });
-      }
+      await handleCreateJob(newJobDescription);
     }
+  };
 
-    setNewJobDescription('');
-    setPendingImageUrl(null);
-    setEditingJobId(null);
-    onClose();
-    await fetchCompletedJobs();
+  const handleCreateJob = async (description: string) => {
+    if (!pendingImageUrl) return;
+
+    try {
+      const response = await fetch('/api/completed-jobs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          imageUrl: pendingImageUrl,
+          description,
+          userId: userId || session?.user?.id,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create completed job');
+      }
+
+      const newJob = await response.json();
+      setCompletedJobs((prev) => [...prev, newJob]);
+      setPendingImageUrl(null);
+      setNewJobDescription('');
+      onClose();
+
+      toast({
+        title: 'Trabajo agregado',
+        description: 'El trabajo se agregó exitosamente a tu portafolio',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error('Error creating completed job:', error);
+      toast({
+        title: 'Error',
+        description: 'No se pudo agregar el trabajo al portafolio',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   const handleUpdateJob = async (jobId: string, description: string) => {
     try {
       const response = await fetch(`/api/completed-jobs/${jobId}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          description,
-        }),
+        body: JSON.stringify({ description }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update job description');
+        throw new Error('Failed to update completed job');
       }
 
+      setCompletedJobs((prev) =>
+        prev.map((job) => (job._id === jobId ? { ...job, description } : job)),
+      );
+      setEditingJobId(null);
+      setNewJobDescription('');
+      onClose();
+
       toast({
-        title: 'Éxito',
-        description: 'Descripción actualizada correctamente',
+        title: 'Trabajo actualizado',
+        description: 'La descripción se actualizó exitosamente',
         status: 'success',
-        duration: 5000,
+        duration: 3000,
         isClosable: true,
       });
     } catch (error) {
-      console.error('Error updating job description:', error);
+      console.error('Error updating completed job:', error);
       toast({
         title: 'Error',
-        description: 'No se pudo actualizar la descripción',
+        description: 'No se pudo actualizar el trabajo',
         status: 'error',
         duration: 5000,
         isClosable: true,
@@ -189,20 +203,20 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({
         throw new Error('Failed to delete completed job');
       }
 
+      setCompletedJobs((prev) => prev.filter((job) => job._id !== jobId));
+
       toast({
-        title: 'Éxito',
-        description: 'Trabajo realizado eliminado correctamente',
+        title: 'Trabajo eliminado',
+        description: 'El trabajo se eliminó exitosamente del portafolio',
         status: 'success',
-        duration: 5000,
+        duration: 3000,
         isClosable: true,
       });
-
-      await fetchCompletedJobs();
     } catch (error) {
       console.error('Error deleting completed job:', error);
       toast({
         title: 'Error',
-        description: 'No se pudo eliminar el trabajo realizado',
+        description: 'No se pudo eliminar el trabajo',
         status: 'error',
         duration: 5000,
         isClosable: true,
@@ -211,194 +225,170 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({
   };
 
   const handleFileDropzoneUpload = (url: string) => {
+    if (isReadOnly) return;
     handleImageUpload(url);
   };
 
   const handleEditDescription = (job: CompletedJob) => {
+    if (isReadOnly) return;
     setEditingJobId(job._id?.toString() || null);
     setNewJobDescription(job.description || '');
-    setPendingImageUrl(job.imageUrl);
     onOpen();
   };
 
+  if (isLoading) {
+    return (
+      <Box>
+        <Text fontSize="xl" mb={4}>
+          Portafolio de Trabajos
+        </Text>
+        <Text color="gray.500">Cargando trabajos...</Text>
+      </Box>
+    );
+  }
+
   return (
-    <>
-      <Text fontSize="xl" mb={4}>
-        Trabajos realizados
-      </Text>
-      {isEditable && (
-        <Box display="flex" alignItems="center" mb={4}>
-          <Box>
-            <FileDropzone
-              text="Añadir trabajos realizados"
-              documentType={DocumentType.WorkPortfolio}
-              onUploadComplete={handleFileDropzoneUpload}
-            />
-          </Box>
+    <Box>
+      <Flex justify="space-between" align="center" mb={4}>
+        <Text fontSize="xl">Portafolio de Trabajos</Text>
+        {!isReadOnly && isEditable && (
           <Tooltip
-            label="Carga fotos o imágenes de tus trabajos para que los clientes puedan verlo"
+            label="Agrega fotos de trabajos realizados para mostrar tu experiencia"
             isOpen={isTooltipOpen}
             onClose={() => setIsTooltipOpen(false)}
-            hasArrow
-            placement="top"
           >
             <Icon
               as={InfoOutlineIcon}
-              boxSize={4}
-              ml={2}
-              color="gray.500"
-              onClick={toggleTooltip}
               cursor="pointer"
+              onClick={toggleTooltip}
+              color="gray.400"
+              _hover={{ color: 'gray.600' }}
             />
           </Tooltip>
+        )}
+      </Flex>
+
+      {!isReadOnly && isEditable && (
+        <Box mb={4}>
+          <FileDropzone
+            onUploadComplete={handleFileDropzoneUpload}
+            documentType={DocumentType.WorkPortfolio}
+            text="Arrastra una imagen de tu trabajo aquí o haz clic para seleccionar"
+          />
         </Box>
       )}
 
-      {isLoading ? (
-        <Text fontSize="large" color="gray.500" textAlign="center" py={10}>
-          Cargando trabajos realizados...
-        </Text>
-      ) : completedJobs.length > 0 ? (
-        <SimpleGrid
-          columns={{ base: 1, sm: 2, md: 3 }}
-          spacing={{ base: 4, md: 6 }}
-          mb={5}
-        >
+      {completedJobs.length > 0 ? (
+        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
           {completedJobs.map((job, index) => (
             <Box
-              key={job._id?.toString() || index}
+              key={index}
               borderWidth="1px"
               borderRadius="lg"
               overflow="hidden"
-              boxShadow="sm"
-              transition="all 0.2s"
-              _hover={{ boxShadow: 'md' }}
+              bg="white"
+              position="relative"
             >
-              <Box position="relative">
-                <AspectRatio ratio={1}>
-                  <Image
-                    src={job.imageUrl}
-                    alt={`Trabajo realizado ${index + 1}`}
-                    objectFit="cover"
-                    w="100%"
-                    h="100%"
-                  />
-                </AspectRatio>
-
-                {isEditable && (
-                  <Flex position="absolute" top="8px" right="8px" gap={2}>
-                    <IconButton
-                      aria-label="Editar descripción"
-                      icon={<EditIcon />}
-                      size="sm"
-                      colorScheme="brand"
-                      onClick={() => handleEditDescription(job)}
-                      borderRadius="full"
-                    />
-                    <IconButton
-                      aria-label="Eliminar trabajo"
-                      icon={<DeleteIcon />}
-                      size="sm"
-                      colorScheme="red"
-                      onClick={() =>
-                        void handleDeleteJob(job._id?.toString() || '')
-                      }
-                      borderRadius="full"
-                    />
-                  </Flex>
-                )}
-              </Box>
-
-              <Box p={3}>
-                {job.description ? (
-                  <Text
-                    fontSize="sm"
-                    wordBreak="break-word"
-                    overflowWrap="break-word"
-                    maxW="100%"
-                  >
+              <AspectRatio ratio={16 / 9}>
+                <img
+                  src={job.imageUrl}
+                  alt={job.description || 'Trabajo completado'}
+                  style={{ objectFit: 'cover' }}
+                />
+              </AspectRatio>
+              {job.description && (
+                <Box p={4}>
+                  <Text fontSize="sm" color="gray.600">
                     {job.description}
                   </Text>
-                ) : isEditable ? (
-                  <Button
-                    size="xs"
-                    colorScheme="brand"
+                </Box>
+              )}
+              {!isReadOnly && isEditable && (
+                <Flex
+                  position="absolute"
+                  top={2}
+                  right={2}
+                  gap={1}
+                  opacity={0}
+                  _groupHover={{ opacity: 1 }}
+                  transition="opacity 0.2s"
+                >
+                  <IconButton
+                    aria-label="Editar descripción"
+                    icon={<EditIcon />}
+                    size="sm"
+                    colorScheme="blue"
                     onClick={() => handleEditDescription(job)}
-                    width="100%"
-                  >
-                    Añadir descripción
-                  </Button>
-                ) : (
-                  <Text color="gray.400" fontSize="sm" fontStyle="italic">
-                    Sin descripción
-                  </Text>
-                )}
-              </Box>
+                  />
+                  <IconButton
+                    aria-label="Eliminar trabajo"
+                    icon={<DeleteIcon />}
+                    size="sm"
+                    colorScheme="red"
+                    onClick={() => handleDeleteJob(job._id?.toString() || '')}
+                  />
+                </Flex>
+              )}
             </Box>
           ))}
         </SimpleGrid>
       ) : (
-        <Box
-          py={10}
-          textAlign="center"
-          borderWidth="1px"
-          borderRadius="lg"
-          borderStyle="dashed"
-        >
-          <Text fontSize="large" color="gray.500">
-            No hay trabajos realizados aún.
-          </Text>
-          {isEditable && (
-            <Text fontSize="sm" color="gray.400" mt={2}>
-              Añade fotos de tus trabajos para mostrar tu experiencia a los
-              clientes
-            </Text>
-          )}
-        </Box>
+        <Text color="gray.500">
+          {isReadOnly
+            ? 'Este usuario aún no ha agregado trabajos a su portafolio.'
+            : 'Aún no has agregado trabajos a tu portafolio. Sube fotos de trabajos realizados para mostrar tu experiencia.'}
+        </Text>
       )}
 
-      {/* Modal para agregar o editar descripción */}
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>
-            {editingJobId ? 'Editar descripción' : 'Añadir descripción'}
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text mb={2}>
+      {/* Modal para agregar/editar trabajo */}
+      {!isReadOnly && (
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>
               {editingJobId
-                ? 'Edita la descripción de tu trabajo realizado:'
-                : 'Añade una descripción para tu trabajo realizado:'}
-            </Text>
-            <Textarea
-              value={newJobDescription}
-              onChange={(e) => setNewJobDescription(e.target.value)}
-              placeholder="Describe el trabajo realizado"
-              size="md"
-            />
-            {pendingImageUrl && (
-              <Flex justifyContent="center" mt={4}>
-                <Image
-                  src={pendingImageUrl}
-                  alt="Vista previa"
-                  maxH="200px"
-                  borderRadius="md"
-                />
-              </Flex>
-            )}
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClose}>
-              Cancelar
-            </Button>
-            <Button colorScheme="brand" onClick={() => void handleJobSubmit()}>
-              Guardar
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+                ? 'Editar descripción'
+                : 'Agregar trabajo al portafolio'}
+            </ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              {!editingJobId && pendingImageUrl && (
+                <Box mb={4}>
+                  <Image
+                    src={pendingImageUrl}
+                    alt="Trabajo a agregar"
+                    borderRadius="md"
+                    maxH="200px"
+                    objectFit="cover"
+                    w="100%"
+                  />
+                </Box>
+              )}
+              <Textarea
+                value={newJobDescription}
+                onChange={(e) => setNewJobDescription(e.target.value)}
+                placeholder="Describe el trabajo realizado..."
+                maxLength={500}
+                resize="vertical"
+                minH="100px"
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button variant="ghost" mr={3} onClick={onClose}>
+                Cancelar
+              </Button>
+              <Button
+                colorScheme="blue"
+                onClick={handleJobSubmit}
+                isDisabled={!newJobDescription.trim()}
+              >
+                {editingJobId ? 'Actualizar' : 'Agregar'}
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
+    </Box>
   );
 };
 
