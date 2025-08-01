@@ -184,7 +184,7 @@ const CloseOpportunityModal: React.FC<CloseOpportunityModalProps> = ({
                     <IconButton
                       key={star}
                       aria-label={`${star} estrellas`}
-                      icon={<StarIcon />}
+                      icon={<StarIcon filled={star <= reviewData.score} />}
                       variant="ghost"
                       colorScheme={star <= reviewData.score ? 'yellow' : 'gray'}
                       color={
@@ -244,7 +244,7 @@ const CloseOpportunityModal: React.FC<CloseOpportunityModalProps> = ({
                   isLoading={isSubmitting}
                   loadingText="Enviando..."
                   flex={1}
-                  fontSize="sm"
+                  fontSize="xs"
                 >
                   Enviar evaluación y cerrar
                 </Button>
@@ -252,7 +252,7 @@ const CloseOpportunityModal: React.FC<CloseOpportunityModalProps> = ({
                   variant="outline"
                   onClick={handleClose}
                   flex={1}
-                  fontSize="sm"
+                  fontSize="xs"
                 >
                   Cancelar
                 </Button>
