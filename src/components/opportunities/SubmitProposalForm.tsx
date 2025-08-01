@@ -1,4 +1,5 @@
 import fetcher from '@/lib/fetcher';
+import { Proposal } from '@/types/proposal';
 import {
   Box,
   Button,
@@ -21,12 +22,6 @@ interface SubmitProposalFormProps {
   onProposalSubmitted: () => void;
 }
 
-interface ExistingProposal {
-  id: string;
-  budget: number;
-  status: string;
-}
-
 export default function SubmitProposalForm({
   opportunityId,
   onProposalSubmitted,
@@ -34,31 +29,25 @@ export default function SubmitProposalForm({
   const { data: session } = useSession();
   const [budget, setBudget] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [existingProposal, setExistingProposal] =
-    useState<ExistingProposal | null>(null);
+  const [existingProposal, setExistingProposal] = useState<Proposal | null>(
+    null,
+  );
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
   // Get user's proposals for this opportunity
-  const { data: proposals, mutate: mutateProposals } = useSWR<
-    ExistingProposal[]
-  >(
+  const { data: proposals, mutate: mutateProposals } = useSWR<Proposal[]>(
     opportunityId ? `/api/opportunities/${opportunityId}/proposals` : null,
     fetcher,
   );
-
   // Check if user already has a proposal for this opportunity
   useEffect(() => {
     if (proposals && session?.user?.id) {
       const userProposal = proposals.find(
-        (proposal: any) => proposal.workerId === session.user.id,
+        (proposal: Proposal) => proposal.workerId === session.user.id,
       );
       if (userProposal) {
-        setExistingProposal({
-          id: userProposal.id,
-          budget: userProposal.budget,
-          status: userProposal.status,
-        });
+        setExistingProposal(userProposal);
       } else {
         setExistingProposal(null);
       }

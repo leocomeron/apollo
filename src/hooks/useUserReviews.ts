@@ -1,11 +1,5 @@
-import { Review } from '@/types/review';
+import { Review, ReviewStats } from '@/types/review';
 import { useEffect, useState } from 'react';
-
-interface ReviewStats {
-  totalReviews: number;
-  averageRating: number;
-  breakdown: Array<{ score: number; count: number }>;
-}
 
 interface UseUserReviewsResult {
   reviews: Review[];

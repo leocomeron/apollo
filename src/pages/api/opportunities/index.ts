@@ -14,7 +14,7 @@ export default async function handler(
       try {
         const { userId, status } = req.query;
 
-        const matchStage: any = {};
+        const matchStage: Record<string, unknown> = {};
         if (userId) {
           matchStage.userId = new ObjectId(userId as string);
         }

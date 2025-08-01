@@ -16,3 +16,9 @@ export interface Review {
     isVerified: boolean;
   };
 }
+
+export interface ReviewStats {
+  totalReviews: number;
+  averageRating: number;
+  breakdown: Array<{ score: number; count: number }>;
+}
