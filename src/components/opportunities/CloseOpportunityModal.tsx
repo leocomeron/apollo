@@ -22,6 +22,7 @@ import {
   VStack,
   useToast,
 } from '@chakra-ui/react';
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 interface AcceptedProposal {
@@ -54,6 +55,7 @@ const CloseOpportunityModal: React.FC<CloseOpportunityModalProps> = ({
   formData,
   onOpportunityUpdate,
 }) => {
+  const { data: session } = useSession();
   const [reviewData, setReviewData] = useState<ReviewFormData>({
     score: 0,
     comment: '',
@@ -84,7 +86,8 @@ const CloseOpportunityModal: React.FC<CloseOpportunityModalProps> = ({
       !acceptedProposal ||
       reviewData.score === 0 ||
       !reviewData.comment.trim() ||
-      reviewData.images.length === 0
+      reviewData.images.length === 0 ||
+      !session?.user?.id
     ) {
       return;
     }
@@ -100,7 +103,7 @@ const CloseOpportunityModal: React.FC<CloseOpportunityModalProps> = ({
         },
         body: JSON.stringify({
           userId: acceptedProposal.workerId,
-          reviewerId: 'current-user-id', // This should come from session
+          reviewerId: session.user.id,
           score: reviewData.score,
           comment: reviewData.comment,
           imageUrl: reviewData.images[0], // For now, just use the first image
@@ -115,7 +118,7 @@ const CloseOpportunityModal: React.FC<CloseOpportunityModalProps> = ({
       const opportunityResponse = await fetch(
         `/api/opportunities/${opportunityId}`,
         {
-          method: 'PATCH',
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
