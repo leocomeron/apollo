@@ -1,3 +1,4 @@
+import UserLink from '@/components/common/UserLink';
 import { Box, Image, Text, VStack } from '@chakra-ui/react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -10,6 +11,7 @@ interface OpportunityCardProps {
   id: string;
   applicationsCount?: number;
   ownerFirstName?: string;
+  ownerId?: string;
 }
 
 const OpportunityCard: React.FC<OpportunityCardProps> = ({
@@ -19,6 +21,7 @@ const OpportunityCard: React.FC<OpportunityCardProps> = ({
   id,
   applicationsCount = 5,
   ownerFirstName,
+  ownerId,
 }) => {
   const router = useRouter();
 
@@ -47,7 +50,12 @@ const OpportunityCard: React.FC<OpportunityCardProps> = ({
         >
           {title}
         </Text>
-        {ownerFirstName && (
+        {ownerFirstName && ownerId && (
+          <Text color="gray.600" fontSize="sm">
+            Creado por: <UserLink userId={ownerId}>{ownerFirstName}</UserLink>
+          </Text>
+        )}
+        {ownerFirstName && !ownerId && (
           <Text color="gray.600" fontSize="sm">
             Creado por: {ownerFirstName}
           </Text>

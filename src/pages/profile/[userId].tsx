@@ -8,7 +8,6 @@ import { DocumentType } from '@/types/onboarding';
 import {
   Alert,
   AlertIcon,
-  Box,
   Center,
   Divider,
   Grid,
@@ -108,15 +107,7 @@ const PublicProfile = () => {
               />
             </>
           ) : (
-            <Box>
-              <Text fontSize="xl" mb={4}>
-                Perfil de Cliente
-              </Text>
-              <Text color="gray.600">
-                Este usuario es un cliente y no tiene trabajos o portafolio para
-                mostrar.
-              </Text>
-            </Box>
+            <>ToDo: Qué vamos a mostrar en el lado derecho para el EMPLEADOR?</>
           )}
         </VStack>
       </GridItem>

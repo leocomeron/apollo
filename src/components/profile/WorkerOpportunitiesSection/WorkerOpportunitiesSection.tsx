@@ -1,10 +1,8 @@
-import fetcher from '@/lib/fetcher';
+import OpportunityCard from '@/components/profile/OpportunityCard/OpportunityCard';
 import { Opportunity } from '@/types/opportunities';
 import { Box, Button, Text, VStack } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
-import useSWR from 'swr';
-import OpportunityCard from '../OpportunityCard/OpportunityCard';
+import { useEffect, useState } from 'react';
 
 type ProposalStatus = 'pending' | 'accepted' | 'rejected';
 type FilterStatus = 'pending' | 'accepted' | 'completed';
@@ -20,42 +18,42 @@ interface OpportunityWithProposal extends Opportunity {
 }
 
 const WorkerOpportunitiesSection: React.FC = () => {
-  const { data: session } = useSession();
-  const [selectedStatus, setSelectedStatus] = useState<FilterStatus>('pending');
-
-  const {
-    data: opportunities,
-    error,
-    isLoading,
-  } = useSWR<OpportunityWithProposal[]>(
-    session?.user?.id
-      ? `/api/opportunities/worker-applications?workerId=${session.user.id}`
-      : null,
-    fetcher,
-    {
-      revalidateOnMount: true,
-    },
+  const [opportunities, setOpportunities] = useState<OpportunityWithProposal[]>(
+    [],
   );
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<FilterStatus>('pending');
+  const { data: session } = useSession();
+  useEffect(() => {
+    const fetchOpportunities = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          `/api/opportunities/worker-applications?workerId=${session?.user?.id}`,
+        );
+        if (!response.ok) {
+          throw new Error('Failed to fetch opportunities');
+        }
+        const data = await response.json();
+        setOpportunities(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Unknown error');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void fetchOpportunities();
+  }, []);
 
   const getOpportunitiesByStatus = (status: FilterStatus) => {
-    if (!opportunities) return [];
-
-    switch (status) {
-      case 'pending':
-        return opportunities.filter(
-          (opportunity) => opportunity.proposal.status === 'pending',
-        );
-      case 'accepted':
-        return opportunities.filter(
-          (opportunity) => opportunity.proposal.status === 'accepted',
-        );
-      case 'completed':
-        return opportunities.filter(
-          (opportunity) => opportunity.status === 'closed',
-        );
-      default:
-        return [];
-    }
+    return opportunities.filter((opportunity) => {
+      if (status === 'completed') {
+        return opportunity.status === 'closed';
+      }
+      return opportunity.proposal.status === status;
+    });
   };
 
   const getStatusLabel = (status: FilterStatus) => {
@@ -65,7 +63,9 @@ const WorkerOpportunitiesSection: React.FC = () => {
       case 'accepted':
         return 'Aceptada';
       case 'completed':
-        return 'Finalizada';
+        return 'Completada';
+      default:
+        return 'Desconocido';
     }
   };
 
@@ -77,12 +77,17 @@ const WorkerOpportunitiesSection: React.FC = () => {
         return 'green.500';
       case 'rejected':
         return 'red.500';
+      default:
+        return 'gray.500';
     }
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
       <VStack spacing={6} align="stretch">
+        <Text fontSize="2xl" fontWeight="bold">
+          Mis Propuestas
+        </Text>
         <Text>Cargando mis propuestas...</Text>
       </VStack>
     );
@@ -128,6 +133,7 @@ const WorkerOpportunitiesSection: React.FC = () => {
               createdAt={new Date(opportunity.createdAt)}
               id={opportunity._id}
               ownerFirstName={opportunity.ownerFirstName}
+              ownerId={opportunity.userId}
             />
             <Box
               position="absolute"

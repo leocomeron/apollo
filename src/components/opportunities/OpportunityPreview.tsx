@@ -1,4 +1,3 @@
-import { OPPORTUNITY_TYPES } from '@/constants';
 import { Category } from '@/types/onboarding';
 import { OpportunityFormData } from '@/types/opportunities';
 import { CloseIcon } from '@chakra-ui/icons';
@@ -37,7 +36,8 @@ export default function OpportunityPreview({
   };
 
   const getOpportunityTypeLabel = (value: string) => {
-    return OPPORTUNITY_TYPES.find((type) => type.value === value)?.label || '';
+    const category = categories.find((cat) => cat.value === value);
+    return category ? category.label : value;
   };
 
   const getCategoryLabel = (value: string) => {

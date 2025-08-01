@@ -1,9 +1,11 @@
+import UserLink from '@/components/common/UserLink';
 import { Avatar, Box, Button, HStack, Text, VStack } from '@chakra-ui/react';
 import CheckIconComponent from '../common/CheckIcon';
 import CloseIconComponent from '../common/CloseIcon';
 import ReviewRating from '../profile/ReviewRating/ReviewRating';
 
 interface ProposalCardProps {
+  userId: string;
   firstName: string;
   lastName: string;
   profileImage: string;
@@ -19,6 +21,7 @@ interface ProposalCardProps {
 }
 
 const ProposalCard: React.FC<ProposalCardProps> = ({
+  userId,
   firstName,
   lastName,
   profileImage,
@@ -36,16 +39,22 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
       {status === 'rejected' && <CloseIconComponent />}
 
       <HStack spacing={2} align="start">
-        <Avatar
-          size="lg"
-          src={profileImage}
-          name={`${firstName} ${lastName}`}
-        />
+        <UserLink userId={userId}>
+          <Avatar
+            size="lg"
+            src={profileImage}
+            name={`${firstName} ${lastName}`}
+            cursor="pointer"
+            _hover={{ opacity: 0.8 }}
+          />
+        </UserLink>
 
         <VStack align="start" flex={1} spacing={1}>
-          <Text fontSize="sm" fontWeight="bold">
-            {firstName} {lastName}
-          </Text>
+          <UserLink userId={userId}>
+            <Text fontSize="sm" fontWeight="bold">
+              {firstName} {lastName}
+            </Text>
+          </UserLink>
           <ReviewRating
             reviewStats={reviewStats}
             hideTotalReviews

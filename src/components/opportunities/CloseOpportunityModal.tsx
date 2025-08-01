@@ -1,7 +1,7 @@
+import UserLink from '@/components/common/UserLink';
 import DragAndDropImage from '@/components/DragAndDrop/DragAndDropImage';
-import { updateOpportunity } from '@/services/opportunities';
+import StarIcon from '@/components/icons/StarIcon';
 import { OpportunityFormData } from '@/types/opportunities';
-import { StarIcon } from '@chakra-ui/icons';
 import {
   Alert,
   AlertIcon,
@@ -19,10 +19,9 @@ import {
   ModalOverlay,
   Text,
   Textarea,
-  useToast,
   VStack,
+  useToast,
 } from '@chakra-ui/react';
-import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 interface AcceptedProposal {
@@ -55,15 +54,13 @@ const CloseOpportunityModal: React.FC<CloseOpportunityModalProps> = ({
   formData,
   onOpportunityUpdate,
 }) => {
-  const { data: session } = useSession();
-  const toast = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [reviewData, setReviewData] = useState<ReviewFormData>({
     score: 0,
     comment: '',
     images: [],
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const toast = useToast();
 
   const resetForm = () => {
     setReviewData({
@@ -79,53 +76,23 @@ const CloseOpportunityModal: React.FC<CloseOpportunityModalProps> = ({
   };
 
   const handleImageChange = (imageData: string[]) => {
-    setReviewData((prev) => ({
-      ...prev,
-      images: imageData,
-    }));
+    setReviewData((prev) => ({ ...prev, images: imageData }));
   };
 
   const handleSubmitReview = async () => {
-    if (!acceptedProposal) return;
-
-    if (reviewData.score === 0) {
-      toast({
-        title: 'Calificación requerida',
-        description: 'Por favor selecciona una calificación',
-        status: 'warning',
-        duration: 3000,
-        isClosable: true,
-      });
+    if (
+      !acceptedProposal ||
+      reviewData.score === 0 ||
+      !reviewData.comment.trim() ||
+      reviewData.images.length === 0
+    ) {
       return;
     }
 
-    if (!reviewData.comment.trim()) {
-      toast({
-        title: 'Comentario requerido',
-        description:
-          'Por favor escribe un comentario sobre el trabajo realizado',
-        status: 'warning',
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
-
-    if (reviewData.images.length === 0) {
-      toast({
-        title: 'Imagen requerida',
-        description: 'Por favor sube al menos una imagen del trabajo realizado',
-        status: 'warning',
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
+    setIsSubmitting(true);
 
     try {
-      setIsSubmitting(true);
-
-      // Create review
+      // Submit review
       const reviewResponse = await fetch('/api/reviews', {
         method: 'POST',
         headers: {
@@ -133,21 +100,40 @@ const CloseOpportunityModal: React.FC<CloseOpportunityModalProps> = ({
         },
         body: JSON.stringify({
           userId: acceptedProposal.workerId,
-          reviewerId: session?.user?.id,
+          reviewerId: 'current-user-id', // This should come from session
           score: reviewData.score,
           comment: reviewData.comment,
-          imageUrl: reviewData.images[0], // Use the first image
+          imageUrl: reviewData.images[0], // For now, just use the first image
         }),
       });
 
       if (!reviewResponse.ok) {
-        throw new Error('Error al crear la evaluación');
+        throw new Error('Failed to submit review');
       }
 
-      // Update opportunity status to closed
-      const updatedFormData = { ...formData, status: 'closed' as const };
-      await updateOpportunity(opportunityId, updatedFormData);
-      onOpportunityUpdate(updatedFormData);
+      // Close opportunity
+      const opportunityResponse = await fetch(
+        `/api/opportunities/${opportunityId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            status: 'closed',
+          }),
+        },
+      );
+
+      if (!opportunityResponse.ok) {
+        throw new Error('Failed to close opportunity');
+      }
+
+      // Update local state
+      onOpportunityUpdate({
+        ...formData,
+        status: 'closed',
+      });
 
       toast({
         title: 'Evaluación enviada',
@@ -184,8 +170,10 @@ const CloseOpportunityModal: React.FC<CloseOpportunityModalProps> = ({
           {acceptedProposal && (
             <VStack spacing={4} align="stretch">
               <Text fontSize="sm" color="gray.600">
-                Evaluando a: {acceptedProposal.firstName}{' '}
-                {acceptedProposal.lastName}
+                Evaluando a:{' '}
+                <UserLink userId={acceptedProposal.workerId}>
+                  {acceptedProposal.firstName} {acceptedProposal.lastName}
+                </UserLink>
               </Text>
 
               {/* Score Selection */}

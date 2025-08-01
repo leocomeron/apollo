@@ -356,6 +356,7 @@ export default function OpportunityPage() {
                         .map((proposal) => (
                           <ProposalCard
                             key={proposal.id}
+                            userId={proposal.workerId}
                             firstName={proposal.firstName}
                             lastName={proposal.lastName}
                             profileImage={proposal.profileImage}

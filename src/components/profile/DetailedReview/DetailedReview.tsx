@@ -1,3 +1,4 @@
+import UserLink from '@/components/common/UserLink';
 import StarIcon from '@/components/icons/StarIcon';
 import { Review } from '@/types/review';
 import { Avatar, HStack, Text, VStack } from '@chakra-ui/react';
@@ -26,6 +27,7 @@ const DetailedReview: React.FC<DetailedReviewProps> = ({ review }) => {
   };
 
   const reviewerInfo = {
+    id: review.reviewer._id,
     name: `${review.reviewer.firstName} ${review.reviewer.lastName}`,
     avatarUrl: review.reviewer.profilePicture || '',
     isVerified: review.reviewer.isVerified,
@@ -44,11 +46,20 @@ const DetailedReview: React.FC<DetailedReviewProps> = ({ review }) => {
     >
       {/* First section: Avatar, UserName, and Verified Status */}
       <HStack spacing={4} w="100%">
-        <Avatar size="md" src={reviewerInfo.avatarUrl} />
+        <UserLink userId={reviewerInfo.id}>
+          <Avatar
+            size="md"
+            src={reviewerInfo.avatarUrl}
+            cursor="pointer"
+            _hover={{ opacity: 0.8 }}
+          />
+        </UserLink>
         <VStack align="flex-start" spacing={0}>
-          <Text fontWeight="bold" fontSize="sm">
-            {reviewerInfo.name}
-          </Text>
+          <UserLink userId={reviewerInfo.id}>
+            <Text fontWeight="bold" fontSize="sm">
+              {reviewerInfo.name}
+            </Text>
+          </UserLink>
           {reviewerInfo.isVerified && (
             <Text fontSize="sm" color="brand.700">
               Perfil verificado
