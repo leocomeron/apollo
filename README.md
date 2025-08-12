@@ -67,7 +67,7 @@ src/
 - **Create Opportunities**: Clients post job opportunities with requirements
 - **Browse Opportunities**: Service providers find relevant work
 - **Proposal Submission**: Workers submit proposals for opportunities
-- **Status Management**: Track opportunity lifecycle (open, in progress, closed)
+- **Status Management**: Track opportunity lifecycle (open, in_progress, completed, closed, canceled)
 
 ### 3. Review & Rating System
 

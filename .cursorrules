@@ -106,6 +106,7 @@ import styles from './Component.module.css';
 ## Data Fetching
 
 - Use SWR or similar for client-side data fetching
+- Use axios for API calls different than a GET request
 - Implement proper loading states
 - Handle errors gracefully with user feedback
 - Use the fetcher utility from `/src/lib/fetcher.ts`

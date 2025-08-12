@@ -1,5 +1,5 @@
 import fetcher from '@/lib/fetcher';
-import { Opportunity } from '@/types/opportunities';
+import type { Opportunity, OpportunityStatus } from '@/types/opportunities';
 import { Box, Button, Text, VStack } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -7,8 +7,6 @@ import { useState } from 'react';
 import useSWR from 'swr';
 import CallToAction from '../../CallToAction/CallToAction';
 import OpportunityCard from '../OpportunityCard/OpportunityCard';
-
-type OpportunityStatus = Opportunity['status'];
 
 const OpportunitiesSection: React.FC = () => {
   const router = useRouter();
@@ -44,8 +42,14 @@ const OpportunitiesSection: React.FC = () => {
         return 'Abiertas';
       case 'in_progress':
         return 'En Curso';
+      case 'completed':
+        return 'Completadas';
       case 'closed':
-        return 'Finalizadas';
+        return 'Cerradas';
+      case 'canceled':
+        return 'Canceladas';
+      default:
+        return status;
     }
   };
 

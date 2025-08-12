@@ -123,7 +123,7 @@ const CloseOpportunityModal: React.FC<CloseOpportunityModalProps> = ({
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            status: 'closed',
+            status: 'completed',
           }),
         },
       );
@@ -135,7 +135,7 @@ const CloseOpportunityModal: React.FC<CloseOpportunityModalProps> = ({
       // Update local state
       onOpportunityUpdate({
         ...formData,
-        status: 'closed',
+        status: 'completed',
       });
 
       toast({
