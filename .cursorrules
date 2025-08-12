@@ -164,4 +164,5 @@ import styles from './Component.module.css';
 - Document complex business logic
 - Use JSDoc for public API functions
 - Keep README updated with setup instructions
+- In case that more information is needed, please check de README.md
 - Document environment variables and their purposes

@@ -25,7 +25,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
       case 'in_progress':
         return 'En curso';
       case 'closed':
-        return 'Cerrada';
+        return 'Finalizada';
       default:
         return status;
     }

@@ -45,7 +45,7 @@ const OpportunitiesSection: React.FC = () => {
       case 'in_progress':
         return 'En Curso';
       case 'closed':
-        return 'Cerradas';
+        return 'Finalizadas';
     }
   };
 
