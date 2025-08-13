@@ -80,10 +80,10 @@ export default function Home({
 
   return (
     <div className="items-center p-2 pb-20 gap-8 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <Tabs size="lg" colorScheme="brand">
+      <Tabs size="lg" colorScheme="brand" borderColor="white">
         <TabList>
-          <Tab>Oportunidades</Tab>
-          <Tab>Trabajadores</Tab>
+          <Tab fontWeight="bold">Oportunidades</Tab>
+          <Tab fontWeight="bold">Trabajadores</Tab>
         </TabList>
 
         <TabPanels>
