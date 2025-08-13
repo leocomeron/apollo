@@ -44,7 +44,8 @@ const WorkerOpportunitiesSection: React.FC = () => {
       if (status === 'completed') {
         // For completed tab: opportunity must be closed AND worker's proposal must have been accepted
         return (
-          opportunity.status === 'closed' &&
+          (opportunity.status === 'completed' ||
+            opportunity.status === 'closed') &&
           opportunity.proposal.status === 'accepted'
         );
       }
@@ -152,7 +153,9 @@ const WorkerOpportunitiesSection: React.FC = () => {
             >
               {opportunity.status === 'closed'
                 ? 'Finalizada'
-                : getStatusLabel(opportunity.proposal.status as FilterStatus)}
+                : opportunity.status === 'completed'
+                  ? 'Completada'
+                  : getStatusLabel(opportunity.proposal.status as FilterStatus)}
             </Box>
             <Box
               position="absolute"
