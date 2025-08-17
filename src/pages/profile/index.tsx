@@ -94,17 +94,20 @@ const Profile = () => {
               <Divider mt={5} />
               <WorkerOpportunitiesSection />
               <Divider mt={5} />
-              <Text fontSize="xl" mb={1}>
-                Opiniones de contrataciones
-              </Text>
-              <DetailedReviewSection
-                reviews={reviews}
-                isLoading={isLoadingReviews}
-              />
             </>
           ) : (
-            <OpportunitiesSection />
+            <>
+              <OpportunitiesSection />
+              <Divider mt={5} />
+            </>
           )}
+          <Text fontSize="xl" mb={1}>
+            Opiniones
+          </Text>
+          <DetailedReviewSection
+            reviews={reviews}
+            isLoading={isLoadingReviews}
+          />
         </VStack>
       </GridItem>
     </Grid>

@@ -98,17 +98,20 @@ const PublicProfile = () => {
             <>
               <WorkPortfolio userId={userId as string} isReadOnly={true} />
               <Divider mt={5} />
-              <Text fontSize="xl" mb={1}>
-                Opiniones de contrataciones
-              </Text>
-              <DetailedReviewSection
-                reviews={reviews}
-                isLoading={isLoadingReviews}
-              />
             </>
           ) : (
-            <>ToDo: Qué vamos a mostrar en el lado derecho para el EMPLEADOR?</>
+            <Text fontSize="xl" mb={1}>
+              Perfil de empleador
+            </Text>
           )}
+          <Divider mt={5} />
+          <Text fontSize="xl" mb={1}>
+            Opiniones
+          </Text>
+          <DetailedReviewSection
+            reviews={reviews}
+            isLoading={isLoadingReviews}
+          />
         </VStack>
       </GridItem>
     </Grid>
