@@ -64,6 +64,13 @@ const CloseOpportunityModal: React.FC<CloseOpportunityModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
 
+  const isSubmitDisabled =
+    !acceptedProposal ||
+    reviewData.score === 0 ||
+    !reviewData.comment.trim() ||
+    reviewData.images.length === 0 ||
+    !session?.user?.id;
+
   const resetForm = () => {
     setReviewData({
       score: 0,
@@ -82,15 +89,7 @@ const CloseOpportunityModal: React.FC<CloseOpportunityModalProps> = ({
   };
 
   const handleSubmitReview = async () => {
-    if (
-      !acceptedProposal ||
-      reviewData.score === 0 ||
-      !reviewData.comment.trim() ||
-      reviewData.images.length === 0 ||
-      !session?.user?.id
-    ) {
-      return;
-    }
+    if (isSubmitDisabled) return;
 
     setIsSubmitting(true);
 
@@ -243,6 +242,7 @@ const CloseOpportunityModal: React.FC<CloseOpportunityModalProps> = ({
               <HStack spacing={3} pt={4}>
                 <Button
                   colorScheme="brand"
+                  disabled={isSubmitDisabled}
                   onClick={handleSubmitReview}
                   isLoading={isSubmitting}
                   loadingText="Enviando..."
