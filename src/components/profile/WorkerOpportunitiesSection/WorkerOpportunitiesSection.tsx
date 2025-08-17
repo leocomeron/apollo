@@ -1,8 +1,9 @@
+import { WorkerReviewModal } from '@/components/opportunities';
 import OpportunityCard from '@/components/profile/OpportunityCard/OpportunityCard';
 import fetcher from '@/lib/fetcher';
 import { Opportunity } from '@/types/opportunities';
 import type { ProposalStatus } from '@/types/proposal';
-import { Box, Button, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Text, VStack, useDisclosure } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import useSWR from 'swr';
@@ -22,11 +23,19 @@ interface OpportunityWithProposal extends Opportunity {
 const WorkerOpportunitiesSection: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<FilterStatus>('pending');
   const { data: session } = useSession();
+  const {
+    isOpen: isReviewOpen,
+    onOpen: onReviewOpen,
+    onClose: onReviewClose,
+  } = useDisclosure();
+  const [selectedOpportunity, setSelectedOpportunity] =
+    useState<OpportunityWithProposal | null>(null);
 
   const {
     data: opportunities,
     error,
     isLoading,
+    mutate,
   } = useSWR<OpportunityWithProposal[]>(
     session?.user?.id
       ? `/api/opportunities/worker-applications?workerId=${session.user.id}`
@@ -73,16 +82,14 @@ const WorkerOpportunitiesSection: React.FC = () => {
     }
   };
 
-  const getStatusColor = (status: ProposalStatus) => {
-    switch (status) {
-      case 'pending':
-        return 'orange.500';
-      case 'accepted':
-        return 'green.500';
-      case 'rejected':
-        return 'red.500';
-      default:
-        return 'gray.500';
+  const handleOpportunityUpdate = (updatedOpportunity: Opportunity) => {
+    if (opportunities && selectedOpportunity) {
+      const updatedOpportunities = opportunities.map((opportunity) =>
+        opportunity._id === selectedOpportunity._id
+          ? { ...opportunity, ...updatedOpportunity }
+          : opportunity,
+      );
+      void mutate(updatedOpportunities, false);
     }
   };
 
@@ -139,24 +146,22 @@ const WorkerOpportunitiesSection: React.FC = () => {
               ownerFirstName={opportunity.ownerFirstName}
               ownerId={opportunity.userId}
             />
-            <Box
-              position="absolute"
-              top={2}
-              right={2}
-              bg={getStatusColor(opportunity.proposal.status)}
-              color="white"
-              px={3}
-              py={1}
-              borderRadius="full"
-              fontSize="sm"
-              fontWeight="bold"
-            >
-              {opportunity.status === 'closed'
-                ? 'Finalizada'
-                : opportunity.status === 'completed'
-                  ? 'Completada'
-                  : getStatusLabel(opportunity.proposal.status as FilterStatus)}
-            </Box>
+            {selectedStatus === 'completed' &&
+              opportunity.status === 'completed' && (
+                <Box position="absolute" top={0} right={2}>
+                  <Button
+                    size="sm"
+                    colorScheme="brand"
+                    onClick={() => {
+                      setSelectedOpportunity(opportunity);
+                      onReviewOpen();
+                    }}
+                    fontSize="xs"
+                  >
+                    Evaluar
+                  </Button>
+                </Box>
+              )}
             <Box
               position="absolute"
               top={10}
@@ -196,6 +201,16 @@ const WorkerOpportunitiesSection: React.FC = () => {
             </Text>
           )}
         </Box>
+      )}
+
+      {/* Review Modal */}
+      {selectedOpportunity?.userId && (
+        <WorkerReviewModal
+          isOpen={isReviewOpen}
+          onClose={onReviewClose}
+          opportunity={selectedOpportunity}
+          onOpportunityUpdate={handleOpportunityUpdate}
+        />
       )}
     </VStack>
   );
