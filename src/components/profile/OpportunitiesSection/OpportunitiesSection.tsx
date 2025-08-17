@@ -34,7 +34,14 @@ const OpportunitiesSection: React.FC = () => {
   };
 
   const getOpportunitiesByStatus = (status: OpportunityStatus) =>
-    opportunities?.filter((opportunity) => opportunity.status === status) || [];
+    opportunities?.filter((opportunity) => {
+      if (status === 'closed') {
+        return (
+          opportunity.status === 'closed' || opportunity.status === 'completed'
+        );
+      }
+      return opportunity.status === status;
+    }) || [];
 
   const getStatusLabel = (status: OpportunityStatus) => {
     switch (status) {

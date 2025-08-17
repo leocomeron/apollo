@@ -72,7 +72,9 @@ const OpportunityCard: React.FC<OpportunityCardProps> = ({
         <Text color="gray.500">
           {format(createdAt, 'd MMM yyyy', { locale: es })}
         </Text>
-        <Text color="gray.500">{proposalsCount} propuestas</Text>
+        <Text color="gray.500">
+          {proposalsCount} {proposalsCount === 1 ? 'propuesta' : 'propuestas'}
+        </Text>
       </VStack>
     </Box>
   );
