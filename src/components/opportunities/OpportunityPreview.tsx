@@ -16,15 +16,18 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useState } from 'react';
+import UserLink from '../common/UserLink';
 import StatusBadge from './StatusBadge';
 
 interface OpportunityPreviewProps {
   formData: OpportunityFormData & { ownerFirstName?: string };
+  ownerId: string;
   categories: Category[];
 }
 
 export default function OpportunityPreview({
   formData,
+  ownerId,
   categories,
 }: OpportunityPreviewProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -73,7 +76,7 @@ export default function OpportunityPreview({
           <Text as="span" fontWeight="semibold">
             Creado por:{' '}
           </Text>
-          {formData.ownerFirstName}
+          <UserLink userId={ownerId}>{formData.ownerFirstName}</UserLink>
         </Text>
       )}
 

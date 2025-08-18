@@ -316,6 +316,7 @@ export default function OpportunityPage() {
                 )}
               </Box>
               <OpportunityPreview
+                ownerId={opportunity.userId}
                 formData={opportunity}
                 categories={categories}
               />
