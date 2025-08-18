@@ -21,7 +21,7 @@ import StatusBadge from './StatusBadge';
 
 interface OpportunityPreviewProps {
   formData: OpportunityFormData & { ownerFirstName?: string };
-  ownerId: string;
+  ownerId?: string;
   categories: Category[];
 }
 
@@ -76,7 +76,7 @@ export default function OpportunityPreview({
           <Text as="span" fontWeight="semibold">
             Creado por:{' '}
           </Text>
-          <UserLink userId={ownerId}>{formData.ownerFirstName}</UserLink>
+          <UserLink userId={ownerId || ''}>{formData.ownerFirstName}</UserLink>
         </Text>
       )}
 

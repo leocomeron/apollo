@@ -12,7 +12,8 @@ const UserLink: React.FC<UserLinkProps> = ({ userId, children, onClick }) => {
   const router = useRouter();
 
   const handleClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent event bubbling
+    e.stopPropagation();
+    if (!userId) return;
     if (onClick) {
       onClick();
     } else {
