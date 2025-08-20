@@ -153,6 +153,7 @@ const AuthForm = () => {
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     try {
+      // Redirect to onboarding - the onboarding page will handle redirecting to profile if needed
       await signIn('google', { callbackUrl: '/onboarding' });
     } catch {
       toast({

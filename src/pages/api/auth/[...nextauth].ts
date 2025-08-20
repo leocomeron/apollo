@@ -132,6 +132,11 @@ export default NextAuth({
       return token;
     },
     async redirect({ url, baseUrl }) {
+      // If it's a Google OAuth callback and the URL is the base URL, redirect to onboarding
+      // The onboarding page will handle redirecting to profile if user already completed onboarding
+      if (url === baseUrl) {
+        return `${baseUrl}/onboarding`;
+      }
       return url.startsWith(baseUrl) ? url : baseUrl;
     },
   },
