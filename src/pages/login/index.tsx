@@ -1,3 +1,4 @@
+import { GoogleSignInButton } from '@/components/common';
 import { isValidEmail, isValidPassword } from '@/utils/strings';
 import {
   Box,
@@ -21,7 +22,6 @@ const AuthForm = () => {
   const [passwordError, setPasswordError] = useState('');
   const [isSignup, setIsSignup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const router = useRouter();
   const toast = useToast();
   const { status } = useSession();
@@ -150,25 +150,6 @@ const AuthForm = () => {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    setIsGoogleLoading(true);
-    try {
-      // Redirect to onboarding - the onboarding page will handle redirecting to profile if needed
-      await signIn('google', { callbackUrl: '/onboarding' });
-    } catch {
-      toast({
-        title: 'Error al iniciar sesión con Google',
-        description: 'Por favor, intente nuevamente',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-        position: 'top',
-      });
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
-
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEmail(value);
@@ -261,7 +242,7 @@ const AuthForm = () => {
           </form>
 
           <Divider my={{ base: 3, md: 4 }} />
-
+          <GoogleSignInButton />
           <Button
             variant="ghost"
             onClick={() => setIsSignup(!isSignup)}
@@ -272,21 +253,6 @@ const AuthForm = () => {
             {isSignup
               ? '¿Ya tienes una cuenta? Inicia sesión'
               : 'Crear una cuenta'}
-          </Button>
-
-          <Button
-            onClick={handleGoogleSignIn}
-            width="100%"
-            size={{ base: 'sm', md: 'lg' }}
-            h={{ base: '45px', md: '52px' }}
-            leftIcon={<Text>🌐</Text>}
-            variant="outline"
-            colorScheme="gray"
-            _hover={{ bg: 'gray.50' }}
-            isLoading={isGoogleLoading}
-            loadingText="Conectando con Google..."
-          >
-            Continuar con Google
           </Button>
         </VStack>
       </Box>
