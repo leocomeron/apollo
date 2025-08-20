@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const AuthForm = () => {
   const [email, setEmail] = useState('');
@@ -21,9 +21,26 @@ const AuthForm = () => {
   const [passwordError, setPasswordError] = useState('');
   const [isSignup, setIsSignup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const router = useRouter();
   const toast = useToast();
   const { status } = useSession();
+
+  // Handle authentication errors from URL params
+  useEffect(() => {
+    const { error } = router.query;
+    if (error === 'auth') {
+      toast({
+        title: 'Error de autenticación',
+        description:
+          'Hubo un problema con el inicio de sesión. Por favor, intente nuevamente.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'top',
+      });
+    }
+  }, [router.query, toast]);
 
   if (status === 'loading') {
     return (
@@ -133,6 +150,24 @@ const AuthForm = () => {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true);
+    try {
+      await signIn('google', { callbackUrl: '/onboarding' });
+    } catch {
+      toast({
+        title: 'Error al iniciar sesión con Google',
+        description: 'Por favor, intente nuevamente',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'top',
+      });
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  };
+
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEmail(value);
@@ -239,13 +274,18 @@ const AuthForm = () => {
           </Button>
 
           <Button
-            onClick={() => signIn('google')}
+            onClick={handleGoogleSignIn}
             width="100%"
             size={{ base: 'sm', md: 'lg' }}
             h={{ base: '45px', md: '52px' }}
             leftIcon={<Text>🌐</Text>}
+            variant="outline"
+            colorScheme="gray"
+            _hover={{ bg: 'gray.50' }}
+            isLoading={isGoogleLoading}
+            loadingText="Conectando con Google..."
           >
-            Iniciar sesión con Google
+            Continuar con Google
           </Button>
         </VStack>
       </Box>

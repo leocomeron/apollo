@@ -54,16 +54,44 @@ export default NextAuth({
           .findOne({ email: user.email });
 
         if (!existingUser) {
+          // Create new user with Google data
           await db.collection('users').insertOne({
             email: user.email,
             profilePicture: user.image,
-            firstName: null,
-            lastName: null,
-            isVerified: false,
+            firstName: user.name?.split(' ')[0] || null,
+            lastName: user.name?.split(' ').slice(1).join(' ') || null,
+            isVerified: true, // Google users are verified
             isWorker: false,
             isOnboardingCompleted: false,
             createdAt: new Date(),
+            categories: [],
+            description: null,
+            contact: null,
+            birthDate: null,
+            documents: [],
           });
+        } else {
+          // Update existing user with Google data if needed
+          await db.collection('users').updateOne(
+            { email: user.email },
+            {
+              $set: {
+                profilePicture: user.image || existingUser.profilePicture,
+              },
+              $setOnInsert: {
+                // Only set if they don't exist
+                ...(existingUser.firstName
+                  ? {}
+                  : { firstName: user.name?.split(' ')[0] || null }),
+                ...(existingUser.lastName
+                  ? {}
+                  : {
+                      lastName:
+                        user.name?.split(' ').slice(1).join(' ') || null,
+                    }),
+              },
+            },
+          );
         }
       }
       return true;
@@ -109,7 +137,8 @@ export default NextAuth({
   },
   pages: {
     signIn: '/login',
-    error: '/login',
+    error: '/login?error=auth',
+    signOut: '/login',
   },
   secret: process.env.NEXTAUTH_SECRET,
   session: {
