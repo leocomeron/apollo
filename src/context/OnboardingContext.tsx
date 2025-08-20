@@ -1,5 +1,12 @@
 import { OnboardingContextType, OnboardingInfo } from '@/types/onboarding';
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
 const OnboardingContext = createContext<OnboardingContextType | undefined>(
   undefined,
@@ -25,6 +32,25 @@ const onboardingInitialState: OnboardingInfo = {
 export const OnboardingProvider = ({ children }: OnboardingProviderProps) => {
   const [step, setStep] = useState<number>(1);
   const [onboardingInfo, setOnboardingInfo] = useState(onboardingInitialState);
+  const { data: session } = useSession();
+
+  // Initialize onboarding info with user data if available
+  useEffect(() => {
+    if (session?.user) {
+      setOnboardingInfo((prevState) => ({
+        ...prevState,
+        firstName: session.user.firstName || prevState.firstName,
+        lastName: session.user.lastName || prevState.lastName,
+        birthDate: session.user.birthDate || prevState.birthDate,
+        contact: {
+          ...prevState.contact,
+          phone: session.user.contact?.phone || prevState.contact.phone,
+          location:
+            session.user.contact?.location || prevState.contact.location,
+        },
+      }));
+    }
+  }, [session]);
 
   const nextStep = () => setStep((prevStep) => prevStep + 1);
   const prevStep = () => setStep((prevStep) => Math.max(1, prevStep - 1));

@@ -52,6 +52,7 @@ const OnboardingThirdStep: React.FC = () => {
         <Heading textAlign="center" mb={{ base: 1, md: 6 }}>
           Contanos de vos
         </Heading>
+
         <Stack spacing={2}>
           {/* First Name */}
           <FormControl id="firstName" isRequired>
