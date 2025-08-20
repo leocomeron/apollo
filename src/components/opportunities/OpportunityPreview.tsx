@@ -1,5 +1,6 @@
 import { Category } from '@/types/onboarding';
 import { OpportunityFormData } from '@/types/opportunities';
+import { decodeOpportunityType } from '@/utils/decoders';
 import { CloseIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -36,11 +37,6 @@ export default function OpportunityPreview({
   const handleImageClick = (image: string) => {
     setSelectedImage(image);
     onOpen();
-  };
-
-  const getOpportunityTypeLabel = (value: string) => {
-    const category = categories.find((cat) => cat.value === value);
-    return category ? category.label : value;
   };
 
   const getCategoryLabel = (value: string) => {
@@ -184,7 +180,7 @@ export default function OpportunityPreview({
           <Text as="span" fontWeight="semibold">
             Tipo:{' '}
           </Text>
-          {getOpportunityTypeLabel(formData.type)}
+          {decodeOpportunityType(formData.type)}
         </Text>
       )}
 
