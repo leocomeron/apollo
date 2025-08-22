@@ -25,7 +25,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface WorkPortfolioProps {
   initialJobs?: CompletedJob[];
@@ -55,7 +55,7 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({
     setIsTooltipOpen((prev) => !prev);
   };
 
-  const fetchCompletedJobs = async () => {
+  const fetchCompletedJobs = useCallback(async () => {
     if (!userId && !session?.user?.id) return;
 
     try {
@@ -84,11 +84,11 @@ const WorkPortfolio: React.FC<WorkPortfolioProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [userId, session, isEditable, toast]);
 
   useEffect(() => {
     void fetchCompletedJobs();
-  }, [userId, session]);
+  }, [userId, session, fetchCompletedJobs]);
 
   const handleImageUpload = (url: string) => {
     if (isReadOnly) return;

@@ -2,8 +2,7 @@ import DetailedReviewSection from '@/components/profile/DetailedReviewSection/De
 import ProfileDescription from '@/components/profile/ProfileDescription';
 import ReviewRating from '@/components/profile/ReviewRating/ReviewRating';
 import WorkPortfolio from '@/components/profile/WorkPortfolio/WorkPortfolio';
-import { useUserProfile } from '@/hooks/useUserProfile';
-import { useUserReviews } from '@/hooks/useUserReviews';
+import { useUserProfile, useUserReviews } from '@/hooks';
 import { DocumentType } from '@/types/onboarding';
 import {
   Alert,

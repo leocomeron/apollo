@@ -24,6 +24,11 @@ export const env = {
     apiSecret: getRequiredEnvVar('NEXT_PUBLIC_CLOUDINARY_API_SECRET'),
     uploadPreset: getRequiredEnvVar('NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET'),
   },
+  brevo: {
+    apiKey: getRequiredEnvVar('BREVO_API_KEY'),
+    fromEmail: getRequiredEnvVar('BREVO_FROM_EMAIL'),
+    fromName: getRequiredEnvVar('BREVO_FROM_NAME'),
+  },
 } as const;
 
 export type Env = typeof env;

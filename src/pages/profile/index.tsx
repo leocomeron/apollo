@@ -5,7 +5,7 @@ import ProfileDescription from '@/components/profile/ProfileDescription';
 import ReviewRating from '@/components/profile/ReviewRating/ReviewRating';
 import WorkPortfolio from '@/components/profile/WorkPortfolio';
 import WorkerOpportunitiesSection from '@/components/profile/WorkerOpportunitiesSection';
-import { useUserReviews } from '@/hooks/useUserReviews';
+import { useUserReviews } from '@/hooks';
 import { DocumentType } from '@/types/onboarding';
 import {
   Center,

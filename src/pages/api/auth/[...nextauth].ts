@@ -1,5 +1,6 @@
 import { env } from '@/lib/env';
 import clientPromise from '@/lib/mongodb';
+import { EmailService } from '@/services/email';
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
 import bcrypt from 'bcrypt';
 import NextAuth from 'next-auth';
@@ -55,21 +56,30 @@ export default NextAuth({
 
         if (!existingUser) {
           // Create new user with Google data
-          await db.collection('users').insertOne({
-            email: user.email,
-            profilePicture: user.image,
-            firstName: user.name?.split(' ')[0] || null,
-            lastName: user.name?.split(' ').slice(1).join(' ') || null,
-            isVerified: true, // Google users are verified
-            isWorker: false,
-            isOnboardingCompleted: false,
-            createdAt: new Date(),
-            categories: [],
-            description: null,
-            contact: null,
-            birthDate: null,
-            documents: [],
-          });
+          try {
+            await db.collection('users').insertOne({
+              email: user.email,
+              profilePicture: user.image,
+              firstName: user.name?.split(' ')[0] || null,
+              lastName: user.name?.split(' ').slice(1).join(' ') || null,
+              isVerified: true, // Google users are verified
+              isWorker: false,
+              isOnboardingCompleted: false,
+              createdAt: new Date(),
+              categories: [],
+              description: null,
+              contact: null,
+              birthDate: null,
+              documents: [],
+            });
+            console.log('Sending welcome email to:', user.email);
+            await EmailService.sendWelcomeEmail({
+              email: user.email,
+              firstName: user.name?.split(' ')[0],
+            });
+          } catch (error) {
+            console.error('Error creating user:', error);
+          }
         } else {
           // Update existing user with Google data if needed
           await db.collection('users').updateOne(
