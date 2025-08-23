@@ -14,6 +14,7 @@ import {
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const AuthForm = () => {
   const [email, setEmail] = useState('');
@@ -89,13 +90,12 @@ const AuthForm = () => {
 
     try {
       if (isSignup) {
-        const res = await fetch('/api/auth/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
+        const res = await axios.post('/api/auth/signup', {
+          email,
+          password,
         });
 
-        if (res.ok) {
+        if (res.status === 201 || res.status === 200) {
           const signInResult = await signIn('credentials', {
             redirect: false,
             email,
