@@ -11,10 +11,10 @@ import {
   VStack,
   useToast,
 } from '@chakra-ui/react';
+import axios from 'axios';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 
 const AuthForm = () => {
   const [email, setEmail] = useState('');
