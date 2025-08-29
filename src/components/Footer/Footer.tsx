@@ -136,6 +136,7 @@ export default function Footer() {
                 >
                   Política de Privacidad
                 </Link>
+                <Box h="18px" />
               </VStack>
             </HStack>
           </Flex>
