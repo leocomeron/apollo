@@ -60,16 +60,27 @@ export default function Footer() {
                 <Text fontWeight="semibold" color="gray.800">
                   Servicios
                 </Text>
-                <Link href="/" color="gray.600" _hover={{ color: 'brand.600' }}>
+                <Link
+                  href="/"
+                  color="gray.600"
+                  _hover={{ color: 'brand.600' }}
+                  fontSize="xs"
+                >
                   Oportunidades
                 </Link>
-                <Link href="/" color="gray.600" _hover={{ color: 'brand.600' }}>
+                <Link
+                  href="/"
+                  color="gray.600"
+                  _hover={{ color: 'brand.600' }}
+                  fontSize="xs"
+                >
                   Trabajadores
                 </Link>
                 <Link
                   href="/opportunities/create"
                   color="gray.600"
                   _hover={{ color: 'brand.600' }}
+                  fontSize="xs"
                 >
                   Publicar Trabajo
                 </Link>
@@ -79,13 +90,28 @@ export default function Footer() {
                 <Text fontWeight="semibold" color="gray.800">
                   Empresa
                 </Text>
-                <Link href="/" color="gray.600" _hover={{ color: 'brand.600' }}>
+                <Link
+                  href="/"
+                  color="gray.600"
+                  _hover={{ color: 'brand.600' }}
+                  fontSize="xs"
+                >
                   Sobre Nosotros
                 </Link>
-                <Link href="/" color="gray.600" _hover={{ color: 'brand.600' }}>
+                <Link
+                  href="/"
+                  color="gray.600"
+                  _hover={{ color: 'brand.600' }}
+                  fontSize="xs"
+                >
                   Contacto
                 </Link>
-                <Link href="/" color="gray.600" _hover={{ color: 'brand.600' }}>
+                <Link
+                  href="/"
+                  color="gray.600"
+                  _hover={{ color: 'brand.600' }}
+                  fontSize="xs"
+                >
                   Ayuda
                 </Link>
               </VStack>
@@ -94,10 +120,20 @@ export default function Footer() {
                 <Text fontWeight="semibold" color="gray.800">
                   Legal
                 </Text>
-                <Link href="/" color="gray.600" _hover={{ color: 'brand.600' }}>
+                <Link
+                  href="/"
+                  color="gray.600"
+                  _hover={{ color: 'brand.600' }}
+                  fontSize="xs"
+                >
                   Términos y Condiciones
                 </Link>
-                <Link href="/" color="gray.600" _hover={{ color: 'brand.600' }}>
+                <Link
+                  href="/"
+                  color="gray.600"
+                  _hover={{ color: 'brand.600' }}
+                  fontSize="xs"
+                >
                   Política de Privacidad
                 </Link>
               </VStack>
