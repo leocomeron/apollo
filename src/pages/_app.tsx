@@ -20,7 +20,9 @@ export default function App({
     >
       <ChakraProvider theme={theme}>
         <Head>
-          <title>Manos a la obra</title>
+          <title>
+            Manos a la Obra - Encuentra Trabajadores Calificados en Argentina
+          </title>
         </Head>
         <OnboardingProvider>
           <Box minH="100vh" bg="brand.100">

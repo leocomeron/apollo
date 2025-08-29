@@ -185,7 +185,7 @@ const ProfileDescription: React.FC<ProfileDescriptionProps> = ({
           borderRadius="full"
           boxSize="200px"
           src={imageUrl}
-          alt={`${name} profile`}
+          alt={`${name} - ${categories?.join(', ')} en Argentina`}
         />
         {/* Badge de verificación */}
         {isVerified && (

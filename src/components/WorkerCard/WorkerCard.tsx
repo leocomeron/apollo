@@ -67,7 +67,7 @@ const WorkerCard: React.FC<WorkerCardProps> = ({
       {profilePicture ? (
         <Image
           src={profilePicture}
-          alt={`${firstName} ${lastName}`}
+          alt={`${firstName} ${lastName} - ${professions?.join(', ')} en Argentina`}
           borderRadius="lg"
           objectFit="cover"
           width="100%"

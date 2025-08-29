@@ -31,6 +31,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useSession } from 'next-auth/react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import useSWR, { mutate } from 'swr';
@@ -291,184 +292,220 @@ export default function OpportunityPage() {
   };
 
   return (
-    <Container maxW="container.xl">
-      <Grid
-        templateColumns={{ base: '1fr', md: '1fr', lg: '2fr 1fr' }}
-        gap={{ base: 6, lg: 8 }}
-      >
-        <GridItem>
-          <VStack align="stretch" spacing={4}>
-            <Box position="relative" w="100%">
-              <Box display="flex" justifyContent="flex-end" mb={1}>
-                {isOwner && opportunity.status === 'open' && (
-                  <HStack spacing={2}>
-                    <EditButton
-                      onClick={() => {
-                        setEditedOpportunity(opportunity);
-                        onOpen();
-                      }}
-                    />
-                    <DeleteButton
-                      onClick={handleDelete}
-                      isLoading={isDeleting}
-                    />
-                  </HStack>
-                )}
-              </Box>
-              <OpportunityPreview
-                ownerId={opportunity.userId}
-                formData={opportunity}
-                categories={categories}
-              />
-            </Box>
-          </VStack>
-        </GridItem>
-
-        <GridItem>
-          <VStack spacing={4} align="stretch">
-            {/* Show different content based on ownership */}
-            {isOwner ? (
-              /* Owner view - Show proposals */
-              <>
-                <Box rounded="lg" shadow="base" p={4}>
-                  <Text fontSize="xl" fontWeight="bold" mb={2}>
-                    Propuestas de interesados
-                  </Text>
-                  <VStack spacing={4} align="stretch">
-                    {isLoadingProposals ? (
-                      <Text>Cargando propuestas...</Text>
-                    ) : proposalsError ? (
-                      <Text color="red.500">
-                        Error al cargar las propuestas
-                      </Text>
-                    ) : proposals?.length === 0 ? (
-                      <Text>No hay propuestas aún</Text>
-                    ) : (
-                      proposals
-                        ?.sort((a, b) => {
-                          // Sort: accepted first, then pending, then rejected
-                          const statusOrder = {
-                            accepted: 0,
-                            pending: 1,
-                            rejected: 2,
-                          };
-                          return statusOrder[a.status] - statusOrder[b.status];
-                        })
-                        .map((proposal) => (
-                          <ProposalCard
-                            key={proposal.id}
-                            userId={proposal.workerId}
-                            firstName={proposal.firstName}
-                            lastName={proposal.lastName}
-                            profileImage={proposal.profileImage}
-                            budget={proposal.budget}
-                            reviewStats={proposal.reviewStats}
-                            status={proposal.status}
-                            onAccept={() => handleAcceptProposal(proposal.id)}
-                            onReject={() => handleRejectProposal(proposal.id)}
-                          />
-                        ))
-                    )}
-                  </VStack>
+    <>
+      <Head>
+        <title>
+          {opportunity?.title
+            ? `${opportunity.title} - Manos a la Obra`
+            : 'Oportunidad de Trabajo'}
+        </title>
+        <meta
+          name="description"
+          content={
+            opportunity?.description
+              ? `${opportunity.description.substring(0, 160)}...`
+              : 'Oportunidad de trabajo en oficios y construcción'
+          }
+        />
+        <meta
+          name="keywords"
+          content={`${opportunity?.categories?.join(', ') || ''}, oficio, trabajo, construcción, argentina`}
+        />
+        <meta
+          property="og:title"
+          content={opportunity?.title || 'Oportunidad de Trabajo'}
+        />
+        <meta
+          property="og:description"
+          content={
+            opportunity?.description ||
+            'Encuentra trabajos en oficios y construcción'
+          }
+        />
+        <meta property="og:type" content="article" />
+        <meta property="og:locale" content="es_AR" />
+      </Head>
+      <Container maxW="container.xl">
+        <Grid
+          templateColumns={{ base: '1fr', md: '1fr', lg: '2fr 1fr' }}
+          gap={{ base: 6, lg: 8 }}
+        >
+          <GridItem>
+            <VStack align="stretch" spacing={4}>
+              <Box position="relative" w="100%">
+                <Box display="flex" justifyContent="flex-end" mb={1}>
+                  {isOwner && opportunity.status === 'open' && (
+                    <HStack spacing={2}>
+                      <EditButton
+                        onClick={() => {
+                          setEditedOpportunity(opportunity);
+                          onOpen();
+                        }}
+                      />
+                      <DeleteButton
+                        onClick={handleDelete}
+                        isLoading={isDeleting}
+                      />
+                    </HStack>
+                  )}
                 </Box>
+                <OpportunityPreview
+                  ownerId={opportunity.userId}
+                  formData={opportunity}
+                  categories={categories}
+                />
+              </Box>
+            </VStack>
+          </GridItem>
 
-                {/* Close and Review Button */}
-                {opportunity.status === 'in_progress' && acceptedProposal && (
-                  <Box display="flex" justifyContent="flex-end">
-                    <Button
-                      colorScheme="brand"
-                      backgroundColor="brand.700"
-                      onClick={handleCloseAndReview}
-                      size="md"
-                    >
-                      Cerrar y Evaluar
-                    </Button>
+          <GridItem>
+            <VStack spacing={4} align="stretch">
+              {/* Show different content based on ownership */}
+              {isOwner ? (
+                /* Owner view - Show proposals */
+                <>
+                  <Box rounded="lg" shadow="base" p={4}>
+                    <Text fontSize="xl" fontWeight="bold" mb={2}>
+                      Propuestas de interesados
+                    </Text>
+                    <VStack spacing={4} align="stretch">
+                      {isLoadingProposals ? (
+                        <Text>Cargando propuestas...</Text>
+                      ) : proposalsError ? (
+                        <Text color="red.500">
+                          Error al cargar las propuestas
+                        </Text>
+                      ) : proposals?.length === 0 ? (
+                        <Text>No hay propuestas aún</Text>
+                      ) : (
+                        proposals
+                          ?.sort((a, b) => {
+                            // Sort: accepted first, then pending, then rejected
+                            const statusOrder = {
+                              accepted: 0,
+                              pending: 1,
+                              rejected: 2,
+                            };
+                            return (
+                              statusOrder[a.status] - statusOrder[b.status]
+                            );
+                          })
+                          .map((proposal) => (
+                            <ProposalCard
+                              key={proposal.id}
+                              userId={proposal.workerId}
+                              firstName={proposal.firstName}
+                              lastName={proposal.lastName}
+                              profileImage={proposal.profileImage}
+                              budget={proposal.budget}
+                              reviewStats={proposal.reviewStats}
+                              status={proposal.status}
+                              onAccept={() => handleAcceptProposal(proposal.id)}
+                              onReject={() => handleRejectProposal(proposal.id)}
+                            />
+                          ))
+                      )}
+                    </VStack>
                   </Box>
-                )}
-              </>
-            ) : (
-              /* Non-owner view - Show proposal form or status */
-              <>
-                {opportunity.status === 'open' ? (
-                  session?.user?.isWorker ? (
-                    <SubmitProposalForm
-                      opportunityId={opportunity._id}
-                      onProposalSubmitted={handleProposalSubmitted}
-                    />
+
+                  {/* Close and Review Button */}
+                  {opportunity.status === 'in_progress' && acceptedProposal && (
+                    <Box display="flex" justifyContent="flex-end">
+                      <Button
+                        colorScheme="brand"
+                        backgroundColor="brand.700"
+                        onClick={handleCloseAndReview}
+                        size="md"
+                      >
+                        Cerrar y Evaluar
+                      </Button>
+                    </Box>
+                  )}
+                </>
+              ) : (
+                /* Non-owner view - Show proposal form or status */
+                <>
+                  {opportunity.status === 'open' ? (
+                    session?.user?.isWorker ? (
+                      <SubmitProposalForm
+                        opportunityId={opportunity._id}
+                        onProposalSubmitted={handleProposalSubmitted}
+                      />
+                    ) : (
+                      <Box rounded="lg" shadow="base" p={6} textAlign="center">
+                        <Text fontSize="lg" fontWeight="bold" mb={2}>
+                          Solo trabajadores pueden enviar propuestas
+                        </Text>
+                      </Box>
+                    )
                   ) : (
                     <Box rounded="lg" shadow="base" p={6} textAlign="center">
                       <Text fontSize="lg" fontWeight="bold" mb={2}>
-                        Solo trabajadores pueden enviar propuestas
+                        Esta oportunidad ya no está disponible
+                      </Text>
+                      <Text color="gray.600">
+                        {opportunity.status === 'in_progress'
+                          ? 'La oportunidad está en curso'
+                          : 'La oportunidad ha sido cerrada'}
                       </Text>
                     </Box>
-                  )
-                ) : (
-                  <Box rounded="lg" shadow="base" p={6} textAlign="center">
-                    <Text fontSize="lg" fontWeight="bold" mb={2}>
-                      Esta oportunidad ya no está disponible
-                    </Text>
-                    <Text color="gray.600">
-                      {opportunity.status === 'in_progress'
-                        ? 'La oportunidad está en curso'
-                        : 'La oportunidad ha sido cerrada'}
-                    </Text>
-                  </Box>
-                )}
-              </>
-            )}
-          </VStack>
-        </GridItem>
-      </Grid>
+                  )}
+                </>
+              )}
+            </VStack>
+          </GridItem>
+        </Grid>
 
-      <Modal
-        isOpen={isOpen}
-        onClose={() => {
-          setEditedOpportunity(null);
-          onClose();
-        }}
-        size="xl"
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Editar oportunidad</ModalHeader>
-          <ModalCloseButton
-            onClick={() => {
-              setEditedOpportunity(null);
-              onClose();
-            }}
-          />
-          <ModalBody>
-            <EditOpportunityForm
-              categories={categories}
-              formData={editedOpportunity || opportunity}
-              onFormChange={setEditedOpportunity}
-              onSave={handleSave}
-              isSaving={isSaving}
+        <Modal
+          isOpen={isOpen}
+          onClose={() => {
+            setEditedOpportunity(null);
+            onClose();
+          }}
+          size="xl"
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Editar oportunidad</ModalHeader>
+            <ModalCloseButton
+              onClick={() => {
+                setEditedOpportunity(null);
+                onClose();
+              }}
             />
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+            <ModalBody>
+              <EditOpportunityForm
+                categories={categories}
+                formData={editedOpportunity || opportunity}
+                onFormChange={setEditedOpportunity}
+                onSave={handleSave}
+                isSaving={isSaving}
+              />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
 
-      <DeleteConfirmationModal
-        isOpen={isAlertOpen}
-        onClose={() => setIsAlertOpen(false)}
-        onConfirm={confirmDelete}
-        isLoading={isDeleting}
-        title="Eliminar oportunidad"
-        message="¿Estás seguro de que deseas eliminar esta oportunidad?"
-        confirmText="Eliminar"
-        cancelText="Cancelar"
-      />
+        <DeleteConfirmationModal
+          isOpen={isAlertOpen}
+          onClose={() => setIsAlertOpen(false)}
+          onConfirm={confirmDelete}
+          isLoading={isDeleting}
+          title="Eliminar oportunidad"
+          message="¿Estás seguro de que deseas eliminar esta oportunidad?"
+          confirmText="Eliminar"
+          cancelText="Cancelar"
+        />
 
-      {/* Close Opportunity Modal */}
-      <CloseOpportunityModal
-        isOpen={isReviewOpen}
-        onClose={onReviewClose}
-        acceptedProposal={acceptedProposal}
-        opportunityId={opportunity._id}
-        formData={opportunity}
-        onOpportunityUpdate={() => mutate(`/api/opportunities/${id}`)}
-      />
-    </Container>
+        {/* Close Opportunity Modal */}
+        <CloseOpportunityModal
+          isOpen={isReviewOpen}
+          onClose={onReviewClose}
+          acceptedProposal={acceptedProposal}
+          opportunityId={opportunity._id}
+          formData={opportunity}
+          onOpportunityUpdate={() => mutate(`/api/opportunities/${id}`)}
+        />
+      </Container>
+    </>
   );
 }

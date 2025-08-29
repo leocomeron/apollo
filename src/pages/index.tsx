@@ -4,6 +4,7 @@ import { Category } from '@/types/onboarding';
 import { Opportunity } from '@/types/opportunities';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { GetServerSideProps } from 'next';
+import Head from 'next/head';
 import useSWR from 'swr';
 import { User } from './api/users/types';
 
@@ -79,30 +80,58 @@ export default function Home({
   );
 
   return (
-    <div className="items-center p-2 pb-20 gap-8 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <Tabs size="lg" colorScheme="brand" borderColor="white">
-        <TabList>
-          <Tab fontWeight="bold">Oportunidades</Tab>
-          <Tab fontWeight="bold">Trabajadores</Tab>
-        </TabList>
+    <>
+      <Head>
+        <title>
+          Manos a la Obra - Encuentra Albañiles, Gasistas y Plomeros en
+          Argentina
+        </title>
+        <meta
+          name="description"
+          content="Encuentra trabajadores calificados para tus proyectos: albañiles, gasistas, plomeros y más oficios en Argentina. Publica trabajos o encuentra trabajo fácilmente."
+        />
+        <meta
+          name="keywords"
+          content="albañil argentina, gasista buenos aires, plomero, oficios, construcción, trabajo, mano de obra, servicios"
+        />
+        <meta name="robots" content="index, follow" />
+        <meta
+          property="og:title"
+          content="Manos a la Obra - Encuentra Trabajadores Calificados"
+        />
+        <meta
+          property="og:description"
+          content="Plataforma líder para conectar clientes con trabajadores calificados en Argentina"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="es_AR" />
+        <link rel="canonical" href="https://manosalaobra.com.ar" />
+      </Head>
+      <div className="items-center p-2 pb-20 gap-8 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+        <Tabs size="lg" colorScheme="brand" borderColor="white">
+          <TabList>
+            <Tab fontWeight="bold">Oportunidades</Tab>
+            <Tab fontWeight="bold">Trabajadores</Tab>
+          </TabList>
 
-        <TabPanels>
-          <TabPanel>
-            <OpportunitiesSection opportunities={opportunities || []} />
-          </TabPanel>
+          <TabPanels>
+            <TabPanel>
+              <OpportunitiesSection opportunities={opportunities || []} />
+            </TabPanel>
 
-          <TabPanel>
-            <WorkersSection
-              workers={workers || []}
-              categories={categories || []}
-            />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+            <TabPanel>
+              <WorkersSection
+                workers={workers || []}
+                categories={categories || []}
+              />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
 
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center mt-8">
-        HOME FOOTER
-      </footer>
-    </div>
+        <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center mt-8">
+          HOME FOOTER
+        </footer>
+      </div>
+    </>
   );
 }

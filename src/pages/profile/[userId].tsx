@@ -15,6 +15,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
@@ -66,54 +67,93 @@ const PublicProfile = () => {
   const isWorker = user.isWorker;
 
   return (
-    <Grid
-      display={{ base: 'block', md: 'grid' }}
-      templateColumns={{ base: '1fr', md: '1fr 4fr' }}
-      gap={6}
-    >
-      {/* Left Column - 1/3 of the screen */}
-      <GridItem mt={{ base: 0, lg: 10 }}>
-        <VStack spacing={5} align="stretch">
-          <ProfileDescription
-            imageUrl={
-              user.documents?.find(
-                (document) => document.type === DocumentType.ProfilePicture,
-              )?.url || ''
-            }
-            name={user.firstName + ' ' + user.lastName}
-            categories={user.categories}
-            description={user.description}
-            isVerified={user.isVerified}
-            isWorker={isWorker}
-            isReadOnly={true}
-          />
-          <ReviewRating reviewStats={reviewStats} />
-        </VStack>
-      </GridItem>
-      {/* Right Column - 2/3 of the screen */}
-      <GridItem>
-        <VStack spacing={5} align="stretch" mt={{ base: 0, lg: 16 }}>
-          {isWorker ? (
-            <>
-              <WorkPortfolio userId={userId as string} isReadOnly={true} />
-              <Divider mt={5} />
-            </>
-          ) : (
+    <>
+      <Head>
+        <title>
+          {user
+            ? `${user.firstName} ${user.lastName} - ${user.categories?.join(', ')} | Manos a la Obra`
+            : 'Perfil de Trabajador'}
+        </title>
+        <meta
+          name="description"
+          content={
+            user
+              ? `${user.firstName} ${user.lastName}, ${user.categories?.join(', ')} en Argentina. ${user.description?.substring(0, 120)}...`
+              : 'Perfil de trabajador calificado'
+          }
+        />
+        <meta
+          name="keywords"
+          content={`${user?.categories?.join(', ') || ''}, ${user?.firstName || ''} ${user?.lastName || ''}, oficio, trabajo, argentina`}
+        />
+        <meta
+          property="og:title"
+          content={
+            user
+              ? `${user.firstName} ${user.lastName} - ${user.categories?.join(', ')}`
+              : 'Perfil de Trabajador'
+          }
+        />
+        <meta
+          property="og:description"
+          content={
+            user
+              ? `${user.firstName} ${user.lastName}, ${user.categories?.join(', ')} en Argentina`
+              : 'Perfil de trabajador calificado'
+          }
+        />
+        <meta property="og:type" content="profile" />
+        <meta property="og:locale" content="es_AR" />
+      </Head>
+      <Grid
+        display={{ base: 'block', md: 'grid' }}
+        templateColumns={{ base: '1fr', md: '1fr 4fr' }}
+        gap={6}
+      >
+        {/* Left Column - 1/3 of the screen */}
+        <GridItem mt={{ base: 0, lg: 10 }}>
+          <VStack spacing={5} align="stretch">
+            <ProfileDescription
+              imageUrl={
+                user.documents?.find(
+                  (document) => document.type === DocumentType.ProfilePicture,
+                )?.url || ''
+              }
+              name={user.firstName + ' ' + user.lastName}
+              categories={user.categories}
+              description={user.description}
+              isVerified={user.isVerified}
+              isWorker={isWorker}
+              isReadOnly={true}
+            />
+            <ReviewRating reviewStats={reviewStats} />
+          </VStack>
+        </GridItem>
+        {/* Right Column - 2/3 of the screen */}
+        <GridItem>
+          <VStack spacing={5} align="stretch" mt={{ base: 0, lg: 16 }}>
+            {isWorker ? (
+              <>
+                <WorkPortfolio userId={userId as string} isReadOnly={true} />
+                <Divider mt={5} />
+              </>
+            ) : (
+              <Text fontSize="xl" mb={1}>
+                Perfil de empleador
+              </Text>
+            )}
+            <Divider mt={5} />
             <Text fontSize="xl" mb={1}>
-              Perfil de empleador
+              Opiniones
             </Text>
-          )}
-          <Divider mt={5} />
-          <Text fontSize="xl" mb={1}>
-            Opiniones
-          </Text>
-          <DetailedReviewSection
-            reviews={reviews}
-            isLoading={isLoadingReviews}
-          />
-        </VStack>
-      </GridItem>
-    </Grid>
+            <DetailedReviewSection
+              reviews={reviews}
+              isLoading={isLoadingReviews}
+            />
+          </VStack>
+        </GridItem>
+      </Grid>
+    </>
   );
 };
 
