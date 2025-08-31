@@ -72,7 +72,6 @@ export default NextAuth({
               birthDate: null,
               documents: [],
             });
-            console.log('Sending welcome email to:', user.email);
             await EmailService.sendWelcomeEmail({
               email: user.email,
               firstName: user.name?.split(' ')[0],
