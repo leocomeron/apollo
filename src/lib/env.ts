@@ -7,6 +7,10 @@ const getRequiredEnvVar = (key: string): string => {
 };
 
 export const env = {
+  app: {
+    next_public_api_url: getRequiredEnvVar('NEXT_PUBLIC_API_URL'),
+    node_env: getRequiredEnvVar('NODE_ENV'),
+  },
   mongodb: {
     uri: getRequiredEnvVar('MONGODB_URI'),
   },

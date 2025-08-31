@@ -1,5 +1,6 @@
 import Footer from '@/components/Footer';
 import { OpportunitiesSection, WorkersSection } from '@/components/sections';
+import { env } from '@/lib/env';
 import fetcher from '@/lib/fetcher';
 import { Category } from '@/types/onboarding';
 import { Opportunity } from '@/types/opportunities';
@@ -18,9 +19,9 @@ interface HomeProps {
 export const getServerSideProps: GetServerSideProps = async () => {
   try {
     const [workersRes, categoriesRes, opportunitiesRes] = await Promise.all([
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users?isWorker=true`),
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/catalogs/categories`),
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/opportunities?status=open`),
+      fetch(`${env.app.next_public_api_url}/api/users?isWorker=true`),
+      fetch(`${env.app.next_public_api_url}/api/catalogs/categories`),
+      fetch(`${env.app.next_public_api_url}/api/opportunities?status=open`),
     ]);
 
     const [workers, categories, opportunities] = await Promise.all([

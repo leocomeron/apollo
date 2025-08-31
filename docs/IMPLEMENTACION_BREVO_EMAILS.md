@@ -34,48 +34,7 @@ BREVO_FROM_EMAIL=tu_email_verificado@ejemplo.com
 BREVO_FROM_NAME=Manos a la Obra
 ```
 
-## 4. Actualización del Archivo de Configuración
-
-Actualiza tu archivo `src/lib/env.ts`:
-
-```typescript:src/lib/env.ts
-const getRequiredEnvVar = (key: string): string => {
-  const value = process.env[key];
-  if (!value) {
-    throw new Error(`Missing required environment variable: ${key}`);
-  }
-  return value;
-};
-
-export const env = {
-  mongodb: {
-    uri: getRequiredEnvVar('MONGODB_URI'),
-  },
-  nextAuth: {
-    secret: getRequiredEnvVar('NEXTAUTH_SECRET'),
-    url: getRequiredEnvVar('NEXTAUTH_URL'),
-  },
-  google: {
-    clientId: getRequiredEnvVar('GOOGLE_CLIENT_ID'),
-    clientSecret: getRequiredEnvVar('GOOGLE_CLIENT_SECRET'),
-  },
-  cloudinary: {
-    cloudName: getRequiredEnvVar('NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME'),
-    apiKey: getRequiredEnvVar('NEXT_PUBLIC_CLOUDINARY_API_KEY'),
-    apiSecret: getRequiredEnvVar('NEXT_PUBLIC_CLOUDINARY_API_SECRET'),
-    uploadPreset: getRequiredEnvVar('NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET'),
-  },
-  brevo: {
-    apiKey: getRequiredEnvVar('BREVO_API_KEY'),
-    fromEmail: getRequiredEnvVar('BREVO_FROM_EMAIL'),
-    fromName: getRequiredEnvVar('BREVO_FROM_NAME'),
-  },
-} as const;
-
-export type Env = typeof env;
-```
-
-## 5. Creación del Servicio de Email con Brevo
+## 4. Creación del Servicio de Email con Brevo
 
 Crea el archivo `src/services/email.ts`:
 
