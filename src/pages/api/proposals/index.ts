@@ -1,4 +1,5 @@
 import clientPromise from '@/lib/mongodb';
+import { EmailService } from '@/services/email';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -32,14 +33,39 @@ export default async function handler(
           });
         }
 
-        // Check if opportunity exists and is open
-        const opportunity = await db
+        // Check if opportunity exists and is open, and get owner information
+        const opportunityWithOwner = await db
           .collection('opportunities')
-          .findOne({ _id: new ObjectId(opportunityId) });
+          .aggregate([
+            { $match: { _id: new ObjectId(opportunityId) } },
+            {
+              $lookup: {
+                from: 'users',
+                localField: 'userId',
+                foreignField: '_id',
+                as: 'owner',
+              },
+            },
+            {
+              $addFields: {
+                ownerEmail: { $arrayElemAt: ['$owner.email', 0] },
+                ownerFirstName: { $arrayElemAt: ['$owner.firstName', 0] },
+                ownerId: { $arrayElemAt: ['$owner._id', 0] },
+              },
+            },
+            {
+              $project: {
+                owner: 0,
+              },
+            },
+          ])
+          .toArray();
 
-        if (!opportunity) {
+        if (!opportunityWithOwner || opportunityWithOwner.length === 0) {
           return res.status(404).json({ message: 'Oportunidad no encontrada' });
         }
+
+        const opportunity = opportunityWithOwner[0];
 
         if (opportunity.status !== 'open') {
           return res.status(400).json({
@@ -63,6 +89,13 @@ export default async function handler(
           message: 'Propuesta enviada exitosamente',
           proposalId: result.insertedId,
         });
+        // Send notification email to opportunity owner
+        await EmailService.sendProposalNotification(
+          opportunity.ownerEmail,
+          opportunity.title,
+          opportunity._id.toString(),
+          opportunity.ownerFirstName,
+        );
       } catch (error) {
         console.error('Error creating proposal:', error);
         res.status(500).json({
